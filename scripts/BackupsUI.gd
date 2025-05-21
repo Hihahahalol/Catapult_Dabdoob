@@ -9,6 +9,16 @@ onready var _btn_refresh = $Available/Buttons/BtnRefresh
 onready var _btn_restore = $Available/Buttons/BtnRestore
 onready var _btn_delete = $Available/Buttons/BtnDelete
 onready var _lbl_info = $Available/HBox/BackupInfo
+# Reference to automatic backup control
+onready var _cb_backup_before_launch = $BackupBeforeLaunch
+
+
+func _ready() -> void:
+	# Initialize automatic backup controls from settings
+	_cb_backup_before_launch.pressed = Settings.read("backup_before_launch")
+	
+	# Connect signals for automatic backup controls
+	_cb_backup_before_launch.connect("toggled", self, "_on_BackupBeforeLaunch_toggled")
 
 
 func _refresh_available() -> void:
@@ -131,3 +141,8 @@ func _make_backup_info_string(index: int) -> String:
 func _on_BackupInfo_meta_clicked(meta) -> void:
 	
 	OS.shell_open(meta)
+
+
+# Handlers for automatic backup controls
+func _on_BackupBeforeLaunch_toggled(button_pressed: bool) -> void:
+	Settings.store("backup_before_launch", button_pressed)
