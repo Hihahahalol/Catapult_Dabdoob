@@ -38,6 +38,7 @@ const _HARDCODED_DEFAULTS = {
 	"proxy_host": "",
 	"proxy_port": 0,
 	"debug_mode": false,
+	"backup_before_launch": false,
 }
 
 var _settings_file = ""

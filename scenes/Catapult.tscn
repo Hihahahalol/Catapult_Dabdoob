@@ -987,10 +987,18 @@ margin_top = 260.0
 margin_right = 577.0
 margin_bottom = 268.0
 
-[node name="Current" type="VBoxContainer" parent="Main/Tabs/Backups"]
+[node name="BackupBeforeLaunch" type="CheckBox" parent="Main/Tabs/Backups" groups=["disable_during_backup_operations"]]
 margin_top = 272.0
 margin_right = 577.0
-margin_bottom = 328.0
+margin_bottom = 300.0
+size_flags_horizontal = 4
+hint_tooltip = "Automatically create a backup of your saves before launching the game"
+text = "Automatically backup saves before game launch"
+
+[node name="Current" type="VBoxContainer" parent="Main/Tabs/Backups"]
+margin_top = 304.0
+margin_right = 577.0
+margin_bottom = 360.0
 
 [node name="Label" type="Label" parent="Main/Tabs/Backups/Current"]
 margin_right = 577.0
@@ -1026,6 +1034,11 @@ text = "btn_create_backup"
 margin_top = 56.0
 margin_right = 577.0
 margin_bottom = 56.0
+
+[node name="Automatic" type="VBoxContainer" parent="Main/Tabs/Backups"]
+margin_top = 364.0
+margin_right = 577.0
+margin_bottom = 388.0
 
 [node name="Settings" type="VBoxContainer" parent="Main/Tabs"]
 visible = false

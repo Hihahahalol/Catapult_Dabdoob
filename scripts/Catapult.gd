@@ -32,6 +32,8 @@ onready var _btn_delete = $Main/Tabs/Game/GameInstalls/HBox/VBox/btnDelete
 onready var _panel_installs = $Main/Tabs/Game/GameInstalls
 onready var _btn_get_kenan = $Main/Tabs/Mods/HBox/Available/BtnDownloadKenan
 onready var _version_check_request = HTTPRequest.new()
+onready var _cb_backup_before_launch = $Main/Tabs/Backups/BackupBeforeLaunch
+onready var _backups = $Backups
 
 var _disable_savestate := {}
 var _installs := {}
@@ -450,12 +452,10 @@ func apply_game_choice() -> void:
 
 
 func _on_BtnPlay_pressed() -> void:
-	
 	_start_game()
 
 
 func _on_BtnResume_pressed() -> void:
-	
 	var lastworld: String = Paths.config.plus_file("lastworld.json")
 	var info = Helpers.load_json_file(lastworld)
 	if info:
@@ -463,6 +463,22 @@ func _on_BtnResume_pressed() -> void:
 
 
 func _start_game(world := "") -> void:
+	# Create automatic backup if enabled
+	if Settings.read("backup_before_launch"):
+		var datetime = OS.get_datetime()
+		var backup_name = "Auto_%02d-%02d-%02d_%02d-%02d" % [
+			datetime["year"] % 100,
+			datetime["month"],
+			datetime["day"],
+			datetime["hour"],
+			datetime["minute"],
+		]
+		# Create the backup
+		Status.post(tr("Creating automatic backup before game launch..."))
+		_backups.backup_current(backup_name)
+		# Wait for backup to complete before launching game
+		yield(_backups, "backup_creation_finished")
+		Status.post(tr("Automatic backup created: %s") % backup_name)
 	
 	match OS.get_name():
 		"X11":
