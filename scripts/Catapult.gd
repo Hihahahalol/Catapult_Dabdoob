@@ -156,12 +156,67 @@ func _unpack_utils() -> void:
 			d.make_dir(Paths.utils_dir)
 		Status.post(tr("msg_unpacking_7zip"))
 		
-		# Try to copy from project directory
-		var project_utils_path = OS.get_executable_path().get_base_dir().plus_file("utils").plus_file("7za.exe")
-		if d.file_exists(project_utils_path):
-			d.copy(project_utils_path, sevenzip_exe)
+		var source_found = false
+		var source_path = ""
+		
+		# Try multiple locations for the 7za.exe file
+		var possible_locations = [
+			"res://utils/7za.exe",  # Godot resource path
+			OS.get_executable_path().get_base_dir().plus_file("utils").plus_file("7za.exe"),  # Next to executable
+			OS.get_executable_path().get_base_dir().plus_file("7za.exe"),  # Same directory as executable
+			"./utils/7za.exe",  # Relative path
+			"utils/7za.exe"     # Current directory utils
+		]
+		
+		for location in possible_locations:
+			if location.begins_with("res://"):
+				# For resource paths, we need to use File.open to check existence
+				var file = File.new()
+				if file.open(location, File.READ) == OK:
+					file.close()
+					source_path = location
+					source_found = true
+					Status.post("[debug] Found 7za.exe at resource path: " + location)
+					break
+			else:
+				# For regular file paths, use Directory.file_exists
+				if d.file_exists(location):
+					source_path = location
+					source_found = true
+					Status.post("[debug] Found 7za.exe at file path: " + location)
+					break
+		
+		if source_found:
+			var copy_error = OK
+			if source_path.begins_with("res://"):
+				# Copy from resource
+				var source_file = File.new()
+				var dest_file = File.new()
+				
+				if source_file.open(source_path, File.READ) == OK:
+					if dest_file.open(sevenzip_exe, File.WRITE) == OK:
+						dest_file.store_buffer(source_file.get_buffer(source_file.get_len()))
+						dest_file.close()
+						Status.post("[info] Successfully copied 7za.exe from resources")
+					else:
+						copy_error = ERR_CANT_CREATE
+				else:
+					copy_error = ERR_FILE_NOT_FOUND
+				source_file.close()
+			else:
+				# Copy from regular file path
+				copy_error = d.copy(source_path, sevenzip_exe)
+				if copy_error == OK:
+					Status.post("[info] Successfully copied 7za.exe from: " + source_path)
+			
+			if copy_error != OK:
+				Status.post("[error] Failed to copy 7za.exe: " + str(copy_error), Enums.MSG_ERROR)
+				return
 		else:
-			Status.post("[error] 7za.exe not found in project utils directory: " + project_utils_path)
+			Status.post("[error] 7za.exe not found in any of the following locations:", Enums.MSG_ERROR)
+			for location in possible_locations:
+				Status.post("  - " + location, Enums.MSG_ERROR)
+			Status.post("[error] Please ensure 7za.exe is included in the project or placed next to the executable.", Enums.MSG_ERROR)
 			return
 	elif OS.get_name() == "Windows":
 		Status.post("[info] 7za.exe already exists in utils directory")
