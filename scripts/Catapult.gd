@@ -614,7 +614,7 @@ func _activate_easter_egg() -> void:
 
 
 func _on_BtnCheck_pressed() -> void:
-	var current_version = Settings.read("version")
+	var current_version = Settings.get_hardcoded_version()
 	Status.post(tr("Checking for updates... Current version: v%s") % current_version)
 	
 	# Disable the button while checking
@@ -651,7 +651,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 	
 	if "name" in response:
 		_latest_version = response["name"]
-		var current_version = Settings.read("version")
+		var current_version = Settings.get_hardcoded_version()
 		
 		Status.post(tr("Latest version available: v%s") % _latest_version)
 		
