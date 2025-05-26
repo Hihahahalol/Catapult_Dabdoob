@@ -25,7 +25,8 @@ func get_game_option(name: String):
 		if item["name"] == name:
 			return item["value"]
 	
-	Status.post(tr("msg_game_option_not_found_get") % name, Enums.MSG_ERROR)
+	# Return null instead of posting error to prevent crashes
+	return null
 
 
 func set_game_option(name: String, value: String):
@@ -61,7 +62,11 @@ func load_available_fonts() -> void:
 func font_config_file_exists() -> bool:
 	
 	var config_file: String = Paths.config.plus_file("fonts.json")
-			
+	
+	# Add safety check for invalid paths
+	if config_file == "" or config_file == "fonts.json":
+		return false
+		
 	return Directory.new().file_exists(config_file)
 
 
@@ -86,12 +91,35 @@ func load_font_config() -> void:
 	else:
 		Status.post(tr("msg_font_config_not_found") % config_file, Enums.MSG_ERROR)
 	
+	# Ensure the loaded config has the expected structure
+	if not result is Dictionary:
+		result = {}
+	
+	# Initialize missing or invalid fields with defaults
+	for field in ["typeface", "map_typeface", "overmap_typeface"]:
+		if not field in result or not result[field] is Array:
+			result[field] = _DEFAULT_FONTS.duplicate()
+		else:
+			# Validate that all entries in the array are strings
+			var valid_fonts = []
+			for font in result[field]:
+				if font is String:
+					valid_fonts.append(font)
+			if valid_fonts.empty():
+				result[field] = _DEFAULT_FONTS.duplicate()
+			else:
+				result[field] = valid_fonts
+	
 	font_config = result
 
 
 func options_file_exists() -> bool:
 	
 	var options_file: String = Paths.config.plus_file("options.json")
+	
+	# Add safety check for invalid paths
+	if options_file == "" or options_file == "options.json":
+		return false
 		
 	return Directory.new().file_exists(options_file)
 
@@ -106,15 +134,23 @@ func load_game_options() -> void:
 		if err == 0:
 			var parse_result := JSON.parse(f.get_as_text())
 			if parse_result.error == 0:
-				_game_options = parse_result.result
+				# Validate that the result is an array
+				if parse_result.result is Array:
+					_game_options = parse_result.result
+				else:
+					Status.post(tr("msg_game_options_invalid_format") % options_file, Enums.MSG_ERROR)
+					_game_options = []
 			else:
 				Status.post(tr("msg_could_not_parse_game_options") % options_file, Enums.MSG_ERROR)
 				Status.post(tr("msg_game_options_error_details")
 						% [parse_result.error, parse_result.error_line, parse_result.error_string], Enums.MSG_DEBUG)
+				_game_options = []
 		else:
 			Status.post(tr("msg_could_not_open_game_options") % [options_file, err], Enums.MSG_ERROR)
+			_game_options = []
 	else:
 		Status.post(tr("msg_game_options_not_found") % options_file, Enums.MSG_ERROR)
+		_game_options = []
 
 
 func _write_font_config() -> void:

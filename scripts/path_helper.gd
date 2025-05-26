@@ -114,6 +114,10 @@ func _get_userdata_dir() -> String:
 
 func _get_config_dir() -> String:
 	
+	var game_dir = _get_game_dir()
+	if game_dir == "" or not Directory.new().dir_exists(game_dir):
+		return ""
+	
 	return _get_userdata_dir().plus_file("config")
 
 

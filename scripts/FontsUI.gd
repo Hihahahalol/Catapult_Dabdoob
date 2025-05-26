@@ -93,13 +93,25 @@ func _show_current_config_info() -> void:
 	var text := "[u]%s[/u]\n[table=2]" % tr("str_curr_font_config")
 	
 	for field in fields:
-		var list: Array = config[field]
 		var row: String = "\n[cell]%s: [/cell]" % fields[field]
 		var fonts := ""
-		for i in len(list):
-			if i > 0:
-				fonts += "  =>"
-			fonts += "  [i]%s[/i]" % list[i].get_file().get_basename()
+		
+		# Defensive check: ensure field exists and is an array
+		if not field in config:
+			fonts = "[i]Not configured[/i]"
+		elif not config[field] is Array:
+			fonts = "[i]Invalid configuration[/i]"
+		else:
+			var list: Array = config[field]
+			for i in len(list):
+				if i > 0:
+					fonts += "  =>"
+				# Defensive check: ensure list item is a string
+				if list[i] != null and list[i] is String:
+					fonts += "  [i]%s[/i]" % list[i].get_file().get_basename()
+				else:
+					fonts += "  [i]Invalid font entry[/i]"
+		
 		row += "[cell]%s[/cell]" % fonts
 		text += row
 	
@@ -112,10 +124,31 @@ func _load_font_options() -> void:
 	
 	_fonts.load_game_options()
 	
-	_sb_font_ui.value = _fonts.get_game_option("FONT_SIZE") as int
-	_sb_font_map.value = _fonts.get_game_option("MAP_FONT_SIZE") as int
-	_sb_font_om.value = _fonts.get_game_option("OVERMAP_FONT_SIZE") as int
-	_cbtn_blending.pressed = (_fonts.get_game_option("FONT_BLENDING").to_lower() == "true")
+	# Defensive handling for font size options
+	var font_size = _fonts.get_game_option("FONT_SIZE")
+	if font_size != null and (font_size is String or font_size is int):
+		_sb_font_ui.value = int(font_size)
+	else:
+		_sb_font_ui.value = 16  # Default value
+	
+	var map_font_size = _fonts.get_game_option("MAP_FONT_SIZE")
+	if map_font_size != null and (map_font_size is String or map_font_size is int):
+		_sb_font_map.value = int(map_font_size)
+	else:
+		_sb_font_map.value = 16  # Default value
+	
+	var overmap_font_size = _fonts.get_game_option("OVERMAP_FONT_SIZE")
+	if overmap_font_size != null and (overmap_font_size is String or overmap_font_size is int):
+		_sb_font_om.value = int(overmap_font_size)
+	else:
+		_sb_font_om.value = 16  # Default value
+	
+	# Defensive handling for font blending option
+	var font_blending = _fonts.get_game_option("FONT_BLENDING")
+	if font_blending != null and font_blending is String:
+		_cbtn_blending.pressed = (font_blending.to_lower() == "true")
+	else:
+		_cbtn_blending.pressed = false  # Default value
 
 
 func _on_Tabs_tab_changed(tab: int) -> void:
