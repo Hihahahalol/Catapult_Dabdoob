@@ -18,7 +18,7 @@ onready var _btn_game_dir = $Main/Tabs/Game/ActiveInstall/Build/GameDir
 onready var _btn_user_dir = $Main/Tabs/Game/ActiveInstall/Build/UserDir
 onready var _btn_play = $Main/Tabs/Game/ActiveInstall/Launch/BtnPlay
 onready var _btn_resume = $Main/Tabs/Game/ActiveInstall/Launch/BtnResume
-onready var _btn_check = $Main/Tabs/Game/ActiveInstall/Update/BtnCheck
+# Button removed - update check now happens automatically
 onready var _btn_update = $Main/Tabs/Game/ActiveInstall/Update/BtnUpdate
 onready var _lst_builds = $Main/Tabs/Game/Builds/BuildsList
 onready var _lst_games = $Main/GameChoice/GamesList
@@ -77,10 +77,11 @@ func _ready() -> void:
 	_unpack_utils()
 	_setup_ui()
 	
-	# Connect the BtnCheck button signal
-	_btn_check.connect("pressed", self, "_on_BtnCheck_pressed")
 	# Connect the BtnUpdate button signal
 	_btn_update.connect("pressed", self, "_on_BtnUpdate_pressed")
+	
+	# Automatically check for updates on startup
+	_on_BtnCheck_pressed()
 
 
 func _save_control_min_sizes() -> void:
@@ -670,20 +671,17 @@ func _activate_easter_egg() -> void:
 
 func _on_BtnCheck_pressed() -> void:
 	var current_version = Settings.get_hardcoded_version()
-	Status.post(tr("Checking for updates... Current version: v%s") % current_version)
+	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % current_version)
 	
-	# Disable the button while checking
-	_btn_check.disabled = true
+	# Disable the update button while checking
 	_btn_update.disabled = true
 	
 	# Make the HTTP request to GitHub
 	var error = _version_check_request.request(VERSION_CHECK_URL)
 	if error != OK:
 		Status.post(tr("Error making HTTP request"), Enums.MSG_ERROR)
-		_btn_check.disabled = false
 
 func _on_version_check_completed(result, response_code, headers, body):
-	_btn_check.disabled = false
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
 		Status.post(tr("Failed to connect to update server"), Enums.MSG_ERROR)
@@ -708,7 +706,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 		_latest_version = response["name"]
 		var current_version = Settings.get_hardcoded_version()
 		
-		Status.post(tr("Latest version available: v%s") % _latest_version)
+		Status.post(tr("Dabdoob's latest version available: v%s") % _latest_version)
 		
 		# Store the browser download URL from the API response
 		if "html_url" in response:
@@ -733,11 +731,11 @@ func _on_version_check_completed(result, response_code, headers, body):
 			_btn_update.disabled = false
 			_is_update_available = true
 		else:
-			Status.post(tr("You have the latest version!"), Enums.MSG_SUCCESS)
+			Status.post(tr("You have Dabdoob's latest version!"), Enums.MSG_SUCCESS)
 			_btn_update.disabled = true
 			_is_update_available = false
 	else:
-		Status.post(tr("Could not determine latest version"), Enums.MSG_ERROR)
+		Status.post(tr("Could not determine Dabdoob's latest version"), Enums.MSG_ERROR)
 
 func _is_newer_version(latest: String, current: String) -> bool:
 	# Split version strings and convert to integers
@@ -778,8 +776,7 @@ func _perform_update() -> void:
 		OS.shell_open(_release_page_url)
 		return
 	
-	# Disable buttons during update
-	_btn_check.disabled = true
+	# Disable update button during update
 	_btn_update.disabled = true
 	
 	# Create a temporary directory for the download
@@ -1012,8 +1009,7 @@ func _cleanup_update(http_request, temp_dir):
 		remove_child(http_request)
 		http_request.queue_free()
 	
-	# Re-enable buttons
-	_btn_check.disabled = false
+	# Re-enable update button
 	_btn_update.disabled = false
 	
 	# Clean up temporary directory
