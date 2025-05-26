@@ -4,7 +4,7 @@ extends Node
 const _SETTINGS_FILENAME = "catapult_settings.json"
 
 const _HARDCODED_DEFAULTS = {
-	"version": "25",
+	"version": "25.1",
 	"game": "dda",
 	"channel": "stable",  # Currently used only for DDA.
 	"active_install_dda": "Cataclysm-DDA experimental build 2022-07-26-0606",
@@ -43,6 +43,14 @@ const _HARDCODED_DEFAULTS = {
 
 var _settings_file = ""
 var _current = {}
+
+
+func get_hardcoded_version() -> String:
+	"""
+	Returns the hardcoded default version from the script instead of reading from JSON file.
+	This is used by the update checker to get the current launcher version.
+	"""
+	return _HARDCODED_DEFAULTS["version"]
 
 
 func _exit_tree() -> void:
