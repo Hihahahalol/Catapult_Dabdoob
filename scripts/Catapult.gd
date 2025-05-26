@@ -150,19 +150,21 @@ func load_ui_theme(theme_file: String) -> void:
 func _unpack_utils() -> void:
 	
 	var d = Directory.new()
-	var unzip_exe = Paths.utils_dir.plus_file("unzip.exe")
-	if (OS.get_name() == "Windows") and (not d.file_exists(unzip_exe)):
+	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	if (OS.get_name() == "Windows") and (not d.file_exists(sevenzip_exe)):
 		if not d.dir_exists(Paths.utils_dir):
 			d.make_dir(Paths.utils_dir)
-		Status.post(tr("msg_unpacking_unzip"))
-		d.copy("res://utils/unzip.exe", unzip_exe)
-	var zip_exe = Paths.utils_dir.plus_file("zip.exe")
-	if (OS.get_name() == "Windows") and (not d.file_exists(zip_exe)):
-		if not d.dir_exists(Paths.utils_dir):
-			d.make_dir(Paths.utils_dir)
-		Status.post(tr("msg_unpacking_zip"))
-		d.copy("res://utils/zip.exe", zip_exe)
-	
+		Status.post(tr("msg_unpacking_7zip"))
+		
+		# Try to copy from project directory
+		var project_utils_path = OS.get_executable_path().get_base_dir().plus_file("utils").plus_file("7za.exe")
+		if d.file_exists(project_utils_path):
+			d.copy(project_utils_path, sevenzip_exe)
+		else:
+			Status.post("[error] 7za.exe not found in project utils directory: " + project_utils_path)
+			return
+	elif OS.get_name() == "Windows":
+		Status.post("[info] 7za.exe already exists in utils directory")
 
 
 func _smart_disable_controls(group_name: String) -> void:

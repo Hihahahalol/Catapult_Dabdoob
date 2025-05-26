@@ -161,10 +161,10 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip or .tar.gz archive using the system utilities on Linux
-	# and bundled unzip.exe from InfoZip on Windows.
+	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows
+	# and system utilities on Linux.
 	
-	var unzip_exe = Paths.utils_dir.plus_file("unzip.exe")
+	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
 	
 	var command_linux_zip = {
 		"name": "unzip",
@@ -177,8 +177,8 @@ func extract(path: String, dest_dir: String) -> void:
 				# Godot can't operate on symlinks just yet, so we have to avoid them.
 	}
 	var command_windows = {
-		"name": "cmd",
-		"args": ["/C", "\"%s\" -o \"%s\" -d \"%s\"" % [unzip_exe, path, dest_dir]]
+		"name": sevenzip_exe,
+		"args": ["x", path, "-o" + dest_dir, "-y"]
 	}
 	var command
 	
@@ -187,6 +187,15 @@ func extract(path: String, dest_dir: String) -> void:
 	elif (_platform == "X11") and (path.to_lower().ends_with(".zip")):
 		command = command_linux_zip
 	elif (_platform == "Windows") and (path.to_lower().ends_with(".zip")):
+		# Check if 7za.exe exists
+		var d = Directory.new()
+		if not d.file_exists(sevenzip_exe):
+			Status.post("[error] 7za.exe not found at: " + sevenzip_exe)
+			emit_signal("extract_done")
+			return
+		
+		Status.post("[debug] Using 7za.exe at: " + sevenzip_exe)
+		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
 		command = command_windows
 	else:
 		Status.post(tr("msg_extract_unsupported") % path.get_file(), Enums.MSG_ERROR)
@@ -198,37 +207,38 @@ func extract(path: String, dest_dir: String) -> void:
 		d.make_dir_recursive(dest_dir)
 		
 	Status.post(tr("msg_extracting_file") % path.get_file())
+	Status.post(tr("debug_extract_command") % str(command), Enums.MSG_DEBUG)
 		
 	var oew = OSExecWrapper.new()
-	oew.execute(command["name"], command["args"])
+	oew.execute(command["name"], command["args"], false)
 	yield(oew, "process_exited")
 	last_extract_result = oew.exit_code
 	if oew.exit_code:
 		Status.post(tr("msg_extract_error") % oew.exit_code, Enums.MSG_ERROR)
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
-		Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
+		if oew.output.size() > 0:
+			Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
 	emit_signal("extract_done")
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
-	# Creates a .zip using the system utilities on Linux
-	# and bundled zip.exe from InfoZip on Windows.
+	# Creates a .zip using 7-Zip on Windows and system utilities on Linux.
 	# parent: directory that zip command is run from  (Path.savegames)
 	# dir_to_zip: relative folder to zip up  (world_name)
 	# dest_zip: zip name   (world_name.zip)
 	# 
 	# runs a command like:
-	# cd <userdata/save> && zip -r MyWorld.zip MyWorld
+	# cd <userdata/save> && 7za a MyWorld.zip MyWorld
 	
-	var zip_exe = Paths.utils_dir.plus_file("zip.exe")
+	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
 	
 	var command_linux_zip = {
 		"name": "/bin/bash",
-		"args": ["-c", "cd '%s' && zip -b '%s' -r '%s' '%s'" % [parent, Paths.tmp_dir, dest_zip, dir_to_zip]]
+		"args": ["-c", "cd '%s' && zip -r '%s' '%s'" % [parent, dest_zip, dir_to_zip]]
 	}
 	var command_windows = {
 		"name": "cmd",
-		"args": ["/C", "cd /d \"%s\" && \"%s\" -b \"%s\" -r \"%s\" \"%s\"" % [parent, zip_exe, Paths.tmp_dir, dest_zip, dir_to_zip]]
+		"args": ["/C", "cd /d \"%s\" && \"%s\" a \"%s\" \"%s\" -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
 	}
 	var command
 	
@@ -240,20 +250,17 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 		Status.post(tr("msg_extract_unsupported") % dest_zip.get_file(), Enums.MSG_ERROR)
 		emit_signal("zip_done")
 		return
-		
-	var d = Directory.new()
-	if not d.dir_exists(Paths.tmp_dir):
-		d.make_dir_recursive(Paths.tmp_dir)
 	
 	Status.post(tr("msg_zipping_file") % dest_zip.get_file())
 		
 	var oew = OSExecWrapper.new()
-	oew.execute(command["name"], command["args"])
+	oew.execute(command["name"], command["args"], false)
 	yield(oew, "process_exited")
 	last_zip_result = oew.exit_code
 	if oew.exit_code:
 		Status.post(tr("msg_zip_error") % oew.exit_code, Enums.MSG_ERROR)
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
-		Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
+		if oew.output.size() > 0:
+			Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
 	emit_signal("zip_done")
 	
