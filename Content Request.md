@@ -11,7 +11,8 @@ Note: For Tilesets and Soundpacks, anyone can make a request. For mods, you need
 To apply, please provide a description of your mod with the link to the github repo. The repo must be at least 2 weeks old and you have to confirm that it's working for the supported forks. Also provide an estimation for the following question: If you were to abandon your mod today, how long (in days/weeks/months/etc) do you think it will take for it to stop working on the latest experimental version?
 
 When you contact me with the aforementioned details, you will also need to include the following comment inside your modinfo.json file:
-"//compatibility": [ "tlg-experimental" ],
+
+```"//compatibility": [ "tlg-experimental" ],```
 
 replace "tlg-experimental" with whatever fork(s) your mod supports. The following formats are supported:
 dda-stable, dda-experimental, tlg-experimental, bn-stable, bn-experimental, eod-experimental, tish-experimental
