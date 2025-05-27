@@ -9,7 +9,6 @@ onready var _cbox_show_stock = $HBox/Installed/ShowStock
 onready var _btn_delete = $HBox/Installed/BtnDelete
 onready var _btn_add = $HBox/Available/VBox/BtnAddSelectedMod
 onready var _btn_add_all = $HBox/Available/VBox/BtnAddAllMods
-onready var _btn_get_kenan = $HBox/Available/BtnDownloadKenan
 onready var _cbox_show_installed = $HBox/Available/ShowInstalled
 onready var _lbl_mod_info = $ModInfo
 onready var _lbl_installed = $HBox/Installed/Label
@@ -266,11 +265,7 @@ func _on_AvailableList_multi_selected(index: int, selected: bool) -> void:
 		_btn_add.disabled = false
 
 
-func _on_BtnDownloadKenan_pressed() -> void:
-	
-	_mods.retrieve_kenan_pack()
-	yield(_mods, "modpack_retrieval_finished")
-	reload_available()
+
 
 
 func _on_BtnDelete_pressed() -> void:

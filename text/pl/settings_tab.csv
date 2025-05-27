@@ -2,7 +2,6 @@
 ,
 "cbtn_debug_mode","Tryb debugowania"
 "cbtn_enable_scale","Aktywuj  "
-"cbtn_install_archived_mods","Uwzględnij zarchiwowane mody podczas instalacji Kenan Modpack"
 "cbtn_keep_launcher_open","Pozostaw launcher otwarty po starcie gry"
 "cbtn_print_tips","Wyświetl wskazówki dnia przy uruchomieniu"
 "cbtn_shorten_release_names","Skróć nazwy eksperymentalnych kompilacji"
@@ -17,7 +16,6 @@
 "lbl_num_releases_to_request","Numer wydań do zażądania:"
 "lbl_ui_scale_override","Niestandardowe skalowanie UI:"
 "tooltip_debug_mode","Pokazuje kartę Debug, z niektórymi funkcjami testowymi,\noraz aktywuje wiadomości debugowe w pasku statusu\n(użyteczne do rozwiązywania problemów)."
-"tooltip_install_archived_mods","Podczas instalacji Kenan Modpack, uwzględnia również *zarchiwowane* mody.\nMody te nie są już dłużej zarządzane przez Kenana i mogą być nieaktualne."
 "tooltip_keep_launcher_open","Kiedy wyłączone, launcher zostanie zamknięty po kliknęciu Uruchom lub Wznów.\nWarto zanotować, iż jeśli nie uda się uruchomić gry z jakiegokolwiek powodu, launcher\nzostanie także zamknięty."
 "tooltip_num_prs_to_request","Jak wiele ostatnich pull requestów (dodatków kodu)\nbędzie zażądanych z GitHub do uformowania listy zmian.\nWysokie liczby mogą prowadzić do wolnych odpowiedzi i błędów."
 "tooltip_num_releases_to_request","Jak wiele najnowszych wydań zostanie zażądanych\nz GitHub po uruchomieniu launchera, wybraniu gry\nlub kliknięciu Odśwież."

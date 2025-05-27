@@ -5,34 +5,12 @@ signal mod_installation_started
 signal mod_installation_finished
 signal mod_deletion_started
 signal mod_deletion_finished
-signal modpack_retrieval_started
-signal modpack_retrieval_finished
 
 signal _done_installing_mod
 signal _done_deleting_mod
 
 
-const _MODPACKS = {
-	"kenan-dda": {
-		"name": "CDDA Kenan Modpack",
-		"url": "https://github.com/Kenan2000/CDDA-Kenan-Modpack/archive/refs/heads/master.zip",
-		"filename": "CDDA-Kenan-Modpack-master.zip",
-		"internal_paths": [
-			"CDDA-Structured-Kenan-Modpack-master/Kenan-Structured-Modpack/High-Maintenance-Huge-Mods",
-			],
-		"archived_path": "CDDA-Structured-Kenan-Modpack-master/Kenan-Structured-Modpack/Archived-Mods",
-	},
-	"kenan-bn": {
-		"name": "BN Kenan Modpack",
-		"url": "https://github.com/Zlorthishen/BrightNights-Structured-Kenan-Modpack/archive/refs/heads/master.zip",
-		"filename": "BrightNights-Structured-Kenan-Modpack-master.zip",
-		"internal_paths": [
-			"BrightNights-Structured-Kenan-Modpack-master/Kenan-BrightNights-Structured-Modpack/High-Maintenance-Huge-Mods",
-			"BrightNights-Structured-Kenan-Modpack-master/Kenan-BrightNights-Structured-Modpack/Medium-Maintenance-Small-Mods",
-			],
-		"archived_path": "BrightNights-Structured-Kenan-Modpack-master/Kenan-BrightNights-Structured-Modpack/Archived-Mods",
-	}
-}
+
 
 
 var installed: Dictionary = {} setget , _get_installed
@@ -256,49 +234,4 @@ func install_mods(mod_ids: Array) -> void:
 	emit_signal("mod_installation_finished")
 
 
-func retrieve_kenan_pack() -> void:
-	
-	var game = Settings.read("game")
-	if( !game == "dda" || !game == "bn" ):
-		Status.post(tr("msg_kenan_unavailable") % game.to_upper())
-		return
-	var pack = _MODPACKS["kenan-" + game]
-	
-	emit_signal("modpack_retrieval_started")
-	Status.post(tr("msg_getting_kenan_pack") % game.to_upper())
-	
-	var archive = Paths.cache_dir.plus_file(pack["filename"])
-	
-	if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
-		Downloader.download_file(pack["url"], Paths.cache_dir, pack["filename"])
-		yield(Downloader, "download_finished")
-	
-	if Directory.new().file_exists(archive):
-		FS.extract(archive, Paths.tmp_dir)
-		yield(FS, "extract_done")
-		if not Settings.read("keep_cache"):
-			Directory.new().remove(archive)
-		
-		Status.post(tr("msg_wiping_mod_repo"))
-		if (Directory.new().dir_exists(Paths.mod_repo)):
-			FS.rm_dir(Paths.mod_repo)
-			yield(FS, "rm_dir_done")
-		
-		Status.post(tr("msg_unpacking_kenan_mods"))
-		for int_path in pack["internal_paths"]:
-			FS.move_dir(Paths.tmp_dir.plus_file(int_path), Paths.mod_repo)
-			yield(FS, "move_dir_done")
-		
-		if Settings.read("install_archived_mods"):
-			Status.post(tr("msg_unpacking_archived_mods"))
-			FS.move_dir(Paths.tmp_dir.plus_file(pack["archived_path"]), Paths.mod_repo)
-			yield(FS, "move_dir_done")
-		
-		Status.post(tr("msg_kenan_install_cleanup"))
-		FS.rm_dir(Paths.tmp_dir.plus_file(pack["internal_paths"][0].split("/")[0]))
-		yield(FS, "rm_dir_done")
-		
-		Status.post(tr("msg_kenan_install_done"))
-	
-	refresh_available()
-	emit_signal("modpack_retrieval_finished")
+

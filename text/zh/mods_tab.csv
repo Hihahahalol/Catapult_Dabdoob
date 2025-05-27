@@ -9,7 +9,6 @@
 "cbtn_installed_mods","展示已安装"
 "btn_add_sel_mods","添加所选"
 "btn_add_all_mods","全部添加"
-"btn_get_kenan_pack","获取Kenan Modpack"
 "lbl_mod_info","选择一个mod来查看详情。"
 "str_mod_name","名称："
 "str_mod_authors","作者："
@@ -23,7 +22,6 @@
 "tooltip_delete_mods","从游戏中删除该模组。"
 "tooltip_add_sel_mods","将该模组添加至游戏。"
 "tooltip_add_all_mods","将该列表下的所有模组添加至游戏。"
-"tooltip_get_kenan_pack","下载Kenan Modpack并添加至本地存储。"
 ,
 "msg_one_mod_is_stock","选中模组有一个是基础模组，无法被删除。"
 "msg_n_mods_are_stock","选中模组有%s个是基础模组，无法被删除。"

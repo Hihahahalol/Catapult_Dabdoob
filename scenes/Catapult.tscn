@@ -484,14 +484,7 @@ margin_bottom = 24.0
 hint_tooltip = "tooltip_add_all_mods"
 text = "btn_add_all_mods"
 
-[node name="BtnDownloadKenan" type="Button" parent="Main/Tabs/Mods/HBox/Available" groups=["disable_during_mod_operations"]]
-margin_left = 72.0
-margin_top = 272.0
-margin_right = 207.0
-margin_bottom = 296.0
-hint_tooltip = "tooltip_get_kenan_pack"
-size_flags_horizontal = 4
-text = "btn_get_kenan_pack"
+
 
 [node name="HSeparator" type="HSeparator" parent="Main/Tabs/Mods"]
 margin_top = 300.0
@@ -1135,12 +1128,7 @@ margin_bottom = 260.0
 hint_tooltip = "tooltip_show_obsolete_mods"
 text = "cbtn_show_obsolete_mods"
 
-[node name="InstallArchivedMods" type="CheckButton" parent="Main/Tabs/Settings"]
-margin_top = 262.0
-margin_right = 577.0
-margin_bottom = 290.0
-hint_tooltip = "tooltip_install_archived_mods"
-text = "cbtn_install_archived_mods"
+
 
 [node name="KeepCache" type="CheckButton" parent="Main/Tabs/Settings"]
 margin_top = 292.0
@@ -1444,7 +1432,6 @@ __meta__ = {
 [connection signal="toggled" from="Main/Tabs/Mods/HBox/Available/ShowInstalled" to="Main/Tabs/Mods" method="_on_ShowInstalled_toggled"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
-[connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/BtnDownloadKenan" to="Main/Tabs/Mods" method="_on_BtnDownloadKenan_pressed"]
 [connection signal="confirmed" from="Main/Tabs/Mods/DeleteMultipleDialog" to="Main/Tabs/Mods" method="_on_DeleteMultipleDialog_confirmed"]
 [connection signal="response_no" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_no"]
 [connection signal="response_yes" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_yes"]
@@ -1482,7 +1469,6 @@ __meta__ = {
 [connection signal="toggled" from="Main/Tabs/Settings/ShortenNames" to="Main/Tabs/Settings" method="_on_ShortenNames_toggled"]
 [connection signal="toggled" from="Main/Tabs/Settings/AlwaysShowInstalls" to="Main/Tabs/Settings" method="_on_AlwaysShowInstalls_toggled"]
 [connection signal="toggled" from="Main/Tabs/Settings/ShowObsoleteMods" to="Main/Tabs/Settings" method="_on_ShowObsoleteMods_toggled"]
-[connection signal="toggled" from="Main/Tabs/Settings/InstallArchivedMods" to="Main/Tabs/Settings" method="_on_InstallArchivedMods_toggled"]
 [connection signal="toggled" from="Main/Tabs/Settings/KeepCache" to="Main/Tabs/Settings" method="_on_KeepCache_toggled"]
 [connection signal="toggled" from="Main/Tabs/Settings/IgnoreCache" to="Main/Tabs/Settings" method="_on_IgnoreCache_toggled"]
 [connection signal="toggled" from="Main/Tabs/Settings/ShowDebug" to="Main/Tabs/Settings" method="_on_ShowDebug_toggled"]
@@ -1516,8 +1502,6 @@ __meta__ = {
 [connection signal="mod_deletion_started" from="Mods" to="." method="_on_mod_operation_started"]
 [connection signal="mod_installation_finished" from="Mods" to="." method="_on_mod_operation_finished"]
 [connection signal="mod_installation_started" from="Mods" to="." method="_on_mod_operation_started"]
-[connection signal="modpack_retrieval_finished" from="Mods" to="." method="_on_mod_operation_finished"]
-[connection signal="modpack_retrieval_started" from="Mods" to="." method="_on_mod_operation_started"]
 [connection signal="soundpack_deletion_finished" from="Sound" to="." method="_on_soundpack_operation_finished"]
 [connection signal="soundpack_deletion_started" from="Sound" to="." method="_on_soundpack_operation_started"]
 [connection signal="soundpack_installation_finished" from="Sound" to="." method="_on_soundpack_operation_finished"]

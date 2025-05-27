@@ -9,7 +9,6 @@
 "cbtn_installed_mods","Yüklenmiş olanları göster"
 "btn_add_sel_mods","Seçilenleri ekle"
 "btn_add_all_mods","Hepsini ekle"
-"btn_get_kenan_pack","Kenan'ın Mod Paketini edin"
 "lbl_mod_info","Detayları görmek için listelerdeki modlardan birini seç"
 "str_mod_name","İsim:"
 "str_mod_authors","Yapımcılar:"
@@ -23,7 +22,6 @@
 "tooltip_delete_mods","Seçili modları oyun yüklemesinden kaldır."
 "tooltip_add_sel_mods","Seçili modları oyun yüklemesine ekle."
 "tooltip_add_all_mods","Listelenmiş tüm modları oyun yüklemesine ekle."
-"tooltip_get_kenan_pack","Kenan'ın Mod Paketini indir ve modlarını\nyerel dizie ekle."
 ,
 "msg_one_mod_is_stock","Seçili modlardan biri oyunla birlikte geldi ve silinemez."
 "msg_n_mods_are_stock","Seçili modlardan %s tanesi oyunla birlikte geldi ve silinemezler."
