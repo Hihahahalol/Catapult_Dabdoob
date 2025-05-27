@@ -45,7 +45,7 @@ None required. The launcher is a single, self-contained executable. Just [downlo
 
 ## Can you include my mod/tileset/soundpack/etc?
 
-Of course! Please check [to be made today/very soon] for more details
+Of course! Please check [Content Request](Content%20Request.md) for the requirements and what you need to do
 
 ## Contact
 
