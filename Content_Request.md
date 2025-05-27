@@ -37,7 +37,7 @@ The stability ratings will be as follows:
 
 The only requirement for your tileset to be included, is to have at least 20% the number of assets MSX's tileset has, or [exact number to be inserted here] icons. or 10% if new stuff are being constantly added which is [exact number to be inserted here]. Or even 5% if new stuff are being constantly added AND you're willing to have your tileset marked as "Work in Progress".
 
-If you meet any if these requirements, submit a request with the link to download your tileset
+If you meet any if these requirements, submit a request with the link to download your tileset. You will also need to provide a screenshot that showcases what your tileset looks like to be shown as a preview in the launcher!
 
 
 ## Soundpacks:
