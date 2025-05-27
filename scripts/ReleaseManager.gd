@@ -449,7 +449,7 @@ func fetch(release_key: String) -> void:
 			Status.post(tr("msg_fetching_releases_tish"))
 			_request_releases($HTTPRequest_TISH, "tish-experimental")
 		"tlg-experimental":
-			Status.post(tr("msg_fetching_releases") % [release_key])
+			Status.post(tr("msg_fetching_releases_tlg"))
 			_request_releases($HTTPRequest_TLG, "tlg-experimental")
 		_:
 			Status.post((tr("msg_invalid_fetch_func_param") % [release_key] ), Enums.MSG_ERROR)

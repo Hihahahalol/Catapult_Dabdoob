@@ -272,17 +272,17 @@ func _on_GamesList_item_selected(index: int) -> void:
 			Settings.store("game", "dda")
 			_game_desc.bbcode_text = tr("desc_dda")
 		1:
-			Settings.store("game", "bn")
-			_game_desc.bbcode_text = tr("desc_bn")
-		2:
-			Settings.store("game", "eod")
-			_game_desc.bbcode_text = tr("desc_eod")
-		3:
-			Settings.store("game", "tish")
-			_game_desc.bbcode_text = tr("desc_tish")
-		4:
 			Settings.store("game", "tlg")
 			_game_desc.bbcode_text = tr("desc_tlg")
+		2:
+			Settings.store("game", "bn")
+			_game_desc.bbcode_text = tr("desc_bn")
+		3:
+			Settings.store("game", "eod")
+			_game_desc.bbcode_text = tr("desc_eod")
+		4:
+			Settings.store("game", "tish")
+			_game_desc.bbcode_text = tr("desc_tish")
 	
 	_tabs.current_tab = 0
 	apply_game_choice()
@@ -494,21 +494,21 @@ func apply_game_choice() -> void:
 			_lst_games.select(0)
 			_game_desc.bbcode_text = tr("desc_dda")
 				
-		"bn":
+		"tlg":
 			_lst_games.select(1)
+			_game_desc.bbcode_text = tr("desc_tlg")
+
+		"bn":
+			_lst_games.select(2)
 			_game_desc.bbcode_text = tr("desc_bn")
 
 		"eod":
-			_lst_games.select(2)
+			_lst_games.select(3)
 			_game_desc.bbcode_text = tr("desc_eod")
 
 		"tish":
-			_lst_games.select(3)
-			_game_desc.bbcode_text = tr("desc_tish")
-
-		"tlg":
 			_lst_games.select(4)
-			_game_desc.bbcode_text = tr("desc_tlg")
+			_game_desc.bbcode_text = tr("desc_tish")
 	
 	if len(_releases.releases[_get_release_key()]) == 0:
 		_releases.fetch(_get_release_key())
