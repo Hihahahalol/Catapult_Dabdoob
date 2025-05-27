@@ -151,22 +151,30 @@ func load_ui_theme(theme_file: String) -> void:
 func _unpack_utils() -> void:
 	
 	var d = Directory.new()
-	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
-	if (OS.get_name() == "Windows") and (not d.file_exists(sevenzip_exe)):
+	var sevenzip_exe
+	
+	# Platform-specific binary names
+	if OS.get_name() == "Windows":
+		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	else:  # Linux (X11)
+		sevenzip_exe = Paths.utils_dir.plus_file("7za")
+	
+	if not d.file_exists(sevenzip_exe):
 		if not d.dir_exists(Paths.utils_dir):
 			d.make_dir(Paths.utils_dir)
 		Status.post(tr("msg_unpacking_7zip"))
 		
 		var source_found = false
 		var source_path = ""
+		var binary_name = "7za.exe" if OS.get_name() == "Windows" else "7za"
 		
-		# Try multiple locations for the 7za.exe file
+		# Try multiple locations for the 7-Zip binary
 		var possible_locations = [
-			"res://utils/7za.exe",  # Godot resource path
-			OS.get_executable_path().get_base_dir().plus_file("utils").plus_file("7za.exe"),  # Next to executable
-			OS.get_executable_path().get_base_dir().plus_file("7za.exe"),  # Same directory as executable
-			"./utils/7za.exe",  # Relative path
-			"utils/7za.exe"     # Current directory utils
+			"res://utils/" + binary_name,  # Godot resource path
+			OS.get_executable_path().get_base_dir().plus_file("utils").plus_file(binary_name),  # Next to executable
+			OS.get_executable_path().get_base_dir().plus_file(binary_name),  # Same directory as executable
+			"./utils/" + binary_name,  # Relative path
+			"utils/" + binary_name     # Current directory utils
 		]
 		
 		for location in possible_locations:
@@ -177,14 +185,14 @@ func _unpack_utils() -> void:
 					file.close()
 					source_path = location
 					source_found = true
-					Status.post("[debug] Found 7za.exe at resource path: " + location)
+					Status.post("[debug] Found 7-Zip binary at resource path: " + location)
 					break
 			else:
 				# For regular file paths, use Directory.file_exists
 				if d.file_exists(location):
 					source_path = location
 					source_found = true
-					Status.post("[debug] Found 7za.exe at file path: " + location)
+					Status.post("[debug] Found 7-Zip binary at file path: " + location)
 					break
 		
 		if source_found:
@@ -198,7 +206,6 @@ func _unpack_utils() -> void:
 					if dest_file.open(sevenzip_exe, File.WRITE) == OK:
 						dest_file.store_buffer(source_file.get_buffer(source_file.get_len()))
 						dest_file.close()
-						Status.post("[info] Successfully copied 7za.exe from resources")
 					else:
 						copy_error = ERR_CANT_CREATE
 				else:
@@ -207,20 +214,20 @@ func _unpack_utils() -> void:
 			else:
 				# Copy from regular file path
 				copy_error = d.copy(source_path, sevenzip_exe)
-				if copy_error == OK:
-					Status.post("[info] Successfully copied 7za.exe from: " + source_path)
 			
 			if copy_error != OK:
-				Status.post("[error] Failed to copy 7za.exe: " + str(copy_error), Enums.MSG_ERROR)
+				Status.post("[error] Failed to copy 7-Zip binary: " + str(copy_error), Enums.MSG_ERROR)
 				return
+			
+			# Make executable on Linux
+			if OS.get_name() == "X11":
+				OS.execute("chmod", ["+x", sevenzip_exe], true)
 		else:
-			Status.post("[error] 7za.exe not found in any of the following locations:", Enums.MSG_ERROR)
+			Status.post("[error] 7-Zip binary not found in any of the following locations:", Enums.MSG_ERROR)
 			for location in possible_locations:
 				Status.post("  - " + location, Enums.MSG_ERROR)
-			Status.post("[error] Please ensure 7za.exe is included in the project or placed next to the executable.", Enums.MSG_ERROR)
+			Status.post("[error] Please ensure 7-Zip binary is included in the project or placed next to the executable.", Enums.MSG_ERROR)
 			return
-	elif OS.get_name() == "Windows":
-		Status.post("[info] 7za.exe already exists in utils directory")
 
 
 func _smart_disable_controls(group_name: String) -> void:
@@ -234,7 +241,7 @@ func _smart_disable_controls(group_name: String) -> void:
 			n.disabled = true
 			
 	_disable_savestate[group_name] = state
-	
+
 
 func _smart_reenable_controls(group_name: String) -> void:
 	
@@ -661,7 +668,7 @@ func _activate_easter_egg() -> void:
 		if node is Control:
 			node.rect_pivot_offset = node.rect_size / 2.0
 			node.rect_rotation = randf() * 2.0 - 1.0
-	
+
 	Status.rainbow_text = true
 	
 	for i in range(20):

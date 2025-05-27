@@ -3,7 +3,7 @@
 "window_title","Dabdoob — a launcher for Cataclysm"
 "str_welcome","Welcome to Dabdoob!"
 "str_tip_of_the_day","\n\n[u]Tip of the day:[/u]\n"
-"msg_unpacking_7zip","Unpacking 7za.exe..."
+"msg_unpacking_7zip","Unpacking 7-Zip binary..."
 "msg_theme_load_error","Could not load theme %s."
 "debug_test","This is a debug text to test translation retrieval."
 ,
