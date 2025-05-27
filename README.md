@@ -13,7 +13,7 @@
 - Automatic game download and installation (stable or experimental releases).
 - Ability to install multiple versions of the game and switch between them.
 - Updating the game while preserving user data (saved games, settings, mods, etc).
-- Mod management: [Kenan Modpack](https://github.com/Kenan2000/CDDA-Kenan-Modpack) download and complete or selective installation.
+- Mod management: [Work in progress] select and download from our list of mods that are curated to be working.
 - Automatic download and installation of soundpacks.
 - Customization of game fonts.
 - Saved game backups.
@@ -42,6 +42,10 @@ None required. The launcher is a single, self-contained executable. Just [downlo
 - 64-bit operating system.
 - Windows 7+ or Linux.
 - OpenGL 2.1 support.
+
+## Can you include my mod/tileset/soundpack/etc?
+
+Of course! Please check [to be made today/very soon] for more details
 
 ## Contact
 
