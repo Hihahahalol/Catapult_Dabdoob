@@ -12,13 +12,26 @@ organization. You don't need to register or pay for 7-Zip.
 7-Zip Command Line Version
 ==========================
 
-7za.exe is the command line version of 7-Zip.
+This package includes 7-Zip command line binaries for both platforms:
+- 7za.exe: Windows (x64) standalone version of 7-Zip
+- 7za: Linux (x64) STATIC standalone version of 7-Zip (7zzs)
 
-7za.exe (a = alone) is a standalone version of 7-Zip. 
-7za.exe supports only 7z, lzma, cab, zip, gzip, bzip2, Z and tar formats. 
-7za.exe doesn't use external modules.
+The Linux binary is the static version (7zzs) which includes all libraries
+statically linked. This ensures maximum compatibility across different Linux
+distributions without requiring additional system libraries.
 
-Copyright (C) 1999-2023 Igor Pavlov.
+Binary Details:
+- 7za.exe (Windows): Standalone version, ~587KB
+- 7za (Linux): Static version (7zzs), ~3.75MB - larger but fully self-contained
+
+7za (standalone) is a standalone version of 7-Zip. 
+7za supports only 7z, lzma, cab, zip, gzip, bzip2, Z and tar formats. 
+7za doesn't use external modules.
+
+These binaries provide cross-platform compression and decompression 
+functionality with consistent performance on both Windows and Linux.
+
+Copyright (C) 1999-2024 Igor Pavlov.
 
 Licenses for files are:
 
@@ -37,7 +50,7 @@ GNU LGPL information:
   Lesser General Public License for more details.
 
 BSD 3-clause License:
-  Some files: Copyright (C) 1999-2023 Igor Pavlov
+  Some files: Copyright (C) 1999-2024 Igor Pavlov
   
   Redistribution and use in source and binary forms, with or without modification, 
   are permitted provided that the following conditions are met:

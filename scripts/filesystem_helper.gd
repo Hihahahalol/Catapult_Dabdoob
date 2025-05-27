@@ -161,10 +161,14 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows
-	# and system utilities on Linux.
+	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows and Linux
+	# Falls back to system utilities on Linux if 7-Zip is not available.
 	
-	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	var sevenzip_exe
+	if OS.get_name() == "Windows":
+		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	else:  # Linux (X11)
+		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
 	var command_linux_zip = {
 		"name": "unzip",
@@ -176,33 +180,40 @@ func extract(path: String, dest_dir: String) -> void:
 				"--exclude=*doc/CONTRIBUTING.md", "--exclude=*doc/JSON_LOADING_ORDER.md"]
 				# Godot can't operate on symlinks just yet, so we have to avoid them.
 	}
-	var command_windows = {
+	var command_sevenzip = {
 		"name": sevenzip_exe,
 		"args": ["x", path, "-o" + dest_dir, "-y"]
 	}
 	var command
 	
-	if (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
+	var d = Directory.new()
+	
+	# Try to use 7-Zip first on both platforms for better performance
+	if d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
+		Status.post("[debug] Using 7-Zip at: " + sevenzip_exe)
+		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
+		command = command_sevenzip
+	# Fall back to system utilities on Linux
+	elif (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
+		Status.post("[debug] Using system tar for .tar.gz extraction")
 		command = command_linux_gz
 	elif (_platform == "X11") and (path.to_lower().ends_with(".zip")):
+		Status.post("[debug] Using system unzip for .zip extraction")
 		command = command_linux_zip
 	elif (_platform == "Windows") and (path.to_lower().ends_with(".zip")):
-		# Check if 7za.exe exists
-		var d = Directory.new()
+		# On Windows, 7-Zip should always be available
 		if not d.file_exists(sevenzip_exe):
-			Status.post("[error] 7za.exe not found at: " + sevenzip_exe)
+			Status.post("[error] 7za.exe not found at: " + sevenzip_exe, Enums.MSG_ERROR)
 			emit_signal("extract_done")
 			return
-		
 		Status.post("[debug] Using 7za.exe at: " + sevenzip_exe)
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
-		command = command_windows
+		command = command_sevenzip
 	else:
 		Status.post(tr("msg_extract_unsupported") % path.get_file(), Enums.MSG_ERROR)
 		emit_signal("extract_done")
 		return
 		
-	var d = Directory.new()
 	if not d.dir_exists(dest_dir):
 		d.make_dir_recursive(dest_dir)
 		
@@ -222,7 +233,8 @@ func extract(path: String, dest_dir: String) -> void:
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
-	# Creates a .zip using 7-Zip on Windows and system utilities on Linux.
+	# Creates a .zip using 7-Zip on Windows and Linux for better performance.
+	# Falls back to system zip on Linux if 7-Zip is not available.
 	# parent: directory that zip command is run from  (Path.savegames)
 	# dir_to_zip: relative folder to zip up  (world_name)
 	# dest_zip: zip name   (world_name.zip)
@@ -230,22 +242,44 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 	# runs a command like:
 	# cd <userdata/save> && 7za a MyWorld.zip MyWorld
 	
-	var sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	var sevenzip_exe
+	if OS.get_name() == "Windows":
+		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	else:  # Linux (X11)
+		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
 	var command_linux_zip = {
 		"name": "/bin/bash",
 		"args": ["-c", "cd '%s' && zip -r '%s' '%s'" % [parent, dest_zip, dir_to_zip]]
 	}
-	var command_windows = {
+	var command_sevenzip_windows = {
 		"name": "cmd",
 		"args": ["/C", "cd /d \"%s\" && \"%s\" a \"%s\" \"%s\" -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
 	}
+	var command_sevenzip_linux = {
+		"name": "/bin/bash",
+		"args": ["-c", "cd '%s' && '%s' a '%s' '%s' -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
+	}
 	var command
 	
-	if (_platform == "X11") and (dest_zip.to_lower().ends_with(".zip")):
+	var d = Directory.new()
+	
+	if not dest_zip.to_lower().ends_with(".zip"):
+		Status.post(tr("msg_extract_unsupported") % dest_zip.get_file(), Enums.MSG_ERROR)
+		emit_signal("zip_done")
+		return
+	
+	# Try to use 7-Zip first for better performance
+	if d.file_exists(sevenzip_exe):
+		Status.post("[debug] Using 7-Zip for compression: " + sevenzip_exe)
+		if OS.get_name() == "Windows":
+			command = command_sevenzip_windows
+		else:  # Linux (X11)
+			command = command_sevenzip_linux
+	# Fall back to system zip on Linux
+	elif _platform == "X11":
+		Status.post("[debug] Using system zip for compression")
 		command = command_linux_zip
-	elif (_platform == "Windows") and (dest_zip.to_lower().ends_with(".zip")):
-		command = command_windows
 	else:
 		Status.post(tr("msg_extract_unsupported") % dest_zip.get_file(), Enums.MSG_ERROR)
 		emit_signal("zip_done")
