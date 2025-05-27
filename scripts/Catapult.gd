@@ -687,26 +687,31 @@ func _on_BtnCheck_pressed() -> void:
 	var error = _version_check_request.request(VERSION_CHECK_URL)
 	if error != OK:
 		Status.post(tr("Error making HTTP request"), Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 
 func _on_version_check_completed(result, response_code, headers, body):
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
 		Status.post(tr("Failed to connect to update server"), Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 		return
 		
 	if response_code != 200:
 		Status.post(tr("Error response from update server: %d") % response_code, Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 		return
 	
 	# Parse the JSON response
 	var json = JSON.parse(body.get_string_from_utf8())
 	if json.error != OK:
 		Status.post(tr("Error parsing response from server"), Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 		return
 	
 	var response = json.result
 	if typeof(response) != TYPE_DICTIONARY:
 		Status.post(tr("Invalid response format from server"), Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 		return
 	
 	if "name" in response:
@@ -743,6 +748,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 			_is_update_available = false
 	else:
 		Status.post(tr("Could not determine Dabdoob's latest version"), Enums.MSG_ERROR)
+		_btn_update.disabled = false  # Re-enable button on error
 
 func _is_newer_version(latest: String, current: String) -> bool:
 	# Split version strings and convert to integers
