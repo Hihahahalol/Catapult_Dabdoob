@@ -9,7 +9,6 @@
 "cbtn_installed_mods","Mostrar os Instalados"
 "btn_add_sel_mods","Add Selecionados"
 "btn_add_all_mods","Add Todos"
-"btn_get_kenan_pack","Obter Modpack do Kenan"
 "lbl_mod_info","Selecione um mod em qualquer uma das listas para ver seus detalhes aqui."
 "str_mod_name","Nome:"
 "str_mod_authors","Autores:"
@@ -23,7 +22,6 @@
 "tooltip_delete_mods","Remova os mods selecionados da instalação do jogo."
 "tooltip_add_sel_mods","Adicionar mods selecionados à instalação do jogo."
 "tooltip_add_all_mods","Adicione todos os mods listados à instalação do jogo."
-"tooltip_get_kenan_pack","Baixar o Modpack do Kenan e adicionar seus mods\npara o repositório local."
 ,
 "msg_one_mod_is_stock","Um dos mods selecionados é padrão e não pode ser excluído."
 "msg_n_mods_are_stock","%s dos mods selecionados são padrão e não podem ser excluídos."

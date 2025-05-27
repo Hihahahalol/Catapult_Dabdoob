@@ -2,7 +2,6 @@
 ,
 "cbtn_debug_mode","Debug mode"
 "cbtn_enable_scale","Enable  "
-"cbtn_install_archived_mods","Include archived mods when installing Kenan Modpack"
 "cbtn_keep_launcher_open","Keep launcher open after starting the game"
 "cbtn_print_tips","Print tips of the day on startup"
 "cbtn_shorten_release_names","Shorten names of experimental releases"
@@ -24,7 +23,6 @@
 "lbl_ui_scale_override","Custom UI scaling:"
 "lbl_proxy_settings","Proxy server:"
 "tooltip_debug_mode","Shows the Debug tab with some testing functions\nand enables debug messages in the status\npane (useful for troubleshooting)."
-"tooltip_install_archived_mods","When installing Kenan Modpack, also include *archived* mods.\nThese mods are no longer maintained by Kenan and may be outdated."
 "tooltip_keep_launcher_open","If turned off, the launcher will close after clicking Play or Resume.\nNote that if the game fails to start for any reason, the launcher\nwill still close."
 "tooltip_num_prs_to_request","How many recent pull requests (code additions)\nwill be requested from GitHub to form the changelog.\nHigh numbers may lead to slow responses and failures."
 "tooltip_num_releases_to_request","How many latest releases will be requested\nfrom GitHub after starting the launcher,\nchoosing the game or clicking Refresh."

@@ -9,7 +9,6 @@
 "cbtn_installed_mods","Ukázat už nainstalované"
 "btn_add_sel_mods","Přidat Vybrané"
 "btn_add_all_mods","Přidat Všechny"
-"btn_get_kenan_pack","Získat Kenanův Modpack"
 "lbl_mod_info","Vyberte mod v jednou ze dvou seznamů a detaily se zobrazí zde."
 "str_mod_name","Název:"
 "str_mod_authors","Autoři:"
@@ -23,7 +22,6 @@
 "tooltip_delete_mods","Odstranit vybrané mody ze hry."
 "tooltip_add_sel_mods","Přidat vybrané mody do hry."
 "tooltip_add_all_mods","Přidat všechny mody do hry."
-"tooltip_get_kenan_pack","Stáhnout Kenanův Modpack a přidat jeho mody\ndo lokálního repozitáře."
 ,
 "msg_one_mod_is_stock","Jeden z vybraných modů už je výchozí a nelze ho smazat."
 "msg_n_mods_are_stock","%s z vybraných modů jsou výchozí a nelze je smazat."

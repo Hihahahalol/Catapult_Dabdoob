@@ -42,7 +42,7 @@ func _ready() -> void:
 	$ShortenNames.pressed = Settings.read("shorten_release_names")
 	$AlwaysShowInstalls.pressed = Settings.read("always_show_installs")
 	$ShowObsoleteMods.pressed = Settings.read("show_obsolete_mods")
-	$InstallArchivedMods.pressed = Settings.read("install_archived_mods")
+
 	$KeepCache.pressed = Settings.read("keep_cache")
 	$IgnoreCache.pressed = Settings.read("ignore_cache")
 	$ShowDebug.pressed = Settings.read("debug_mode")
@@ -111,9 +111,7 @@ func _on_ShowObsoleteMods_toggled(button_pressed: bool) -> void:
 	
 	Settings.store("show_obsolete_mods", button_pressed)
 
-func _on_InstallArchivedMods_toggled(button_pressed: bool) -> void:
-	
-	Settings.store("install_archived_mods", button_pressed)
+
 
 func _on_KeepCache_toggled(button_pressed: bool) -> void:
 	
