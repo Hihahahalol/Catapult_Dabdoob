@@ -10,7 +10,6 @@ const _TOTD = [
 	"tip_downgrading",
 	"tip_stock_mods",
 	"tip_mod_multi_install",
-	"tip_modpack_update",
 	"tip_debug_mode",
 	"tip_bug_reporting",
 	"tip_backup_caveat",
