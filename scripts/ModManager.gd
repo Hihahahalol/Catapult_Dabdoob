@@ -149,6 +149,17 @@ func refresh_available():
 	# Custom mods for TLG (Cataclysm: The Last Generation)
 	if Settings.read("game") == "tlg":
 		available = {
+			"MindOverMatter": {
+				"location": "https://github.com/Vegetabs/MindOverMatter-CTLG",
+				"modinfo": {
+					"id": "MindOverMatter",
+					"name": "Mind Over Matter",
+					"authors": ["Vegetabs"],
+					"description": "Port of MoM from CDDA to CTLG. Adds nine separate psionic power paths to Cataclysm including Biokinesis, Clairsentience, Electrokinesis, Photokinesis, Pyrokinesis, Telekinesis, Telepathy, Teleportation, and Vitakinesis.",
+					"category": "content",
+					"dependencies": []
+				}
+			},
 			"BionicsExpanded": {
 				"location": "https://github.com/Vegetabs/BionicsExpanded-CTLG",
 				"modinfo": {
@@ -214,6 +225,141 @@ func delete_mods(mod_ids: Array) -> void:
 	emit_signal("mod_deletion_finished")
 
 
+func _get_latest_release_url(github_url: String, mod_name: String) -> void:
+	
+	# Extract owner and repo from GitHub URL
+	var url_parts = github_url.replace("https://github.com/", "").split("/")
+	var owner = url_parts[0]
+	var repo = url_parts[1]
+	
+	# GitHub API endpoint for latest release
+	var api_url = "https://api.github.com/repos/%s/%s/releases/latest" % [owner, repo]
+	
+	# Create HTTP request for GitHub API
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	
+	# Set up proxy if needed
+	if Settings.read("proxy_option") == "on":
+		var host = Settings.read("proxy_host")
+		var port = Settings.read("proxy_port") as int
+		http_request.set_http_proxy(host, port)
+		http_request.set_https_proxy(host, port)
+	
+	# Connect signal and make request
+	http_request.connect("request_completed", self, "_on_release_info_received", [http_request, mod_name])
+	var error = http_request.request(api_url)
+	
+	if error != OK:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		remove_child(http_request)
+		http_request.queue_free()
+		emit_signal("_done_installing_mod")
+
+
+func _on_release_info_received(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String) -> void:
+	
+	# Clean up HTTP request
+	remove_child(http_request)
+	http_request.queue_free()
+	
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	# Parse JSON response
+	var json = JSON.parse(body.get_string_from_utf8())
+	if json.error != OK:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	var release_data = json.result
+	var download_url = ""
+	
+	# Look for ZIP asset in the release
+	if "assets" in release_data and release_data["assets"] is Array:
+		for asset in release_data["assets"]:
+			if asset["name"].ends_with(".zip"):
+				download_url = asset["browser_download_url"]
+				break
+	
+	# If no ZIP asset found, fall back to tarball
+	if download_url == "":
+		if "zipball_url" in release_data:
+			download_url = release_data["zipball_url"]
+		else:
+			Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+			emit_signal("_done_installing_mod")
+			return
+	
+	# Continue with download using the release URL
+	_download_and_install_mod(download_url, mod_name)
+
+
+func _download_and_install_mod(download_url: String, mod_name: String) -> void:
+	
+	var mod_id = ""
+	var mod = {}
+	
+	# Find the mod info from available mods
+	for id in available:
+		if available[id]["modinfo"]["name"] == mod_name:
+			mod_id = id
+			mod = available[id]
+			break
+	
+	if mod_id == "":
+		Status.post(tr("msg_mod_not_found") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	var mods_dir = Paths.mods_user
+	var filename = mod_id + ".zip"
+	var archive = Paths.cache_dir.plus_file(filename)
+	var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
+	
+	# Download the mod
+	if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
+		Downloader.download_file(download_url, Paths.cache_dir, filename)
+		yield(Downloader, "download_finished")
+	
+	if not Directory.new().file_exists(archive):
+		Status.post(tr("msg_mod_download_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	# Extract the mod
+	FS.extract(archive, tmp_dir)
+	yield(FS, "extract_done")
+	if not Settings.read("keep_cache"):
+		Directory.new().remove(archive)
+	
+	if FS.last_extract_result == 0:
+		# Find the extracted directory (GitHub releases can have various structures)
+		var contents = FS.list_dir(tmp_dir)
+		if contents.size() > 0:
+			var extracted_dir = tmp_dir + "/" + contents[0]
+			FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
+			yield(FS, "move_dir_done")
+			Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+		else:
+			Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
+			emit_signal("_done_installing_mod")
+			return
+	else:
+		Status.post(tr("msg_mod_extraction_error") % [mod["modinfo"]["name"], FS.last_extract_result], Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+		
+	# Clean up temporary directory
+	FS.rm_dir(tmp_dir)
+	yield(FS, "rm_dir_done")
+	
+	emit_signal("_done_installing_mod")
+
+
 func _install_mod(mod_id: String) -> void:
 	
 	yield(get_tree().create_timer(0.05), "timeout")
@@ -226,59 +372,9 @@ func _install_mod(mod_id: String) -> void:
 		
 		# Check if this is a GitHub URL
 		if mod["location"].begins_with("https://github.com/"):
-			# Handle GitHub mod installation
-			var github_url = mod["location"]
-			var download_url = github_url + "/archive/refs/heads/main.zip"
-			var filename = mod_id + ".zip"
-			var archive = Paths.cache_dir.plus_file(filename)
-			var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
-			
-			# Download the mod
-			if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
-				Downloader.download_file(download_url, Paths.cache_dir, filename)
-				yield(Downloader, "download_finished")
-			
-			if not Directory.new().file_exists(archive):
-				Status.post(tr("msg_mod_download_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
-				emit_signal("_done_installing_mod")
-				return
-			
-			# Extract the mod
-			FS.extract(archive, tmp_dir)
-			yield(FS, "extract_done")
-			if not Settings.read("keep_cache"):
-				Directory.new().remove(archive)
-			
-			if FS.last_extract_result == 0:
-				# GitHub repos are extracted into a subdirectory with the format "RepoName-main"
-				var repo_name = github_url.split("/")[-1] # Get the last part of the URL (repo name)
-				var extracted_dir = tmp_dir + "/" + repo_name + "-main"
-				
-				# Check if the extraction created the expected directory
-				if Directory.new().dir_exists(extracted_dir):
-					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
-					yield(FS, "move_dir_done")
-				else:
-					# Fallback: try to find any directory in the tmp folder
-					var contents = FS.list_dir(tmp_dir)
-					if contents.size() > 0:
-						var first_dir = tmp_dir + "/" + contents[0]
-						FS.move_dir(first_dir, mods_dir.plus_file(mod_id))
-						yield(FS, "move_dir_done")
-					else:
-						Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
-						emit_signal("_done_installing_mod")
-						return
-				
-				Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
-			else:
-				Status.post(tr("msg_mod_extraction_error") % [mod["modinfo"]["name"], FS.last_extract_result], Enums.MSG_ERROR)
-				emit_signal("_done_installing_mod")
-				return
-				
-			# Clean up temporary directory
-			FS.rm_dir(tmp_dir)
-			yield(FS, "rm_dir_done")
+			# Handle GitHub mod installation - get latest release
+			_get_latest_release_url(mod["location"], mod["modinfo"]["name"])
+			return
 		else:
 			# Handle local mod installation (existing code)
 			FS.copy_dir(mod["location"], mods_dir)
