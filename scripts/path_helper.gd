@@ -18,6 +18,8 @@ var sound_stock: String setget , _get_sound_dir_default
 var sound_user: String setget , _get_sound_dir_user
 var gfx_default: String setget , _get_gfx_dir_default
 var gfx_user: String setget , _get_gfx_dir_user
+var tileset_stock: String setget , _get_tileset_dir_default
+var tileset_user: String setget , _get_tileset_dir_user
 var font_user: String setget , _get_font_dir_user
 var templates: String setget , _get_templates_dir
 var memorial: String setget , _get_memorial_dir
@@ -152,6 +154,16 @@ func _get_gfx_dir_default() -> String:
 
 
 func _get_gfx_dir_user() -> String:
+	
+	return _get_userdata_dir().plus_file("gfx")
+
+
+func _get_tileset_dir_default() -> String:
+	
+	return _get_game_dir().plus_file("gfx")
+
+
+func _get_tileset_dir_user() -> String:
 	
 	return _get_userdata_dir().plus_file("gfx")
 

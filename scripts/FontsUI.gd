@@ -153,7 +153,7 @@ func _load_font_options() -> void:
 
 func _on_Tabs_tab_changed(tab: int) -> void:
 	
-	if tab != 3:
+	if tab != 4:
 		return
 	
 	if not _fonts.font_config_file_exists():

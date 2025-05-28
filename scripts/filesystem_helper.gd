@@ -181,8 +181,8 @@ func extract(path: String, dest_dir: String) -> void:
 				# Godot can't operate on symlinks just yet, so we have to avoid them.
 	}
 	var command_sevenzip = {
-		"name": sevenzip_exe,
-		"args": ["x", path, "-o" + dest_dir, "-y"]
+		"name": "cmd",
+		"args": ["/C", "\"%s\" x \"%s\" -o\"%s\" -y" % [sevenzip_exe.replace("/", "\\"), path.replace("/", "\\"), dest_dir.replace("/", "\\")]]
 	}
 	var command
 	
@@ -228,7 +228,10 @@ func extract(path: String, dest_dir: String) -> void:
 		Status.post(tr("msg_extract_error") % oew.exit_code, Enums.MSG_ERROR)
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
 		if oew.output.size() > 0:
-			Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
+			for i in range(oew.output.size()):
+				Status.post("[7-Zip output] " + str(oew.output[i]), Enums.MSG_ERROR)
+		else:
+			Status.post("[7-Zip] No output captured", Enums.MSG_ERROR)
 	emit_signal("extract_done")
 
 

@@ -1,0 +1,17 @@
+"keys","zh"
+,
+"lbl_installed_tilesets","已安装："
+"lbl_avail_tilesets","可下载："
+"cbtn_stock_tilesets","显示默认"
+"btn_delete_tilesets","删除选中"
+"btn_install_tilesets","安装选中"
+"btn_reinstall_tileset","重新安装选中"
+,
+"tooltip_stock_tilesets","在列表中显示来自gfx的瓦片集。"
+"tooltip_delete_tilesets","从游戏安装中移除选中的瓦片集。"
+"tooltip_install_tilesets","下载选中的瓦片集并添加到游戏安装中。"
+,
+"dlg_tileset_deletion_title","确认删除瓦片集"
+"dlg_tileset_deletion_text","正在删除 %s。"
+"dlg_tileset_manual_dl_title","需要手动下载"
+"dlg_tileset_manual_dl_text","此瓦片集无法自动下载。点击确定在浏览器中下载。" 

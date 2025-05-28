@@ -47,7 +47,7 @@ func _populate_default_new_name() -> void:
 
 func _on_Tabs_tab_changed(tab: int) -> void:
 	
-	if tab != 4:
+	if tab != 5:
 		return
 	
 	_refresh_available()

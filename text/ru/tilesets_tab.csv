@@ -1,0 +1,17 @@
+"keys","ru"
+,
+"lbl_installed_tilesets","Установленные:"
+"lbl_avail_tilesets","Доступные для загрузки:"
+"cbtn_stock_tilesets","Показать стандартные"
+"btn_delete_tilesets","Удалить выбранные"
+"btn_install_tilesets","Установить выбранные"
+"btn_reinstall_tileset","Переустановить выбранные"
+,
+"tooltip_stock_tilesets","Показать тайлсеты из gfx в списке."
+"tooltip_delete_tilesets","Удалить выбранный тайлсет из установки игры."
+"tooltip_install_tilesets","Загрузить выбранный тайлсет и добавить его в установку игры."
+,
+"dlg_tileset_deletion_title","Подтвердить удаление тайлсета"
+"dlg_tileset_deletion_text","Удаление %s."
+"dlg_tileset_manual_dl_title","Требуется ручная загрузка"
+"dlg_tileset_manual_dl_text","Этот тайлсет нельзя загрузить автоматически. Нажмите OK, чтобы загрузить его в браузере." 

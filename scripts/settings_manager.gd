@@ -29,6 +29,7 @@ const _HARDCODED_DEFAULTS = {
 	"show_obsolete_mods": false,
 
 	"show_stock_sound": false,
+	"show_stock_tilesets": false,
 	"font_preview_cyrillic": false,
 	"show_game_desc": true,
 	"keep_open_after_starting_game": true,

@@ -45,6 +45,8 @@
 [ext_resource path="res://icons/lang/tex_lang_tr.res" type="Texture" id=43]
 [ext_resource path="res://icons/lang/tex_lang_pt.res" type="Texture" id=44]
 [ext_resource path="res://icons/lang/tex_lang_ko.res" type="Texture" id=45]
+[ext_resource path="res://scripts/TilesetManager.gd" type="Script" id=46]
+[ext_resource path="res://scripts/TilesetsUI.gd" type="Script" id=47]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 content_margin_left = 4.0
@@ -519,6 +521,124 @@ anchor_bottom = 0.0
 margin_top = 476.0
 margin_right = 619.0
 margin_bottom = 477.0
+
+[node name="Tilesets" type="VBoxContainer" parent="Main/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+size_flags_vertical = 3
+script = ExtResource( 47 )
+
+[node name="HBox" type="HBoxContainer" parent="Main/Tabs/Tilesets"]
+margin_right = 577.0
+margin_bottom = 288.0
+
+[node name="Installed" type="VBoxContainer" parent="Main/Tabs/Tilesets/HBox"]
+margin_right = 278.0
+margin_bottom = 288.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Main/Tabs/Tilesets/HBox/Installed"]
+margin_right = 278.0
+margin_bottom = 24.0
+text = "lbl_installed_tilesets"
+align = 1
+
+[node name="InstalledList" type="ItemList" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
+margin_top = 28.0
+margin_right = 278.0
+margin_bottom = 228.0
+rect_min_size = Vector2( 0, 200 )
+size_flags_horizontal = 3
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
+same_column_width = true
+script = ExtResource( 17 )
+
+[node name="ShowStock" type="CheckBox" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
+margin_left = 67.0
+margin_top = 232.0
+margin_right = 210.0
+margin_bottom = 260.0
+hint_tooltip = "tooltip_stock_tilesets"
+size_flags_horizontal = 4
+text = "cbtn_stock_tilesets"
+
+[node name="BtnDelete" type="Button" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
+margin_left = 79.0
+margin_top = 264.0
+margin_right = 199.0
+margin_bottom = 288.0
+hint_tooltip = "tooltip_delete_tilesets"
+size_flags_horizontal = 4
+disabled = true
+text = "btn_delete_tilesets"
+
+[node name="VSeparator" type="VSeparator" parent="Main/Tabs/Tilesets/HBox"]
+margin_left = 284.0
+margin_right = 292.0
+margin_bottom = 288.0
+
+[node name="Downloadable" type="VBoxContainer" parent="Main/Tabs/Tilesets/HBox"]
+margin_left = 298.0
+margin_right = 577.0
+margin_bottom = 288.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Main/Tabs/Tilesets/HBox/Downloadable"]
+margin_right = 279.0
+margin_bottom = 24.0
+text = "lbl_avail_tilesets"
+align = 1
+
+[node name="AvailableList" type="ItemList" parent="Main/Tabs/Tilesets/HBox/Downloadable" groups=["disable_during_tileset_operations"]]
+margin_top = 28.0
+margin_right = 279.0
+margin_bottom = 228.0
+rect_min_size = Vector2( 0, 200 )
+size_flags_horizontal = 3
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
+same_column_width = true
+script = ExtResource( 17 )
+
+[node name="BtnInstall" type="Button" parent="Main/Tabs/Tilesets/HBox/Downloadable" groups=["disable_during_tileset_operations"]]
+margin_left = 80.0
+margin_top = 232.0
+margin_right = 198.0
+margin_bottom = 256.0
+hint_tooltip = "tooltip_install_tilesets"
+size_flags_horizontal = 4
+disabled = true
+text = "btn_install_tilesets"
+
+[node name="ConfirmDelete" type="ConfirmationDialog" parent="Main/Tabs/Tilesets"]
+margin_top = 385.0
+margin_right = 769.0
+margin_bottom = 507.0
+rect_min_size = Vector2( 300, 105 )
+window_title = "dlg_tileset_deletion_title"
+dialog_text = "dlg_tileset_deletion_text"
+dialog_autowrap = true
+
+[node name="ConfirmManualDownload" type="ConfirmationDialog" parent="Main/Tabs/Tilesets"]
+margin_right = 300.0
+margin_bottom = 122.0
+rect_min_size = Vector2( 300, 105 )
+window_title = "dlg_tileset_manual_dl_title"
+dialog_text = "dlg_tileset_manual_dl_text"
+dialog_autowrap = true
+
+[node name="InstallFromFileDialog" type="FileDialog" parent="Main/Tabs/Tilesets"]
+margin_right = 593.0
+margin_bottom = 250.0
+rect_min_size = Vector2( 300, 105 )
+window_title = "Open a File"
+mode = 0
+access = 2
+filters = PoolStringArray( "*.zip" )
 
 [node name="Soundpacks" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
@@ -1391,6 +1511,9 @@ script = ExtResource( 12 )
 [node name="Sound" type="Node" parent="."]
 script = ExtResource( 13 )
 
+[node name="Tileset" type="Node" parent="."]
+script = ExtResource( 46 )
+
 [node name="Fonts" type="Node" parent="."]
 script = ExtResource( 28 )
 __meta__ = {
@@ -1443,6 +1566,15 @@ __meta__ = {
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmDelete" to="Main/Tabs/Soundpacks" method="_on_ConfirmDelete_confirmed"]
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmManualDownload" to="Main/Tabs/Soundpacks" method="_on_ConfirmManualDownload_confirmed"]
 [connection signal="file_selected" from="Main/Tabs/Soundpacks/InstallFromFileDialog" to="Main/Tabs/Soundpacks" method="_on_InstallFromFileDialog_file_selected"]
+[connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Tilesets" method="_on_Tabs_tab_changed"]
+[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Installed/InstalledList" to="Main/Tabs/Tilesets" method="_on_InstalledList_item_selected"]
+[connection signal="toggled" from="Main/Tabs/Tilesets/HBox/Installed/ShowStock" to="Main/Tabs/Tilesets" method="_on_ShowStock_toggled"]
+[connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Installed/BtnDelete" to="Main/Tabs/Tilesets" method="_on_BtnDelete_pressed"]
+[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Downloadable/AvailableList" to="Main/Tabs/Tilesets" method="_on_AvailableList_item_selected"]
+[connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Downloadable/BtnInstall" to="Main/Tabs/Tilesets" method="_on_BtnInstall_pressed"]
+[connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmDelete" to="Main/Tabs/Tilesets" method="_on_ConfirmDelete_confirmed"]
+[connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmManualDownload" to="Main/Tabs/Tilesets" method="_on_ConfirmManualDownload_confirmed"]
+[connection signal="file_selected" from="Main/Tabs/Tilesets/InstallFromFileDialog" to="Main/Tabs/Tilesets" method="_on_InstallFromFileDialog_file_selected"]
 [connection signal="item_selected" from="Main/Tabs/Fonts/FontSelection/RightPane/FontsList" to="Main/Tabs/Fonts" method="_on_FontsList_item_selected"]
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/RightPane/Buttons/BtnSetFontUI" to="Main/Tabs/Fonts" method="_on_BtnSetFontX_pressed" binds= [ true, false, false ]]
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/RightPane/Buttons/BtnSetFontMap" to="Main/Tabs/Fonts" method="_on_BtnSetFontX_pressed" binds= [ false, true, false ]]
@@ -1506,6 +1638,10 @@ __meta__ = {
 [connection signal="soundpack_deletion_started" from="Sound" to="." method="_on_soundpack_operation_started"]
 [connection signal="soundpack_installation_finished" from="Sound" to="." method="_on_soundpack_operation_finished"]
 [connection signal="soundpack_installation_started" from="Sound" to="." method="_on_soundpack_operation_started"]
+[connection signal="tileset_deletion_finished" from="Tileset" to="." method="_on_tileset_operation_finished"]
+[connection signal="tileset_deletion_started" from="Tileset" to="." method="_on_tileset_operation_started"]
+[connection signal="tileset_installation_finished" from="Tileset" to="." method="_on_tileset_operation_finished"]
+[connection signal="tileset_installation_started" from="Tileset" to="." method="_on_tileset_operation_started"]
 [connection signal="backup_creation_finished" from="Backups" to="." method="_on_backup_operation_finished"]
 [connection signal="backup_creation_started" from="Backups" to="." method="_on_backup_operation_started"]
 [connection signal="backup_restoration_finished" from="Backups" to="." method="_on_backup_operation_finished"]
