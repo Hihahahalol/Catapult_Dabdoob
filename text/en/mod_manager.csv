@@ -7,4 +7,7 @@
 "msg_obsolete_mod_collision","There is already an obsoleted mod with ID %s. [i]%s[/i] will be installed with modified ID and name to avoid collisions."
 "msg_mod_installed","Installed %s"
 "msg_installing_n_mods","Installing %s mods..."
+"msg_mod_download_failed","Failed to download mod %s"
+"msg_mod_extraction_failed","Failed to extract mod %s"
+"msg_mod_extraction_error","Extraction error for mod %s: %s"
 

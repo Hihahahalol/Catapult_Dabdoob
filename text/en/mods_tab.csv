@@ -2,7 +2,7 @@
 ,
 "lbl_installed_mods","Installed%s:"
 "str_installed_mods_hidden"," (%s hidden)"
-"lbl_mod_repo","Local repository%s:"
+"lbl_mod_repo","Downloadable%s:"
 "str_mod_repo_hidden"," (%s hidden)"
 "cbtn_stock_mods","Show stock"
 "btn_delete_mods","Delete Selected"
