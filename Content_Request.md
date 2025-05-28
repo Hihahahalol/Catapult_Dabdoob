@@ -1,5 +1,3 @@
-**Disclaimer: Please note that this is still a work in progress, the exact details of this file are subject to change these couple of days. Until this disclaimer is removed don't actually make a request**
-
 So you want your work to be included in Dabdoob? You came to the right file!
 
 Hello! I am honored to have you here, as I am always looking to include more content in my launcher, to apply you will need to reach out to me. Which you can do on TLG's Discord (https://discord.com/invite/zT9sXmZNCK) or by submitting an issue here on the github. We have some minimal requirements to make sure that your work is functional and not broken. Please read the part related to the type of work you made below to understand the process and requirements
