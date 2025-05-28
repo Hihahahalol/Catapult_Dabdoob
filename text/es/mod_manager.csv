@@ -2,10 +2,13 @@
 ,
 "msg_mod_json_parsing_failed","No se pudo analizar %s"
 "msg_mod_deleted","Eliminado %s"
-"msg_mod_not_found","No se encontró el mod con ID \""%s\""".
+"msg_mod_not_found","No se pudo encontrar el mod con ID \""%s\"""
 "msg_deleting_n_mods","Eliminando %s mods..."
-"msg_obsolete_mod_collision","Ya existe un mod obsoleto con ID %s. [i]%s[/i] será instalado con nombre e ID modificado para evitar colisiones."
-"msg_mod_installed","%s instalado"
+"msg_obsolete_mod_collision","Ya hay un mod obsoleto con ID %s. [i]%s[/i] se instalará con ID y nombre modificados para evitar colisiones."
+"msg_mod_installed","Instalado %s"
 "msg_installing_n_mods","Instalando %s mods..."
 "msg_wiping_mod_repo","Limpiando el repositorio..."
-"msg_unpacking_archived_mods","Añadiendo mods archivados al repositorio"
+"msg_unpacking_archived_mods","Agregando mods archivados al repositorio..."
+"msg_mod_download_failed","Error al descargar el mod %s"
+"msg_mod_extraction_failed","Error al extraer el mod %s"
+"msg_mod_extraction_error","Error de extracción para el mod %s: %s"

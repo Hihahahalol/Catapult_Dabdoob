@@ -146,7 +146,34 @@ func refresh_installed():
 
 func refresh_available():
 	
-	available = parse_mods_dir(Paths.mod_repo)
+	# Custom mods for TLG (Cataclysm: The Last Generation)
+	if Settings.read("game") == "tlg":
+		available = {
+			"BionicsExpanded": {
+				"location": "https://github.com/Vegetabs/BionicsExpanded-CTLG",
+				"modinfo": {
+					"id": "BionicsExpanded",
+					"name": "Bionics Expanded",
+					"authors": ["Vegetabs"],
+					"description": "Expanded bionics system for Cataclysm: The Last Generation.",
+					"category": "content",
+					"dependencies": []
+				}
+			},
+			"MythicalMartialArts": {
+				"location": "https://github.com/Vegetabs/MythicalMartialArts-CTLG",
+				"modinfo": {
+					"id": "MythicalMartialArts",
+					"name": "Mythical Martial Arts",
+					"authors": ["Vegetabs"],
+					"description": "Mythical martial arts mod ported to Cataclysm: The Last Generation.",
+					"category": "content",
+					"dependencies": []
+				}
+			}
+		}
+	else:
+		available = parse_mods_dir(Paths.mod_repo)
 
 
 func _delete_mod(mod_id: String) -> void:
@@ -197,19 +224,76 @@ func _install_mod(mod_id: String) -> void:
 	if mod_id in available:
 		var mod = available[mod_id]
 		
-		FS.copy_dir(mod["location"], mods_dir)
-		yield(FS, "copy_dir_done")
-		
-		if (mod_id in installed) and (installed[mod_id]["is_obsolete"] == true):
-			Status.post(tr("msg_obsolete_mod_collision") % [mod_id, mod["modinfo"]["name"]])
-			var modinfo = mod["modinfo"].duplicate()
-			modinfo["id"] += "__"
-			modinfo["name"] += "*"
-			var f = File.new()
-			f.open(mods_dir.plus_file(mod["location"].get_file()).plus_file("modinfo.json"), File.WRITE)
-			f.store_string(JSON.print(modinfo, "    "))
-					
-		Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+		# Check if this is a GitHub URL
+		if mod["location"].begins_with("https://github.com/"):
+			# Handle GitHub mod installation
+			var github_url = mod["location"]
+			var download_url = github_url + "/archive/refs/heads/main.zip"
+			var filename = mod_id + ".zip"
+			var archive = Paths.cache_dir.plus_file(filename)
+			var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
+			
+			# Download the mod
+			if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
+				Downloader.download_file(download_url, Paths.cache_dir, filename)
+				yield(Downloader, "download_finished")
+			
+			if not Directory.new().file_exists(archive):
+				Status.post(tr("msg_mod_download_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
+				emit_signal("_done_installing_mod")
+				return
+			
+			# Extract the mod
+			FS.extract(archive, tmp_dir)
+			yield(FS, "extract_done")
+			if not Settings.read("keep_cache"):
+				Directory.new().remove(archive)
+			
+			if FS.last_extract_result == 0:
+				# GitHub repos are extracted into a subdirectory with the format "RepoName-main"
+				var repo_name = github_url.split("/")[-1] # Get the last part of the URL (repo name)
+				var extracted_dir = tmp_dir + "/" + repo_name + "-main"
+				
+				# Check if the extraction created the expected directory
+				if Directory.new().dir_exists(extracted_dir):
+					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
+					yield(FS, "move_dir_done")
+				else:
+					# Fallback: try to find any directory in the tmp folder
+					var contents = FS.list_dir(tmp_dir)
+					if contents.size() > 0:
+						var first_dir = tmp_dir + "/" + contents[0]
+						FS.move_dir(first_dir, mods_dir.plus_file(mod_id))
+						yield(FS, "move_dir_done")
+					else:
+						Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
+						emit_signal("_done_installing_mod")
+						return
+				
+				Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+			else:
+				Status.post(tr("msg_mod_extraction_error") % [mod["modinfo"]["name"], FS.last_extract_result], Enums.MSG_ERROR)
+				emit_signal("_done_installing_mod")
+				return
+				
+			# Clean up temporary directory
+			FS.rm_dir(tmp_dir)
+			yield(FS, "rm_dir_done")
+		else:
+			# Handle local mod installation (existing code)
+			FS.copy_dir(mod["location"], mods_dir)
+			yield(FS, "copy_dir_done")
+			
+			if (mod_id in installed) and (installed[mod_id]["is_obsolete"] == true):
+				Status.post(tr("msg_obsolete_mod_collision") % [mod_id, mod["modinfo"]["name"]])
+				var modinfo = mod["modinfo"].duplicate()
+				modinfo["id"] += "__"
+				modinfo["name"] += "*"
+				var f = File.new()
+				f.open(mods_dir.plus_file(mod["location"].get_file()).plus_file("modinfo.json"), File.WRITE)
+				f.store_string(JSON.print(modinfo, "    "))
+						
+			Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 	else:
 		Status.post(tr("msg_mod_not_found") % mod_id, Enums.MSG_ERROR)
 	
