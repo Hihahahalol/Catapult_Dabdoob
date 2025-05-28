@@ -1,0 +1,12 @@
+"keys","ru"
+,
+"msg_no_tileset_dir","Каталог тайлсетов не существует: %s"
+"msg_deleting_tileset","Удаление %s"
+"msg_tileset_not_found","Не удалось найти тайлсет с именем \"\"%s\"\""
+"msg_installing_tileset","Установка тайлсета \"\"%s\"\"..."
+"msg_reinstalling_tileset","Переустановка тайлсета \"\"%s\"\"..."
+"msg_tileset_download_failed","Не удалось загрузить архив тайлсета."
+"msg_tileset_installed","Тайлсет установлен."
+"msg_tileset_extraction_error","Извлечение архива завершилось с ошибкой (код: %s)"
+"msg_tileset_extraction_failed","Ожидаемая папка тайлсета '%s' не найдена после извлечения."
+"msg_tileset_extraction_debug","Папка извлечения: %s, Содержимое: %s" 

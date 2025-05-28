@@ -108,10 +108,11 @@ func assign_localized_text() -> void:
 	
 	_tabs.set_tab_title(0, tr("tab_game"))
 	_tabs.set_tab_title(1, tr("tab_mods"))
-	_tabs.set_tab_title(2, tr("tab_soundpacks"))
-	_tabs.set_tab_title(3, tr("tab_fonts"))
-	_tabs.set_tab_title(4, tr("tab_backups"))
-	_tabs.set_tab_title(5, tr("tab_settings"))
+	_tabs.set_tab_title(2, tr("tab_tilesets"))
+	_tabs.set_tab_title(3, tr("tab_soundpacks"))
+	_tabs.set_tab_title(4, tr("tab_fonts"))
+	_tabs.set_tab_title(5, tr("tab_backups"))
+	_tabs.set_tab_title(6, tr("tab_settings"))
 	
 	_lbl_changelog.bbcode_text = tr("lbl_changelog")
 	
@@ -345,6 +346,16 @@ func _on_soundpack_operation_started() -> void:
 func _on_soundpack_operation_finished() -> void:
 	
 	_smart_reenable_controls("disable_during_soundpack_operations")
+
+
+func _on_tileset_operation_started() -> void:
+	
+	_smart_disable_controls("disable_during_tileset_operations")
+
+
+func _on_tileset_operation_finished() -> void:
+	
+	_smart_reenable_controls("disable_during_tileset_operations")
 
 
 func _on_backup_operation_started() -> void:
@@ -641,7 +652,7 @@ func _refresh_currently_installed() -> void:
 	else:
 		_panel_installs.visible = false
 
-	for i in [1, 2, 3, 4]:
+	for i in [1, 2, 3, 4, 5]:
 		_tabs.set_tab_disabled(i, not game in _installs)
 
 

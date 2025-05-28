@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://text/zh/tileset_manager.zh_Hans_CN.translation" ]
+
+source_file="res://text/zh/tileset_manager.csv"
+dest_files=[ "res://text/zh/tileset_manager.zh_Hans_CN.translation" ]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,0 +1,17 @@
+"keys","fr"
+,
+"lbl_installed_tilesets","Installés :"
+"lbl_avail_tilesets","Téléchargeables :"
+"cbtn_stock_tilesets","Afficher par défaut"
+"btn_delete_tilesets","Supprimer sélectionnés"
+"btn_install_tilesets","Installer sélectionnés"
+"btn_reinstall_tileset","Réinstaller sélectionnés"
+,
+"tooltip_stock_tilesets","Afficher les tilesets de gfx dans la liste."
+"tooltip_delete_tilesets","Supprimer le tileset sélectionné de votre installation de jeu."
+"tooltip_install_tilesets","Télécharger le tileset sélectionné et l'ajouter à votre installation de jeu."
+,
+"dlg_tileset_deletion_title","Confirmer la suppression du tileset"
+"dlg_tileset_deletion_text","Suppression de %s."
+"dlg_tileset_manual_dl_title","Téléchargement manuel requis"
+"dlg_tileset_manual_dl_text","Ce tileset ne peut pas être téléchargé automatiquement. Cliquez sur OK pour le télécharger dans votre navigateur." 
