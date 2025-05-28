@@ -185,14 +185,12 @@ func _unpack_utils() -> void:
 					file.close()
 					source_path = location
 					source_found = true
-					Status.post("[debug] Found 7-Zip binary at resource path: " + location)
 					break
 			else:
 				# For regular file paths, use Directory.file_exists
 				if d.file_exists(location):
 					source_path = location
 					source_found = true
-					Status.post("[debug] Found 7-Zip binary at file path: " + location)
 					break
 		
 		if source_found:

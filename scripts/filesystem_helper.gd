@@ -190,7 +190,6 @@ func extract(path: String, dest_dir: String) -> void:
 	
 	# Try to use 7-Zip first on both platforms for better performance
 	if d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
-		Status.post("[debug] Using 7-Zip at: " + sevenzip_exe)
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
 		command = command_sevenzip
 	# Fall back to system utilities on Linux
@@ -206,7 +205,6 @@ func extract(path: String, dest_dir: String) -> void:
 			Status.post("[error] 7za.exe not found at: " + sevenzip_exe, Enums.MSG_ERROR)
 			emit_signal("extract_done")
 			return
-		Status.post("[debug] Using 7za.exe at: " + sevenzip_exe)
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
 		command = command_sevenzip
 	else:
@@ -274,7 +272,6 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 	
 	# Try to use 7-Zip first for better performance
 	if d.file_exists(sevenzip_exe):
-		Status.post("[debug] Using 7-Zip for compression: " + sevenzip_exe)
 		if OS.get_name() == "Windows":
 			command = command_sevenzip_windows
 		else:  # Linux (X11)
