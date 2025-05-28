@@ -16,7 +16,7 @@
 - Mod management: Select and download from our list of mods that are verified to be working for the version of Cataclysm you selected.
 - Automatic download and installation of soundpacks and tilesets.
 - Customization of game fonts.
-- Automatic and manual saved game backups.
+- Automatic and manual saved game backups (30 times faster than Catapult too!).
 - Multilingual interface.
 - Fully portable and can be carried on a removable drive.
 - Good support for HiDPI displays: UI is automatically scaled with screen DPI, with ability to adjust the scale manually.
