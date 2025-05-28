@@ -13,10 +13,10 @@
 - Automatic game download and installation (stable or experimental releases).
 - Ability to install multiple versions of the game and switch between them.
 - Updating the game while preserving user data (saved games, settings, mods, etc).
-- Mod management: Select and download from our list of mods that are verified to be working.
-- Automatic download and installation of soundpacks.
+- Mod management: Select and download from our list of mods that are verified to be working for the version of Cataclysm you selected.
+- Automatic download and installation of soundpacks and tilesets.
 - Customization of game fonts.
-- Saved game backups.
+- Automatic and manual saved game backups.
 - Multilingual interface.
 - Fully portable and can be carried on a removable drive.
 - Good support for HiDPI displays: UI is automatically scaled with screen DPI, with ability to adjust the scale manually.
@@ -49,7 +49,7 @@ Of course! Please check [Content_Request](Content_Request.md) for the requiremen
 
 ## Contact
 
-Feel free to create an issue on the github. You can also find me on [TLG's Discord](https://discord.com/invite/zT9sXmZNCK)
+Feel free to create an issue on the Github. You can also find me on [TLG's Discord](https://discord.com/invite/zT9sXmZNCK)
 
 ## Contributing
 
