@@ -13,7 +13,7 @@
 - Automatic game download and installation (stable or experimental releases).
 - Ability to install multiple versions of the game and switch between them.
 - Updating the game while preserving user data (saved games, settings, mods, etc).
-- Mod management: [Work in progress] select and download from our list of mods that are curated to be working.
+- Mod management: Select and download from our list of mods that are verified to be working.
 - Automatic download and installation of soundpacks.
 - Customization of game fonts.
 - Saved game backups.
