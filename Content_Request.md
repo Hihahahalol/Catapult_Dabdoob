@@ -20,14 +20,14 @@ replace "tlg-experimental" with whatever fork(s) your mod supports. The followin
 Based on your description and estimate, a stability rating will be given to your mod inside my repo. Meaning that the mod will be supported on experimental versions until X amount of time passed, depending on the rating then it will cease to be available for download on the launcher until it's updated again. Note that this doesn't apply for stable game versions, as well as tish and eod. If your mod supports those and you confirm that they work, then it will be considered working. Please note that your mod might be removed if you provide false information
 
 The stability ratings will be as follows:
-0: supported until 1 month has passed since being last updated
-1: supported until 3 months have passed since being last updated
-2: supported until 6 months have passed since being last updated
-3: 9 months
-4: 1 year
-5: 2 years
-100: supported forever, your mod should never break unless the cataclysm happens irl or the devs rebuilt the engine from scratch
--1: 1 week
+- 0: supported until 1 month has passed since being last updated
+- 1: supported until 3 months have passed since being last updated
+- 2: supported until 6 months have passed since being last updated
+- 3: 9 months
+- 4: 1 year
+- 5: 2 years
+- 100: supported forever, your mod should never break unless the cataclysm happens irl or the devs rebuilt the engine from scratch
+- -1: 1 week
 
 
 ## Tilesets:
