@@ -59,6 +59,7 @@ content_margin_bottom = 4.0
 [node name="Catapult" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 600, 900 )
 theme = ExtResource( 11 )
 script = ExtResource( 4 )
 
@@ -535,7 +536,7 @@ script = ExtResource( 47 )
 
 [node name="HBox" type="HBoxContainer" parent="Main/Tabs/Tilesets"]
 margin_right = 577.0
-margin_bottom = 288.0
+margin_bottom = 188.0
 
 [node name="Installed" type="VBoxContainer" parent="Main/Tabs/Tilesets/HBox"]
 margin_right = 278.0
@@ -551,8 +552,8 @@ align = 1
 [node name="InstalledList" type="ItemList" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
 margin_top = 28.0
 margin_right = 278.0
-margin_bottom = 228.0
-rect_min_size = Vector2( 0, 200 )
+margin_bottom = 128.0
+rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
 same_column_width = true
@@ -560,18 +561,18 @@ script = ExtResource( 17 )
 
 [node name="ShowStock" type="CheckBox" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
 margin_left = 67.0
-margin_top = 232.0
+margin_top = 132.0
 margin_right = 210.0
-margin_bottom = 260.0
+margin_bottom = 160.0
 hint_tooltip = "tooltip_stock_tilesets"
 size_flags_horizontal = 4
 text = "cbtn_stock_tilesets"
 
 [node name="BtnDelete" type="Button" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
 margin_left = 79.0
-margin_top = 264.0
+margin_top = 164.0
 margin_right = 199.0
-margin_bottom = 288.0
+margin_bottom = 188.0
 hint_tooltip = "tooltip_delete_tilesets"
 size_flags_horizontal = 4
 disabled = true
@@ -597,8 +598,8 @@ align = 1
 [node name="AvailableList" type="ItemList" parent="Main/Tabs/Tilesets/HBox/Downloadable" groups=["disable_during_tileset_operations"]]
 margin_top = 28.0
 margin_right = 279.0
-margin_bottom = 228.0
-rect_min_size = Vector2( 0, 200 )
+margin_bottom = 128.0
+rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
 same_column_width = true
@@ -606,9 +607,9 @@ script = ExtResource( 17 )
 
 [node name="BtnInstall" type="Button" parent="Main/Tabs/Tilesets/HBox/Downloadable" groups=["disable_during_tileset_operations"]]
 margin_left = 80.0
-margin_top = 232.0
+margin_top = 132.0
 margin_right = 198.0
-margin_bottom = 256.0
+margin_bottom = 156.0
 hint_tooltip = "tooltip_install_tilesets"
 size_flags_horizontal = 4
 disabled = true
@@ -639,6 +640,34 @@ window_title = "Open a File"
 mode = 0
 access = 2
 filters = PoolStringArray( "*.zip" )
+
+[node name="HSeparator" type="HSeparator" parent="Main/Tabs/Tilesets"]
+margin_top = 292.0
+margin_right = 577.0
+margin_bottom = 300.0
+
+[node name="PreviewArea" type="VBoxContainer" parent="Main/Tabs/Tilesets"]
+margin_top = 204.0
+margin_right = 577.0
+margin_bottom = 546.0
+size_flags_horizontal = 3
+
+[node name="PreviewImage" type="TextureRect" parent="Main/Tabs/Tilesets/PreviewArea"]
+margin_right = 577.0
+margin_bottom = 342.0
+rect_min_size = Vector2( 0, 342 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand = true
+stretch_mode = 6
+
+[node name="NoPreviewLabel" type="Label" parent="Main/Tabs/Tilesets/PreviewArea"]
+visible = false
+margin_right = 577.0
+margin_bottom = 24.0
+text = "No preview available for this tileset"
+align = 1
+valign = 1
 
 [node name="Soundpacks" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
