@@ -1129,10 +1129,30 @@ size_flags_horizontal = 4
 hint_tooltip = "Automatically create a backup of your saves before launching the game"
 text = "Automatically backup saves before game launch"
 
-[node name="Current" type="VBoxContainer" parent="Main/Tabs/Backups"]
+[node name="MaxAutoBackups" type="HBoxContainer" parent="Main/Tabs/Backups"]
 margin_top = 304.0
 margin_right = 577.0
-margin_bottom = 360.0
+margin_bottom = 328.0
+
+[node name="Label" type="Label" parent="Main/Tabs/Backups/MaxAutoBackups"]
+margin_right = 216.0
+margin_bottom = 24.0
+text = "Maximum number of automatic backups"
+
+[node name="sbMaxAutoBackups" type="SpinBox" parent="Main/Tabs/Backups/MaxAutoBackups"]
+margin_left = 477.0
+margin_right = 577.0
+margin_bottom = 24.0
+size_flags_horizontal = 10
+min_value = 1.0
+max_value = 50.0
+value = 5.0
+rounded = true
+
+[node name="Current" type="VBoxContainer" parent="Main/Tabs/Backups"]
+margin_top = 332.0
+margin_right = 577.0
+margin_bottom = 388.0
 
 [node name="Label" type="Label" parent="Main/Tabs/Backups/Current"]
 margin_right = 577.0
@@ -1170,9 +1190,9 @@ margin_right = 577.0
 margin_bottom = 56.0
 
 [node name="Automatic" type="VBoxContainer" parent="Main/Tabs/Backups"]
-margin_top = 364.0
+margin_top = 392.0
 margin_right = 577.0
-margin_bottom = 388.0
+margin_bottom = 416.0
 
 [node name="Settings" type="VBoxContainer" parent="Main/Tabs"]
 visible = false

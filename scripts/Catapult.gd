@@ -546,6 +546,9 @@ func _start_game(world := "") -> void:
 		# Wait for backup to complete before launching game
 		yield(_backups, "backup_creation_finished")
 		Status.post(tr("Automatic backup created: %s") % backup_name)
+		
+		# Clean up old automatic backups if we exceed the maximum count
+		_cleanup_automatic_backups()
 	
 	match OS.get_name():
 		"X11":
@@ -1045,3 +1048,29 @@ func _remove_directory_recursive(path):
 		dir.list_dir_end()
 		dir.change_dir("..")
 		dir.remove(path)
+
+func _cleanup_automatic_backups() -> void:
+	var max_backups = Settings.read("max_auto_backups")
+	_backups.refresh_available()
+	var auto_backups = []
+	
+	# Filter to only automatic backups and sort by name (which includes timestamp)
+	for backup in _backups.available:
+		if backup["name"].begins_with("Auto_"):
+			auto_backups.append(backup)
+	
+	# Sort by name to get chronological order (oldest first)
+	auto_backups.sort_custom(self, "_compare_backup_names")
+	
+	# Remove excess automatic backups
+	if auto_backups.size() > max_backups:
+		var backups_to_remove = auto_backups.size() - max_backups
+		for i in range(backups_to_remove):
+			var backup_name = auto_backups[i]["name"]
+			Status.post(tr("Removing old automatic backup: %s") % backup_name)
+			_backups.delete(backup_name)
+			yield(_backups, "backup_deletion_finished")
+
+
+func _compare_backup_names(a, b) -> bool:
+	return a["name"] < b["name"]

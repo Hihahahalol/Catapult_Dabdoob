@@ -11,14 +11,17 @@ onready var _btn_delete = $Available/Buttons/BtnDelete
 onready var _lbl_info = $Available/HBox/BackupInfo
 # Reference to automatic backup control
 onready var _cb_backup_before_launch = $BackupBeforeLaunch
+onready var _sb_max_auto_backups = $MaxAutoBackups/sbMaxAutoBackups
 
 
 func _ready() -> void:
 	# Initialize automatic backup controls from settings
 	_cb_backup_before_launch.pressed = Settings.read("backup_before_launch")
+	_sb_max_auto_backups.value = Settings.read("max_auto_backups")
 	
 	# Connect signals for automatic backup controls
 	_cb_backup_before_launch.connect("toggled", self, "_on_BackupBeforeLaunch_toggled")
+	_sb_max_auto_backups.connect("value_changed", self, "_on_MaxAutoBackups_value_changed")
 
 
 func _refresh_available() -> void:
@@ -146,3 +149,7 @@ func _on_BackupInfo_meta_clicked(meta) -> void:
 # Handlers for automatic backup controls
 func _on_BackupBeforeLaunch_toggled(button_pressed: bool) -> void:
 	Settings.store("backup_before_launch", button_pressed)
+
+
+func _on_MaxAutoBackups_value_changed(value: int) -> void:
+	Settings.store("max_auto_backups", value)
