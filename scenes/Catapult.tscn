@@ -497,8 +497,8 @@ margin_bottom = 308.0
 [node name="ModInfo" type="RichTextLabel" parent="Main/Tabs/Mods"]
 margin_top = 312.0
 margin_right = 577.0
-margin_bottom = 412.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 512.0
+rect_min_size = Vector2( 0, 200 )
 focus_mode = 2
 custom_constants/line_separation = 4
 bbcode_enabled = true
