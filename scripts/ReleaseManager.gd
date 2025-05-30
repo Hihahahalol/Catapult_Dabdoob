@@ -412,6 +412,7 @@ func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> 
 		if Settings.read("shorten_release_names"):
 			build["name"] = build["name"].split(" ")[-1]
 		build["url"] = ""
+		build["published_at"] = rec.get("published_at", "")
 		
 		for asset in rec["assets"]:
 			if filter["substring"] in asset[filter["field"]]:
