@@ -4,7 +4,7 @@ extends Node
 const _SETTINGS_FILENAME = "catapult_settings.json"
 
 const _HARDCODED_DEFAULTS = {
-	"version": "26",
+	"version": "26.1",
 	"game": "dda",
 	"channel": "stable",  # Currently used only for DDA.
 	"active_install_dda": "Cataclysm-DDA experimental build 2022-07-26-0606",
@@ -78,8 +78,6 @@ func _read_from_file(path: String) -> Dictionary:
 	if not f.file_exists(path):
 		Status.post(tr("msg_nonexistent_attempt") % path, Enums.MSG_ERROR)
 		return {}
-		
-	Status.post(tr("msg_loading_settings") % _SETTINGS_FILENAME)
 		
 	f.open(path, File.READ)
 	var s = f.get_as_text()

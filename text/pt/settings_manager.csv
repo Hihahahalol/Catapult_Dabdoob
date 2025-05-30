@@ -1,6 +1,5 @@
 "keys","pt"
 ,
-"msg_nonexistent_attempt","Tentou carregar configurações de um arquivo inexistente %s"
-"msg_loading_settings","Carregando configurações de %s."
-"msg_settings_parse_error","Erro ao analisar as configurações do JSON, linha %s, mensagem: %s"
-"msg_nonexisting_setting","Tentou ler uma configuração inexistente \""%s\"""
+"msg_nonexistent_attempt","Tentou carregar configurações do arquivo inexistente %s"
+"msg_settings_parse_error","Erro ao analisar configurações do JSON, linha %s, mensagem: %s"
+"msg_nonexisting_setting","Tentou ler configuração inexistente \"%s\""
