@@ -85,16 +85,6 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	
 	# Hide preview when tab is first opened
 	_hide_preview()
-	
-	# Test: Try to load one preview image to see if it works
-	print("Debug: Testing image loading...")
-	var test_texture = load("res://images/tileset_previews/Altica.png")
-	print("Debug: Test load result for Altica.png: ", test_texture)
-	if test_texture != null:
-		print("Debug: Image loading works! Setting test preview...")
-		_preview_image.texture = test_texture
-		_preview_image.visible = true
-		_no_preview_label.visible = false
 
 
 func _on_ShowStock_toggled(button_pressed: bool) -> void:
@@ -303,4 +293,4 @@ func _show_tileset_preview(tileset_name: String) -> void:
 func _hide_preview() -> void:
 	_preview_image.visible = false
 	_preview_image.texture = null
-	_no_preview_label.visible = false 
+	_no_preview_label.visible = true 

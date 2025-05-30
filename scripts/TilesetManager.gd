@@ -9,10 +9,10 @@ signal tileset_deletion_finished
 
 const TILESETS = [
 	{
-		"name": "Currently there is no supported tilesets",
+		"name": "Currently there are no supported tilesets",
 		"url": "https://github.com/I-am-Erk/CDDA-Tilesets/releases/latest/download/MSXotto.zip",
-		"filename": "Currently there is no supported tilesets.zip",
-		"internal_path": "Currently there is no supported tilesets",
+		"filename": "Currently there are no supported tilesets.zip",
+		"internal_path": "Currently there are no supported tilesets",
 	},
 ]
 

@@ -2,11 +2,16 @@
 
 importer="texture"
 type="StreamTexture"
-valid=false
+path="res://.import/HollowMoon.png-c3b7f3a8a0363baae933e56322d93d88.stex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://images/tileset_previews/HollowMoon.png"
+dest_files=[ "res://.import/HollowMoon.png-c3b7f3a8a0363baae933e56322d93d88.stex" ]
+
 [params]
 
 compress/mode=0
