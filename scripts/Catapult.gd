@@ -50,6 +50,39 @@ var _release_page_url = ""
 var _download_urls = []
 
 
+func _get_github_auth_headers() -> PoolStringArray:
+	# Check for Auth_Token.txt file in the same directory as the executable
+	var token_file_path = OS.get_executable_path().get_base_dir().plus_file("Auth_Token.txt")
+	var file = File.new()
+	
+	if file.open(token_file_path, File.READ) != OK:
+		# File doesn't exist, return empty headers for unauthenticated requests
+		return PoolStringArray()
+	
+	var token = file.get_as_text().strip_edges()
+	file.close()
+	
+	# Basic validation - GitHub tokens should be at least 20 characters
+	# and contain only alphanumeric characters, underscores, and possibly other characters
+	if token.length() < 20:
+		# Token too short, use unauthenticated requests
+		Status.post("Auth_Token.txt found but token appears too short, using unauthenticated requests")
+		return PoolStringArray()
+	
+	# GitHub tokens typically contain only alphanumeric characters, underscores, and sometimes dashes
+	# We'll do a simple validation to check for obvious invalid tokens
+	var regex = RegEx.new()
+	regex.compile("^[a-zA-Z0-9_-]+$")
+	if not regex.search(token):
+		# Invalid characters in token, use unauthenticated requests
+		Status.post("Auth_Token.txt found but token contains invalid characters, using unauthenticated requests")
+		return PoolStringArray()
+	
+	# Return headers with authentication
+	Status.post("Using GitHub authentication token for API requests")
+	return PoolStringArray(["Authorization: token " + token])
+
+
 func _ready() -> void:
 	
 	# Add the HTTPRequest node for version checking
@@ -688,8 +721,11 @@ func _on_BtnCheck_pressed() -> void:
 	# Disable the update button while checking
 	_btn_update.disabled = true
 	
-	# Make the HTTP request to GitHub
-	var error = _version_check_request.request(VERSION_CHECK_URL)
+	# Get authentication headers if token is available
+	var headers = _get_github_auth_headers()
+	
+	# Make the HTTP request to GitHub with authentication if available
+	var error = _version_check_request.request(VERSION_CHECK_URL, headers)
 	if error != OK:
 		Status.post(tr("Error making HTTP request"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
@@ -847,8 +883,11 @@ func _perform_update() -> void:
 	add_child(http_request)
 	http_request.connect("request_completed", self, "_on_update_download_completed", [temp_dir, asset_name])
 	
-	# Start the download
-	var error = http_request.request(download_url)
+	# Get authentication headers for the download
+	var headers = _get_github_auth_headers()
+	
+	# Start the download with authentication if available
+	var error = http_request.request(download_url, headers)
 	if error != OK:
 		Status.post(tr("Error starting download: %s") % error, Enums.MSG_ERROR)
 		_cleanup_update(http_request, temp_dir)

@@ -316,7 +316,15 @@ func _update_proxy(http: HTTPRequest) -> void:
 func _request_releases(http: HTTPRequest, release: String) -> void:
 	emit_signal("started_fetching_releases")
 	_update_proxy(http)
-	http.request(_RELEASE_URLS[release] + _get_query_string())
+	
+	# Get authentication headers from the parent Catapult instance if available
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	
+	# Make the request with authentication if available
+	http.request(_RELEASE_URLS[release] + _get_query_string(), headers)
 
 
 func _on_request_completed_dda(result: int, response_code: int,

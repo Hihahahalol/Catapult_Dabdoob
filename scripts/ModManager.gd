@@ -248,7 +248,15 @@ func _get_latest_release_url(github_url: String, mod_name: String) -> void:
 	
 	# Connect signal and make request
 	http_request.connect("request_completed", self, "_on_release_info_received", [http_request, mod_name])
-	var error = http_request.request(api_url)
+	
+	# Get authentication headers from the parent Catapult instance if available
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	
+	# Make the request with authentication if available
+	var error = http_request.request(api_url, headers)
 	
 	if error != OK:
 		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)

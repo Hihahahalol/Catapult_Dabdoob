@@ -38,6 +38,16 @@ func download_pull_requests():
 	var url = _PR_URL[Settings.read("game")]
 	url += "+is%3Apr+is%3Amerged&per_page=" + prs
 	var headers = ["user-agent: CatapultGodotApp"]
+	
+	# Get authentication headers from the main Catapult instance if available
+	var catapult = get_node("/root/Catapult")
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		var auth_headers = catapult._get_github_auth_headers()
+		if auth_headers.size() > 0:
+			# Add authentication headers to the existing user-agent header
+			for auth_header in auth_headers:
+				headers.append(auth_header)
+	
 	_pr_data = tr("str_fetching_changes")
 	_update_proxy(_pullRequests)
 	_pullRequests.request(url, headers)
