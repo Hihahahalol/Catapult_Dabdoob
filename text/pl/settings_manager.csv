@@ -1,6 +1,5 @@
 "keys","pl"
 ,
-"msg_nonexistent_attempt","Próbowano załadować ustawienia z nieistniejącego pliku %s"
-"msg_loading_settings","Ładowanie ustawień z %s."
-"msg_settings_parse_error","Błąd parsowania ustawień z JSON, linia %s, wiadomość: %s"
-"msg_nonexisting_setting","Próbowano wczytać nieistniejące ustawienie \""%s\"""
+"msg_nonexistent_attempt","Próba załadowania ustawień z nieistniejącego pliku %s"
+"msg_settings_parse_error","Błąd analizowania ustawień z JSON, linia %s, komunikat: %s"
+"msg_nonexisting_setting","Próba odczytu nieistniejącego ustawienia \"%s\""

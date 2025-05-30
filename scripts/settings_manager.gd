@@ -79,8 +79,6 @@ func _read_from_file(path: String) -> Dictionary:
 		Status.post(tr("msg_nonexistent_attempt") % path, Enums.MSG_ERROR)
 		return {}
 		
-	Status.post(tr("msg_loading_settings") % _SETTINGS_FILENAME)
-		
 	f.open(path, File.READ)
 	var s = f.get_as_text()
 	var result: JSONParseResult = JSON.parse(s)
