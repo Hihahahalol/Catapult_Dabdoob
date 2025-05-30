@@ -790,10 +790,20 @@ func _on_version_check_completed(result, response_code, headers, body):
 		Status.post(tr("Could not determine Dabdoob's latest version"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
 
+func _normalize_version(version: String) -> String:
+	# Special case: treat version "27" as "26.1"
+	if version == "27":
+		return "26.1"
+	return version
+
 func _is_newer_version(latest: String, current: String) -> bool:
+	# Normalize versions before comparison
+	var normalized_latest = _normalize_version(latest)
+	var normalized_current = _normalize_version(current)
+	
 	# Split version strings and convert to integers
-	var latest_parts = latest.split(".")
-	var current_parts = current.split(".")
+	var latest_parts = normalized_latest.split(".")
+	var current_parts = normalized_current.split(".")
 	
 	# Compare major version first
 	if latest_parts.size() > 0 and current_parts.size() > 0:
