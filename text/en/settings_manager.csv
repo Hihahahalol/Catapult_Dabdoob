@@ -1,6 +1,5 @@
 "keys","en"
 ,
-"msg_creating_settings","Creating settings file %s."
 "msg_nonexistent_attempt","Attempted to load settings from nonexistent file %s"
 "msg_loading_settings","Loading settings from %s."
 "msg_settings_parse_error","Error parsing settings from JSON, line %s, message: %s"

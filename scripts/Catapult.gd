@@ -195,7 +195,6 @@ func _unpack_utils() -> void:
 	if not d.file_exists(sevenzip_exe):
 		if not d.dir_exists(Paths.utils_dir):
 			d.make_dir(Paths.utils_dir)
-		Status.post(tr("msg_unpacking_7zip"))
 		
 		var source_found = false
 		var source_path = ""
