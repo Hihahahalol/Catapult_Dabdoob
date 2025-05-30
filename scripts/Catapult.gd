@@ -715,7 +715,8 @@ func _activate_easter_egg() -> void:
 
 func _on_BtnCheck_pressed() -> void:
 	var current_version = Settings.get_hardcoded_version()
-	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % current_version)
+	var normalized_current = _normalize_version(current_version)
+	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % normalized_current)
 	
 	# Disable the update button while checking
 	_btn_update.disabled = true
@@ -757,8 +758,9 @@ func _on_version_check_completed(result, response_code, headers, body):
 	if "name" in response:
 		_latest_version = response["name"]
 		var current_version = Settings.get_hardcoded_version()
+		var normalized_latest = _normalize_version(_latest_version)
 		
-		Status.post(tr("Dabdoob's latest version available: v%s") % _latest_version)
+		Status.post(tr("Dabdoob's latest version available: v%s") % normalized_latest)
 		
 		# Store the browser download URL from the API response
 		if "html_url" in response:
@@ -779,7 +781,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 		
 		# Simple version comparison
 		if _is_newer_version(_latest_version, current_version):
-			Status.post(tr("A new version is available! You can update to v%s") % _latest_version, Enums.MSG_SUCCESS)
+			Status.post(tr("A new version is available! You can update to v%s") % normalized_latest, Enums.MSG_SUCCESS)
 			_btn_update.disabled = false
 			_is_update_available = true
 		else:
@@ -833,7 +835,8 @@ func _is_newer_version(latest: String, current: String) -> bool:
 
 func _on_BtnUpdate_pressed() -> void:
 	if _is_update_available:
-		Status.post(tr("Starting update to version v%s...") % _latest_version)
+		var normalized_latest = _normalize_version(_latest_version)
+		Status.post(tr("Starting update to version v%s...") % normalized_latest)
 		_perform_update()
 	else:
 		Status.post(tr("No update available"))
