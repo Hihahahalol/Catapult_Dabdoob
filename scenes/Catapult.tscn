@@ -1525,12 +1525,15 @@ text = "Print screen info"
 [node name="Log" type="RichTextLabel" parent="Main"]
 margin_top = 575.0
 margin_right = 592.0
-margin_bottom = 692.0
+margin_bottom = 888.0
+rect_min_size = Vector2( 0, 270 )
 focus_mode = 2
-size_flags_vertical = 3
 bbcode_enabled = true
+scroll_active = true
 scroll_following = true
 selection_enabled = true
+fit_content_height = false
+clip_contents = true
 
 [node name="Releases" type="Node" parent="."]
 script = ExtResource( 5 )
