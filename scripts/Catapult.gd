@@ -806,12 +806,18 @@ func _is_newer_version(latest: String, current: String) -> bool:
 			return false
 	
 	# If major versions are equal, compare minor version
-	if latest_parts.size() > 1 and current_parts.size() > 1:
-		var latest_minor = int(latest_parts[1])
-		var current_minor = int(current_parts[1])
-		
-		if latest_minor > current_minor:
-			return true
+	# Get minor versions (default to 0 if not present)
+	var latest_minor = 0
+	var current_minor = 0
+	
+	if latest_parts.size() > 1:
+		latest_minor = int(latest_parts[1])
+	
+	if current_parts.size() > 1:
+		current_minor = int(current_parts[1])
+	
+	if latest_minor > current_minor:
+		return true
 	
 	return false
 
