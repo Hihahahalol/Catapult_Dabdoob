@@ -1,6 +1,5 @@
 "keys","tr"
 ,
-"msg_creating_settings","Ayar dosyası %s oluşturuluyor."
 "msg_nonexistent_attempt","Olmayan dosya %s den ayar yüklenmeye çalışıldı"
 "msg_loading_settings","%s daki ayarlan yükleniyor."
 "msg_settings_parse_error","JSON, satırı %s den ayar okunurken hata, mesaj: %s"

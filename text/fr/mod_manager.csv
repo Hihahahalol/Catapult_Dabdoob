@@ -8,7 +8,6 @@
 "msg_mod_installed","Installé %s"
 "msg_installing_n_mods","Installation de %s mods..."
 "msg_wiping_mod_repo","Vide le dépôt..."
-"msg_unpacking_archived_mods","Ajoute les mods archivés au dépôt..."
 "msg_mod_download_failed","Échec du téléchargement du mod %s"
 "msg_mod_extraction_failed","Échec de l'extraction du mod %s"
 "msg_mod_extraction_error","Erreur d'extraction pour le mod %s: %s"

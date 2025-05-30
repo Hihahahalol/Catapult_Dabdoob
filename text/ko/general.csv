@@ -3,7 +3,6 @@ keys,ko
 window_title,Dabdoob — Cataclysm: DDA 및 BN 런처
 str_welcome,Dabdoob에 오신 것을 환영합니다!
 str_tip_of_the_day,\n\n[u]오늘의 팁:[/u]\n
-msg_unpacking_unzip,unzip.exe 압축을 푸는 중...
 msg_theme_load_error,%s 테마를 로드할 수 없습니다.
 debug_test,번역 검색을 테스트하기 위한 디버그 텍스트입니다.
 ,

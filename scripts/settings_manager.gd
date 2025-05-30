@@ -68,7 +68,6 @@ func _load() -> void:
 		
 	else:
 		_current = _HARDCODED_DEFAULTS
-		Status.post(tr("msg_creating_settings") % _SETTINGS_FILENAME)
 		_write_to_file(_HARDCODED_DEFAULTS, _settings_file)
 
 

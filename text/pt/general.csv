@@ -3,8 +3,6 @@
 "window_title","Dabdoob — Launcher para Cataclysm: DDA e BN"
 "str_welcome","Bem-vindo ao Dabdoob!"
 "str_tip_of_the_day","\n\n[u]Dica do dia:[/u]\n"
-"msg_unpacking_unzip","Descompactando unzip.exe..."
-"msg_unpacking_zip","Compactando zip.exe..."
 "msg_theme_load_error","Não foi possível carregar o tema %s."
 "debug_test","Esta é uma mensagem de debug para testar o carregamento da tradução."
 ,
