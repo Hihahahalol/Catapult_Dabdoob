@@ -171,7 +171,7 @@ func refresh_available():
 					"authors": ["StandingStorm"],
 					"maintainers": ["Vegetabs"],
 					"description": "Port of MoM from CDDA to CTLG. Adds nine separate psionic power paths to Cataclysm including Biokinesis, Clairsentience, Electrokinesis, Photokinesis, Pyrokinesis, Telekinesis, Telepathy, Teleportation, and Vitakinesis.",
-					"category": "Content",
+					"category": "content",
 					"dependencies": [],
 					"stability": 1
 				}
@@ -184,7 +184,7 @@ func refresh_available():
 					"authors": ["Vegetabs"],
 					"maintainers": [],
 					"description": "Expanded bionics system for Cataclysm: The Last Generation.",
-					"category": "Content",
+					"category": "content",
 					"dependencies": [],
 					"stability": 4
 				}
@@ -197,7 +197,7 @@ func refresh_available():
 					"authors": ["Photoloss"],
 					"maintainers": ["Vegetabs"],
 					"description": "Mythical martial arts mod ported to Cataclysm: The Last Generation.",
-					"category": "Content",
+					"category": "content",
 					"dependencies": [],
 					"stability": 2
 				}
