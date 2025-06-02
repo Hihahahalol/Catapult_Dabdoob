@@ -13,7 +13,9 @@
 "str_mod_name","名称："
 "str_mod_authors","作者："
 "str_mod_maintainers","维护者："
+"str_mod_url","模组链接："
 "str_mod_category","分类："
+"str_mod_stability","模组稳定性："
 "str_mod_description","描述："
 ,
 "tooltip_mod_location","位置：%s"

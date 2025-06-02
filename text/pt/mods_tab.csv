@@ -13,7 +13,9 @@
 "str_mod_name","Nome:"
 "str_mod_authors","Autores:"
 "str_mod_maintainers","Mantenedores:"
+"str_mod_url","URL do Mod:"
 "str_mod_category","Categoria:"
+"str_mod_stability","Estabilidade do Mod:"
 "str_mod_description","Descrição:"
 ,
 "tooltip_mod_location","Local: %s"

@@ -13,7 +13,9 @@
 "str_mod_name","Název:"
 "str_mod_authors","Autoři:"
 "str_mod_maintainers","Udržovatelé:"
+"str_mod_url","URL Modu:"
 "str_mod_category","Kategorie:"
+"str_mod_stability","Stabilita Modu:"
 "str_mod_description","Popis:"
 ,
 "tooltip_mod_location","Lokace: %s"

@@ -13,7 +13,9 @@
 "str_mod_name","Название:"
 "str_mod_authors","Авторы:"
 "str_mod_maintainers","Сопровождение:"
+"str_mod_url","URL мода:"
 "str_mod_category","Категория:"
+"str_mod_stability","Стабильность мода:"
 "str_mod_description","Описание:"
 ,
 "tooltip_mod_location","Расположение: %s"

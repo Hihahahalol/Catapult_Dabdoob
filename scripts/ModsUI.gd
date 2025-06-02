@@ -184,23 +184,23 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 	
 	var result = ""
 	var modinfo = mod["modinfo"]
-	result += "[u]%s[/u] %s" % [tr("str_mod_name") ,modinfo["name"]]
+	result += "[b][u]%s[/u][/b] %s" % [tr("str_mod_name") ,modinfo["name"]]
 	
 	if "id" in modinfo:
-		result += " ([u]ID:[/u] %s)" % modinfo["id"]
+		result += " ([b][u]ID:[/u][/b] %s)" % modinfo["id"]
 	
 	result += "\n"
 	
-	if "authors" in modinfo:
-		result += "[u]%s[/u] %s\n" % [tr("str_mod_authors"), _array_to_text_list(modinfo["authors"])]
-		
-	if "maintainers" in modinfo:
-		result += "[u]%s[/u] %s\n" % [tr("str_mod_maintainers"), _array_to_text_list(modinfo["maintainers"])]
-		
 	if "category" in modinfo:
-		result += "[u]%s[/u] %s\n" % [tr("str_mod_category"), modinfo["category"]]
+		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_category"), modinfo["category"]]
 	
-	# Show mod's last release date for all downloadable mods
+	if "authors" in modinfo:
+		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_authors"), _array_to_text_list(modinfo["authors"])]
+		
+	if "maintainers" in modinfo and len(modinfo["maintainers"]) > 0:
+		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_maintainers"), _array_to_text_list(modinfo["maintainers"])]
+	
+	# Add mod URL for downloadable mods
 	var mod_dict_key = ""
 	# Find the dictionary key for this mod in available mods
 	for key in _mods.available:
@@ -209,17 +209,25 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 			break
 	
 	if mod_dict_key != "":
+		var mod_location = _mods.available[mod_dict_key]["location"]
+		
+		# Only show URL for downloadable mods (GitHub URLs)
+		if mod_location.begins_with("https://github.com/") or mod_location.begins_with("http"):
+			result += "[b][u]%s[/u][/b] [color=#065fd4][url=%s]%s[/url][/color]\n" % [tr("str_mod_url"), mod_location, mod_location]
+		
+	# Show mod's last release date for all downloadable mods
+	if mod_dict_key != "":
 		var mod_release_date = _mods._get_mod_latest_release_date(mod_dict_key)
 		var mod_location = _mods.available[mod_dict_key]["location"]
 		
 		if mod_location.begins_with("https://github.com/"):
 			if mod_release_date != "":
 				var days_since_mod_release = _mods._calculate_days_since_release(mod_release_date)
-				result += "[u]Last Updated:[/u] %s (%d days ago)\n" % [mod_release_date, days_since_mod_release]
+				result += "[b][u]Last Updated:[/u][/b] %s (%d days ago)\n" % [mod_release_date, days_since_mod_release]
 			else:
-				result += "[u]Last Updated:[/u] [color=yellow]Fetching from GitHub...[/color]\n"
+				result += "[b][u]Last Updated:[/u][/b] [color=yellow]Fetching from GitHub...[/color]\n"
 		else:
-			result += "[u]Last Updated:[/u] [color=gray]Not available (non-GitHub mod)[/color]\n"
+			result += "[b][u]Last Updated:[/u][/b] [color=gray]Not available (non-GitHub mod)[/color]\n"
 	
 	# Add stability rating information for experimental channel only
 	if Settings.read("channel") == "experimental" and "stability" in modinfo:
@@ -246,22 +254,22 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 			_:
 				stability_text = "unknown"
 		
-		result += "[u]Stability Rating:[/u] %s\n" % [stability_text]
-		
-		# Show compatibility status for experimental channel only
+		# Combine stability rating and viability into one field
 		if mod_dict_key != "":
 			var mod_release_date = _mods._get_mod_latest_release_date(mod_dict_key)
 			var is_compatible = _mods.is_mod_compatible(mod_dict_key)
 			if mod_release_date != "":
 				if is_compatible:
-					result += "[u]Viability:[/u] [color=green]Up to Date![/color]\n"
+					result += "[b][u]%s[/u][/b] %s - [color=green]Up to Date![/color]\n" % [tr("str_mod_stability"), stability_text]
 				else:
-					result += "[u]Viability:[/u] [color=red]Potentially Broken/Outdated[/color]\n"
+					result += "[b][u]%s[/u][/b] %s - [color=red]Potentially Broken/Outdated[/color]\n" % [tr("str_mod_stability"), stability_text]
 			else:
-				result += "[u]Viability:[/u] [color=yellow]Checking...[/color]\n"
+				result += "[b][u]%s[/u][/b] %s - [color=yellow]Checking...[/color]\n" % [tr("str_mod_stability"), stability_text]
+		else:
+			result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_stability"), stability_text]
 	
 	if "description" in modinfo:
-		result += "[u]%s[/u] %s\n" % [tr("str_mod_description"), modinfo["description"]]
+		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_description"), modinfo["description"]]
 	
 	result = result.rstrip("\n")
 	return result
