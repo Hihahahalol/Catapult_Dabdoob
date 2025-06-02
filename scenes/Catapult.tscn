@@ -400,33 +400,14 @@ align = 1
 [node name="InstalledList" type="ItemList" parent="Main/Tabs/Mods/HBox/Installed" groups=["disable_during_mod_operations"]]
 margin_top = 28.0
 margin_right = 278.0
-margin_bottom = 208.0
-rect_min_size = Vector2( 0, 180 )
+margin_bottom = 264.0
+rect_min_size = Vector2( 0, 236 )
 size_flags_horizontal = 3
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
 select_mode = 1
 allow_reselect = true
 same_column_width = true
 script = ExtResource( 17 )
-
-[node name="ShowStock" type="CheckBox" parent="Main/Tabs/Mods/HBox/Installed" groups=["disable_during_mod_operations"]]
-margin_left = 69.0
-margin_top = 212.0
-margin_right = 208.0
-margin_bottom = 240.0
-hint_tooltip = "tooltip_stock_mods"
-size_flags_horizontal = 4
-text = "cbtn_stock_mods"
-
-[node name="BtnDelete" type="Button" parent="Main/Tabs/Mods/HBox/Installed" groups=["disable_during_mod_operations"]]
-margin_left = 81.0
-margin_top = 244.0
-margin_right = 197.0
-margin_bottom = 268.0
-hint_tooltip = "tooltip_delete_mods"
-size_flags_horizontal = 4
-disabled = true
-text = "btn_delete_mods"
 
 [node name="VSeparator" type="VSeparator" parent="Main/Tabs/Mods/HBox"]
 margin_left = 284.0
@@ -448,8 +429,8 @@ align = 1
 [node name="AvailableList" type="ItemList" parent="Main/Tabs/Mods/HBox/Available" groups=["disable_during_mod_operations"]]
 margin_top = 28.0
 margin_right = 279.0
-margin_bottom = 208.0
-rect_min_size = Vector2( 0, 180 )
+margin_bottom = 264.0
+rect_min_size = Vector2( 0, 236 )
 size_flags_horizontal = 3
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
 select_mode = 1
@@ -457,37 +438,61 @@ allow_reselect = true
 same_column_width = true
 script = ExtResource( 17 )
 
-[node name="ShowInstalled" type="CheckBox" parent="Main/Tabs/Mods/HBox/Available" groups=["disable_during_mod_operations"]]
-margin_left = 61.0
-margin_top = 212.0
-margin_right = 218.0
-margin_bottom = 240.0
-hint_tooltip = "tooltip_installed_mods"
-size_flags_horizontal = 4
-text = "cbtn_installed_mods"
+[node name="ButtonsRow" type="HBoxContainer" parent="Main/Tabs/Mods"]
+margin_top = 268.0
+margin_right = 577.0
+margin_bottom = 292.0
 
-[node name="VBox" type="HBoxContainer" parent="Main/Tabs/Mods/HBox/Available"]
-margin_top = 244.0
-margin_right = 279.0
-margin_bottom = 268.0
+[node name="LeftButtons" type="HBoxContainer" parent="Main/Tabs/Mods/ButtonsRow"]
+margin_right = 278.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
 alignment = 1
 
-[node name="BtnAddSelectedMod" type="Button" parent="Main/Tabs/Mods/HBox/Available/VBox" groups=["disable_during_mod_operations"]]
-margin_left = 14.0
-margin_right = 138.0
+[node name="ShowStock" type="CheckBox" parent="Main/Tabs/Mods/ButtonsRow/LeftButtons" groups=["disable_during_mod_operations"]]
+margin_left = 20.0
+margin_right = 159.0
+margin_bottom = 24.0
+hint_tooltip = "tooltip_stock_mods"
+size_flags_horizontal = 4
+text = "cbtn_stock_mods"
+
+[node name="BtnDelete" type="Button" parent="Main/Tabs/Mods/ButtonsRow/LeftButtons" groups=["disable_during_mod_operations"]]
+margin_left = 165.0
+margin_right = 258.0
+margin_bottom = 24.0
+hint_tooltip = "tooltip_delete_mods"
+size_flags_horizontal = 4
+disabled = true
+text = "btn_delete_mods"
+
+[node name="VSeparator" type="VSeparator" parent="Main/Tabs/Mods/ButtonsRow"]
+margin_left = 284.0
+margin_right = 292.0
+margin_bottom = 24.0
+
+[node name="RightButtons" type="HBoxContainer" parent="Main/Tabs/Mods/ButtonsRow"]
+margin_left = 298.0
+margin_right = 577.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="BtnAddSelectedMod" type="Button" parent="Main/Tabs/Mods/ButtonsRow/RightButtons" groups=["disable_during_mod_operations"]]
+margin_left = 17.0
+margin_right = 141.0
 margin_bottom = 24.0
 hint_tooltip = "tooltip_add_sel_mods"
 size_flags_horizontal = 4
 text = "btn_add_sel_mods"
 
-[node name="BtnAddAllMods" type="Button" parent="Main/Tabs/Mods/HBox/Available/VBox" groups=["disable_during_mod_operations"]]
-margin_left = 144.0
-margin_right = 265.0
+[node name="BtnAddAllMods" type="Button" parent="Main/Tabs/Mods/ButtonsRow/RightButtons" groups=["disable_during_mod_operations"]]
+margin_left = 147.0
+margin_right = 262.0
 margin_bottom = 24.0
 hint_tooltip = "tooltip_add_all_mods"
+size_flags_horizontal = 4
 text = "btn_add_all_mods"
-
-
 
 [node name="HSeparator" type="HSeparator" parent="Main/Tabs/Mods"]
 margin_top = 300.0
@@ -1604,7 +1609,6 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Installed/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Mods/HBox/Available/AvailableList" to="Main/Tabs/Mods" method="_on_AvailableList_item_selected"]
 [connection signal="multi_selected" from="Main/Tabs/Mods/HBox/Available/AvailableList" to="Main/Tabs/Mods" method="_on_AvailableList_multi_selected"]
-[connection signal="toggled" from="Main/Tabs/Mods/HBox/Available/ShowInstalled" to="Main/Tabs/Mods" method="_on_ShowInstalled_toggled"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
 [connection signal="confirmed" from="Main/Tabs/Mods/DeleteMultipleDialog" to="Main/Tabs/Mods" method="_on_DeleteMultipleDialog_confirmed"]
@@ -1698,3 +1702,7 @@ __meta__ = {
 [connection signal="backup_creation_started" from="Backups" to="." method="_on_backup_operation_started"]
 [connection signal="backup_restoration_finished" from="Backups" to="." method="_on_backup_operation_finished"]
 [connection signal="backup_restoration_started" from="Backups" to="." method="_on_backup_operation_started"]
+[connection signal="toggled" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/ShowStock" to="Main/Tabs/Mods" method="_on_ShowStock_toggled"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]

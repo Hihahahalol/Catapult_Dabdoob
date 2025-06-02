@@ -5,11 +5,10 @@ onready var _root = $"/root/Catapult"
 onready var _mods = $"../../../Mods"
 onready var _installed_list = $HBox/Installed/InstalledList
 onready var _available_list = $HBox/Available/AvailableList
-onready var _cbox_show_stock = $HBox/Installed/ShowStock
-onready var _btn_delete = $HBox/Installed/BtnDelete
-onready var _btn_add = $HBox/Available/VBox/BtnAddSelectedMod
-onready var _btn_add_all = $HBox/Available/VBox/BtnAddAllMods
-onready var _cbox_show_installed = $HBox/Available/ShowInstalled
+onready var _cbox_show_stock = $ButtonsRow/LeftButtons/ShowStock
+onready var _btn_delete = $ButtonsRow/LeftButtons/BtnDelete
+onready var _btn_add = $ButtonsRow/RightButtons/BtnAddSelectedMod
+onready var _btn_add_all = $ButtonsRow/RightButtons/BtnAddAllMods
 onready var _lbl_mod_info = $ModInfo
 onready var _lbl_installed = $HBox/Installed/Label
 onready var _lbl_repo = $HBox/Available/Label
@@ -281,19 +280,12 @@ func _on_ShowStock_toggled(button_pressed: bool) -> void:
 	reload_installed()
 
 
-func _on_ShowInstalled_toggled(button_pressed: bool) -> void:
-	
-	Settings.store("show_installed_mods_in_available", button_pressed)
-	reload_available()
-
-
 func _on_Tabs_tab_changed(tab: int) -> void:
 	
 	if tab != 1:
 		return
 	
 	_cbox_show_stock.pressed = Settings.read("show_stock_mods")
-	_cbox_show_installed.pressed = Settings.read("show_installed_mods_in_available")
 	_lbl_mod_info.bbcode_text = tr("lbl_mod_info")
 	_btn_delete.disabled = true
 	_btn_add.disabled = true
