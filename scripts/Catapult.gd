@@ -43,6 +43,10 @@ var _base_icon_sizes := {}
 
 var _easter_egg_counter := 0
 
+# Game process monitoring
+var _game_process: OSExecWrapper = null
+var _launcher_should_close_after_game := false
+
 const VERSION_CHECK_URL = "https://api.github.com/repos/Hihahahalol/Catapult_Dabdoob/releases/latest"
 var _latest_version = ""
 var _is_update_available = false
@@ -582,12 +586,22 @@ func _start_game(world := "") -> void:
 		# Clean up old automatic backups if we exceed the maximum count
 		_cleanup_automatic_backups()
 	
+	# Store whether launcher should close after game
+	_launcher_should_close_after_game = not Settings.read("keep_open_after_starting_game")
+	
+	# Create game process wrapper for monitoring
+	_game_process = OSExecWrapper.new()
+	_game_process.connect("process_exited", self, "_on_game_process_exited")
+	
+	var command_path: String
+	var command_args: PoolStringArray
+	
 	match OS.get_name():
 		"X11":
-			var params := ["--userdir", Paths.userdata + "/"]
+			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
+			command_args = ["--userdir", Paths.userdata + "/"]
 			if world != "":
-				params.append_array(["--world", world])
-			OS.execute(Paths.game_dir.plus_file("cataclysm-launcher"), params, false)
+				command_args.append_array(["--world", world])
 		"Windows":
 			var world_str := ""
 			if world != "":
@@ -599,12 +613,71 @@ func _start_game(world := "") -> void:
 			if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
 				exe_file = "cataclysm-tlg-tiles.exe"
 
-			var command = "cd /d %s && start %s --userdir \"%s/\" %s" % [Paths.game_dir, exe_file, Paths.userdata, world_str]
-			OS.execute("cmd", ["/C", command], false)
+			# For Windows, we need to use cmd to change directory and launch the executable
+			# This ensures the game runs from its installation directory
+			command_path = "cmd"
+			var game_exe_path = Paths.game_dir.plus_file(exe_file)
+			var cmd_string = "cd /d \"%s\" && \"%s\" --userdir \"%s/\"" % [Paths.game_dir, game_exe_path, Paths.userdata]
+			if world != "":
+				cmd_string += " --world \"%s\"" % world
+			command_args = ["/C", cmd_string]
 		_:
+			Status.post(tr("Unsupported operating system for game launching"), Enums.MSG_ERROR)
 			return
 	
-	if not Settings.read("keep_open_after_starting_game"):
+	# Show appropriate status message
+	var game_name = command_path
+	if OS.get_name() == "Windows":
+		# For Windows, extract the actual game executable name from the command
+		var exe_file = "cataclysm-tiles.exe"
+		if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles.exe")):
+			exe_file = "cataclysm-bn-tiles.exe"
+		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
+			exe_file = "cataclysm-tlg-tiles.exe"
+		game_name = exe_file
+	
+	Status.post(tr("Starting game: %s") % game_name)
+	
+	# Launch game with process monitoring
+	_game_process.execute(command_path, command_args, false)
+	
+	# Inform user about monitoring
+	if Settings.read("backup_after_closing"):
+		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+	else:
+		Status.post(tr("Game launched. Monitoring process..."))
+
+
+func _on_game_process_exited() -> void:
+	# Game has closed, handle post-game actions
+	Status.post(tr("Game process has exited (exit code: %s)") % _game_process.exit_code)
+	
+	# Create automatic backup if enabled
+	if Settings.read("backup_after_closing"):
+		var datetime = OS.get_datetime()
+		var backup_name = "AutoExit_%02d-%02d-%02d_%02d-%02d" % [
+			datetime["year"] % 100,
+			datetime["month"],
+			datetime["day"],
+			datetime["hour"],
+			datetime["minute"],
+		]
+		Status.post(tr("Creating automatic backup after game closed..."))
+		_backups.backup_current(backup_name)
+		yield(_backups, "backup_creation_finished")
+		Status.post(tr("Automatic backup created: %s") % backup_name)
+		
+		# Clean up old automatic backups if we exceed the maximum count
+		_cleanup_automatic_backups()
+	
+	# Clean up the process wrapper
+	if _game_process:
+		_game_process = null
+	
+	# Close launcher if that was the original setting
+	if _launcher_should_close_after_game:
+		Status.post(tr("Closing launcher..."))
+		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
 		get_tree().quit()
 
 
@@ -1113,7 +1186,7 @@ func _cleanup_automatic_backups() -> void:
 	
 	# Filter to only automatic backups and sort by name (which includes timestamp)
 	for backup in _backups.available:
-		if backup["name"].begins_with("Auto_"):
+		if backup["name"].begins_with("Auto_") or backup["name"].begins_with("AutoExit_"):
 			auto_backups.append(backup)
 	
 	# Sort by name to get chronological order (oldest first)
@@ -1131,3 +1204,11 @@ func _cleanup_automatic_backups() -> void:
 
 func _compare_backup_names(a, b) -> bool:
 	return a["name"] < b["name"]
+
+func _exit_tree() -> void:
+	# Clean up game process monitoring if still active
+	if _game_process:
+		_game_process = null
+	
+	# Note: Backup creation is now handled in _on_game_process_exited()
+	# when the game actually closes, not when the launcher closes
