@@ -788,8 +788,7 @@ func _activate_easter_egg() -> void:
 
 func _on_BtnCheck_pressed() -> void:
 	var current_version = Settings.get_hardcoded_version()
-	var normalized_current = _normalize_version(current_version)
-	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % normalized_current)
+	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % current_version)
 	
 	# Disable the update button while checking
 	_btn_update.disabled = true
@@ -831,9 +830,8 @@ func _on_version_check_completed(result, response_code, headers, body):
 	if "name" in response:
 		_latest_version = response["name"]
 		var current_version = Settings.get_hardcoded_version()
-		var normalized_latest = _normalize_version(_latest_version)
 		
-		Status.post(tr("Dabdoob's latest version available: v%s") % normalized_latest)
+		Status.post(tr("Dabdoob's latest version available: v%s") % _latest_version)
 		
 		# Store the browser download URL from the API response
 		if "html_url" in response:
@@ -854,7 +852,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 		
 		# Simple version comparison
 		if _is_newer_version(_latest_version, current_version):
-			Status.post(tr("A new version is available! You can update to v%s") % normalized_latest, Enums.MSG_SUCCESS)
+			Status.post(tr("A new version is available! You can update to v%s") % _latest_version, Enums.MSG_SUCCESS)
 			_btn_update.disabled = false
 			_is_update_available = true
 		else:
@@ -865,20 +863,10 @@ func _on_version_check_completed(result, response_code, headers, body):
 		Status.post(tr("Could not determine Dabdoob's latest version"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
 
-func _normalize_version(version: String) -> String:
-	# Special case: treat version "27" as "26.1"
-	if version == "27":
-		return "26.1"
-	return version
-
 func _is_newer_version(latest: String, current: String) -> bool:
-	# Normalize versions before comparison
-	var normalized_latest = _normalize_version(latest)
-	var normalized_current = _normalize_version(current)
-	
 	# Split version strings and convert to integers
-	var latest_parts = normalized_latest.split(".")
-	var current_parts = normalized_current.split(".")
+	var latest_parts = latest.split(".")
+	var current_parts = current.split(".")
 	
 	# Compare major version first
 	if latest_parts.size() > 0 and current_parts.size() > 0:
@@ -908,8 +896,7 @@ func _is_newer_version(latest: String, current: String) -> bool:
 
 func _on_BtnUpdate_pressed() -> void:
 	if _is_update_available:
-		var normalized_latest = _normalize_version(_latest_version)
-		Status.post(tr("Starting update to version v%s...") % normalized_latest)
+		Status.post(tr("Starting update to version v%s...") % _latest_version)
 		_perform_update()
 	else:
 		Status.post(tr("No update available"))
