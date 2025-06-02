@@ -7,6 +7,8 @@ signal backup_restoration_started
 signal backup_restoration_finished
 signal backup_deletion_started
 signal backup_deletion_finished
+signal backup_batch_deletion_started
+signal backup_batch_deletion_finished
 
 var available = null setget , _get_available
 
@@ -113,3 +115,25 @@ func delete(backup_name: String) -> void:
 		Status.post(tr("msg_backup_deleted"))
 
 	emit_signal("backup_deletion_finished")
+
+
+func delete_multiple(backup_names: Array) -> void:
+	# Delete multiple backups.
+	
+	if backup_names.empty():
+		return
+	
+	emit_signal("backup_batch_deletion_started")
+	
+	Status.post(tr("msg_deleting_multiple_backups") % backup_names.size())
+	
+	for backup_name in backup_names:
+		var target_dir = Paths.save_backups.plus_file(backup_name)
+		
+		if Directory.new().dir_exists(target_dir):
+			Status.post(tr("msg_deleting_backup") % backup_name)
+			FS.rm_dir(target_dir)
+			yield(FS, "rm_dir_done")
+	
+	Status.post(tr("msg_multiple_backups_deleted") % backup_names.size())
+	emit_signal("backup_batch_deletion_finished")

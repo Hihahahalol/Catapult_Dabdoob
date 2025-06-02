@@ -25,6 +25,9 @@ func _ready() -> void:
 	_cb_backup_before_launch.connect("toggled", self, "_on_BackupBeforeLaunch_toggled")
 	_cb_backup_after_closing.connect("toggled", self, "_on_BackupAfterClosing_toggled")
 	_sb_max_auto_backups.connect("value_changed", self, "_on_MaxAutoBackups_value_changed")
+	
+	# Connect keyboard input for delete key
+	_list_backups.connect("gui_input", self, "_on_BackupsList_input")
 
 
 func _refresh_available() -> void:
@@ -91,7 +94,12 @@ func _on_BtnRestore_pressed():
 	if not _list_backups.is_anything_selected():
 		return
 	
-	var idx = _list_backups.get_selected_items()[0]
+	var selected_items = _list_backups.get_selected_items()
+	if selected_items.size() > 1:
+		# Cannot restore multiple backups at once
+		return
+	
+	var idx = selected_items[0]
 	_backups.restore(idx)
 
 
@@ -100,12 +108,22 @@ func _on_BtnDelete_pressed():
 	if not _list_backups.is_anything_selected():
 		return
 	
-	var selection = _list_backups.get_item_text(_list_backups.get_selected_items()[0])
-
-	if selection != "":
-		_backups.delete(selection)
+	var selected_items = _list_backups.get_selected_items()
+	var backup_names = []
+	
+	for idx in selected_items:
+		backup_names.append(_list_backups.get_item_text(idx))
+	
+	if backup_names.size() == 1:
+		# Single deletion
+		_backups.delete(backup_names[0])
 		yield(_backups, "backup_deletion_finished")
-		_refresh_available()
+	elif backup_names.size() > 1:
+		# Batch deletion
+		_backups.delete_multiple(backup_names)
+		yield(_backups, "backup_batch_deletion_finished")
+	
+	_refresh_available()
 
 
 func _on_EditName_text_changed(new_text: String):
@@ -123,9 +141,24 @@ func _on_EditName_text_changed(new_text: String):
 
 func _on_BackupsList_item_selected(index):
 	
-	_btn_restore.disabled = false
-	_btn_delete.disabled = false
-	_lbl_info.bbcode_text = _make_backup_info_string(index)
+	var selected_items = _list_backups.get_selected_items()
+	
+	# Enable/disable buttons based on selection
+	_btn_delete.disabled = selected_items.empty()
+	_btn_restore.disabled = selected_items.empty() or selected_items.size() > 1
+	
+	# Update info display
+	if selected_items.size() == 1:
+		_lbl_info.bbcode_text = _make_backup_info_string(selected_items[0])
+	elif selected_items.size() > 1:
+		_lbl_info.bbcode_text = _make_multi_selection_info_string(selected_items)
+	else:
+		_lbl_info.bbcode_text = tr("lbl_backup_info_placeholder")
+
+
+func _on_BackupsList_multi_selected(index: int, selected: bool) -> void:
+	# Handle multi-selection events (called when items are selected/deselected with Ctrl/Shift)
+	_on_BackupsList_item_selected(index)
 
 
 func _make_backup_info_string(index: int) -> String:
@@ -160,3 +193,26 @@ func _on_BackupAfterClosing_toggled(button_pressed: bool) -> void:
 
 func _on_MaxAutoBackups_value_changed(value: int) -> void:
 	Settings.store("max_auto_backups", value)
+
+
+func _on_BackupsList_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.scancode == KEY_DELETE:
+			_on_BtnDelete_pressed()
+
+
+func _make_multi_selection_info_string(selected_indices: Array) -> String:
+	var text := ""
+	text += "[u]%s[/u]\n" % tr("backup_info_multiple_selected")
+	text += tr("backup_info_selected_count") % selected_indices.size()
+	text += "\n\n"
+	
+	# List selected backup names
+	for i in range(min(selected_indices.size(), 10)):  # Limit to first 10 for display
+		var index = selected_indices[i]
+		text += "• %s\n" % _list_backups.get_item_text(index)
+	
+	if selected_indices.size() > 10:
+		text += "• ... %s %s\n" % [tr("and"), selected_indices.size() - 10, tr("more")]
+	
+	return text
