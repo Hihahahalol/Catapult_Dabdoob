@@ -180,9 +180,13 @@ func extract(path: String, dest_dir: String) -> void:
 				"--exclude=*doc/CONTRIBUTING.md", "--exclude=*doc/JSON_LOADING_ORDER.md"]
 				# Godot can't operate on symlinks just yet, so we have to avoid them.
 	}
-	var command_sevenzip = {
+	var command_sevenzip_windows = {
 		"name": "cmd",
 		"args": ["/C", "\"%s\" x \"%s\" -o\"%s\" -y" % [sevenzip_exe.replace("/", "\\"), path.replace("/", "\\"), dest_dir.replace("/", "\\")]]
+	}
+	var command_sevenzip_linux = {
+		"name": "/bin/bash",
+		"args": ["-c", "'%s' x '%s' -o'%s' -y" % [sevenzip_exe, path, dest_dir]]
 	}
 	var command
 	
@@ -191,7 +195,10 @@ func extract(path: String, dest_dir: String) -> void:
 	# Try to use 7-Zip first on both platforms for better performance
 	if d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
-		command = command_sevenzip
+		if OS.get_name() == "Windows":
+			command = command_sevenzip_windows
+		else:  # Linux (X11)
+			command = command_sevenzip_linux
 	# Fall back to system utilities on Linux
 	elif (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Using system tar for .tar.gz extraction")
@@ -206,7 +213,7 @@ func extract(path: String, dest_dir: String) -> void:
 			emit_signal("extract_done")
 			return
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
-		command = command_sevenzip
+		command = command_sevenzip_windows
 	else:
 		Status.post(tr("msg_extract_unsupported") % path.get_file(), Enums.MSG_ERROR)
 		emit_signal("extract_done")
