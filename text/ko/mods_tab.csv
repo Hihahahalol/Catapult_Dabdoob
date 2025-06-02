@@ -13,7 +13,9 @@ lbl_mod_info,여기에서 자세한 내용을 보려면 목록에서 모드를 �
 str_mod_name,이름:
 str_mod_authors,제작자:
 str_mod_maintainers,유지관리자:
+str_mod_url,모드 URL:
 str_mod_category,카테고리:
+str_mod_stability,모드 안정성:
 str_mod_description,설명:
 ,
 tooltip_mod_location,위치: %s

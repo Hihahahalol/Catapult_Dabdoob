@@ -168,7 +168,8 @@ func refresh_available():
 				"modinfo": {
 					"id": "mindovermatter",
 					"name": "Mind Over Matter",
-					"authors": ["Vegetabs"],
+					"authors": ["StandingStorm"],
+					"maintainers": ["Vegetabs"],
 					"description": "Port of MoM from CDDA to CTLG. Adds nine separate psionic power paths to Cataclysm including Biokinesis, Clairsentience, Electrokinesis, Photokinesis, Pyrokinesis, Telekinesis, Telepathy, Teleportation, and Vitakinesis.",
 					"category": "content",
 					"dependencies": [],
@@ -181,6 +182,7 @@ func refresh_available():
 					"id": "bionics_expanded",
 					"name": "Bionics Expanded",
 					"authors": ["Vegetabs"],
+					"maintainers": [],
 					"description": "Expanded bionics system for Cataclysm: The Last Generation.",
 					"category": "content",
 					"dependencies": [],
@@ -192,7 +194,8 @@ func refresh_available():
 				"modinfo": {
 					"id": "MMA",
 					"name": "Mythical Martial Arts",
-					"authors": ["Vegetabs"],
+					"authors": ["Photoloss"],
+					"maintainers": ["Vegetabs"],
 					"description": "Mythical martial arts mod ported to Cataclysm: The Last Generation.",
 					"category": "content",
 					"dependencies": [],

@@ -13,7 +13,9 @@
 "str_mod_name","Nazwa:"
 "str_mod_authors","Autorzy:"
 "str_mod_maintainers","Opiekunowie:"
+"str_mod_url","URL Moda:"
 "str_mod_category","Kategoria:"
+"str_mod_stability","Stabilność Moda:"
 "str_mod_description","Opis:"
 ,
 "tooltip_mod_location","Lokalizacja: %s"
