@@ -1083,6 +1083,7 @@ margin_right = 285.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 0, 200 )
 size_flags_horizontal = 3
+select_mode = 1
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false, "Item 5", null, false, "Item 6", null, false, "Item 7", null, false, "Item 8", null, false, "Item 9", null, false ]
 same_column_width = true
 
@@ -1649,6 +1650,7 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/LeftPane/OtherSettings/HelpIcon" to="Main/Tabs/Fonts" method="_on_HelpIcon_pressed"]
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/LeftPane/BtnSaveFontOptions" to="Main/Tabs/Fonts" method="_on_BtnSaveFontOptions_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_item_selected"]
+[connection signal="multi_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_multi_selected"]
 [connection signal="meta_clicked" from="Main/Tabs/Backups/Available/HBox/BackupInfo" to="Main/Tabs/Backups" method="_on_BackupInfo_meta_clicked"]
 [connection signal="pressed" from="Main/Tabs/Backups/Available/Buttons/BtnRestore" to="Main/Tabs/Backups" method="_on_BtnRestore_pressed"]
 [connection signal="pressed" from="Main/Tabs/Backups/Available/Buttons/BtnDelete" to="Main/Tabs/Backups" method="_on_BtnDelete_pressed"]
@@ -1714,3 +1716,10 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
 [connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
 [connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
+[connection signal="backup_deletion_finished" from="Backups" to="." method="_on_backup_operation_finished"]
+[connection signal="backup_deletion_started" from="Backups" to="." method="_on_backup_operation_started"]
+[connection signal="backup_batch_deletion_finished" from="Backups" to="." method="_on_backup_operation_finished"]
+[connection signal="backup_batch_deletion_started" from="Backups" to="." method="_on_backup_operation_started"]
+[connection signal="item_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_item_selected"]
+[connection signal="multi_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_multi_selected"]
+[connection signal="meta_clicked" from="Main/Tabs/Backups/Available/HBox/BackupInfo" to="Main/Tabs/Backups" method="_on_BackupInfo_meta_clicked"]

@@ -13,3 +13,7 @@
 ,
 "backup_info_location","Location:"
 "backup_info_worlds","Worlds:"
+"backup_info_multiple_selected","Multiple backups selected"
+"backup_info_selected_count","Selected: %s backups"
+"and","and"
+"more","more"
