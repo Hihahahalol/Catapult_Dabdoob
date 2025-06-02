@@ -40,6 +40,7 @@ const _HARDCODED_DEFAULTS = {
 	"proxy_port": 0,
 	"debug_mode": false,
 	"backup_before_launch": false,
+	"backup_after_closing": false,
 	"max_auto_backups": 5,
 }
 
