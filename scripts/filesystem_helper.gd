@@ -176,7 +176,7 @@ func extract(path: String, dest_dir: String) -> void:
 	}
 	var command_linux_gz = {
 		"name": "tar",
-		"args": ["-xzf", "\"\"%s\"\"" % path, "-C", "\"\"%s\"\"" % dest_dir,
+		"args": ["-xzf", path, "-C", dest_dir,
 				"--exclude=*doc/CONTRIBUTING.md", "--exclude=*doc/JSON_LOADING_ORDER.md"]
 				# Godot can't operate on symlinks just yet, so we have to avoid them.
 	}
@@ -192,20 +192,20 @@ func extract(path: String, dest_dir: String) -> void:
 	
 	var d = Directory.new()
 	
-	# Try to use 7-Zip first on both platforms for better performance
-	if d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
-		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
-		if OS.get_name() == "Windows":
-			command = command_sevenzip_windows
-		else:  # Linux (X11)
-			command = command_sevenzip_linux
-	# Fall back to system utilities on Linux
-	elif (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
+	# On Linux, prefer system utilities for better compatibility
+	if (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Using system tar for .tar.gz extraction")
 		command = command_linux_gz
 	elif (_platform == "X11") and (path.to_lower().ends_with(".zip")):
 		Status.post("[debug] Using system unzip for .zip extraction")
 		command = command_linux_zip
+	# Try to use 7-Zip on both platforms as fallback
+	elif d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
+		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
+		if OS.get_name() == "Windows":
+			command = command_sevenzip_windows
+		else:  # Linux (X11)
+			command = command_sevenzip_linux
 	elif (_platform == "Windows") and (path.to_lower().ends_with(".zip")):
 		# On Windows, 7-Zip should always be available
 		if not d.file_exists(sevenzip_exe):
@@ -223,7 +223,7 @@ func extract(path: String, dest_dir: String) -> void:
 		d.make_dir_recursive(dest_dir)
 		
 	Status.post(tr("msg_extracting_file") % path.get_file())
-	Status.post(tr("debug_extract_command") % str(command), Enums.MSG_DEBUG)
+	Status.post("[debug] Extract command: " + str(command), Enums.MSG_DEBUG)
 		
 	var oew = OSExecWrapper.new()
 	oew.execute(command["name"], command["args"], false)

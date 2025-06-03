@@ -9,6 +9,15 @@ func create_info_file(location: String, name: String) -> void:
 	var info = {"name": name}
 	var path = location + "/" + INFO_FILENAME
 	var f = File.new()
+	
+	# Ensure the directory exists
+	var d = Directory.new()
+	if not d.dir_exists(location):
+		var err = d.make_dir_recursive(location)
+		if err != OK:
+			Status.post(tr("msg_cannot_create_install_info") % path + " (mkdir failed: " + str(err) + ")", Enums.MSG_ERROR)
+			return
+	
 	if (f.open(path, File.WRITE) == 0):
 		f.store_string(JSON.print(info, "    "))
 		f.close()
