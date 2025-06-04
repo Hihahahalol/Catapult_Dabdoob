@@ -59,7 +59,6 @@ content_margin_bottom = 4.0
 [node name="Catapult" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 600, 900 )
 theme = ExtResource( 11 )
 script = ExtResource( 4 )
 
@@ -130,7 +129,7 @@ margin_bottom = 100.0
 [node name="Tabs" type="TabContainer" parent="Main" groups=["disable_during_backup_operations", "disable_during_mod_operations", "disable_during_release_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases"]]
 margin_top = 104.0
 margin_right = 592.0
-margin_bottom = 571.0
+margin_bottom = 535.0
 tab_align = 0
 script = ExtResource( 16 )
 
@@ -1537,17 +1536,14 @@ size_flags_horizontal = 4
 text = "Print screen info"
 
 [node name="Log" type="RichTextLabel" parent="Main"]
-margin_top = 575.0
+margin_top = 539.0
 margin_right = 592.0
-margin_bottom = 888.0
-rect_min_size = Vector2( 0, 270 )
+margin_bottom = 692.0
 focus_mode = 2
+size_flags_vertical = 3
 bbcode_enabled = true
-scroll_active = true
 scroll_following = true
 selection_enabled = true
-fit_content_height = false
-clip_contents = true
 
 [node name="Releases" type="Node" parent="."]
 script = ExtResource( 5 )
