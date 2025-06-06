@@ -222,7 +222,7 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 		
 		# Only show URL for downloadable mods (GitHub URLs)
 		if mod_location.begins_with("https://github.com/") or mod_location.begins_with("http"):
-			result += "[b][u]%s[/u][/b] [color=#065fd4][url=%s]%s[/url][/color]\n" % [tr("str_mod_url"), mod_location, mod_location]
+			result += "[b][u]%s[/u][/b] [color=#3b93f7][url=%s]%s[/url][/color]\n" % [tr("str_mod_url"), mod_location, mod_location]
 		
 	# Show mod's last release date for all downloadable mods
 	if mod_dict_key != "":
@@ -278,7 +278,8 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 			result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_stability"), stability_text]
 	
 	if "description" in modinfo:
-		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_description"), modinfo["description"]]
+		var formatted_description = _format_links_in_text(modinfo["description"])
+		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_description"), formatted_description]
 	
 	result = result.rstrip("\n")
 	return result
@@ -551,3 +552,28 @@ func _refresh_selected_mod_description() -> void:
 		var id = _available_mods_view[index]["id"]
 		_lbl_mod_info.bbcode_text = _make_mod_info_string(_mods.available[id])
 		_lbl_mod_info.scroll_to_line(0)
+
+
+func _format_links_in_text(text: String) -> String:
+	
+	# Regular expression to find URLs (http/https)
+	var regex = RegEx.new()
+	regex.compile("(https?://[^\\s]+)")
+	
+	var formatted_text = text
+	var matches = regex.search_all(text)
+	
+	# Process matches in reverse order to maintain correct positions
+	for i in range(matches.size() - 1, -1, -1):
+		var match_result = matches[i]
+		var url = match_result.get_string()
+		# Format the URL with BBCode and the same color as other links
+		var formatted_url = "[color=#3b93f7][url=%s]%s[/url][/color]" % [url, url]
+		formatted_text = formatted_text.substr(0, match_result.get_start()) + formatted_url + formatted_text.substr(match_result.get_end())
+	
+	return formatted_text
+
+
+func _on_ModInfo_meta_clicked(meta) -> void:
+	
+	OS.shell_open(meta)
