@@ -506,6 +506,7 @@ rect_min_size = Vector2( 0, 200 )
 focus_mode = 2
 custom_constants/line_separation = 4
 bbcode_enabled = true
+meta_underlined = true
 bbcode_text = "Mod info will appear here."
 text = "Mod info will appear here."
 selection_enabled = true
@@ -1616,6 +1617,7 @@ __meta__ = {
 [connection signal="multi_selected" from="Main/Tabs/Mods/HBox/Available/AvailableList" to="Main/Tabs/Mods" method="_on_AvailableList_multi_selected"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
 [connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
+[connection signal="meta_clicked" from="Main/Tabs/Mods/ModInfo" to="Main/Tabs/Mods" method="_on_ModInfo_meta_clicked"]
 [connection signal="confirmed" from="Main/Tabs/Mods/DeleteMultipleDialog" to="Main/Tabs/Mods" method="_on_DeleteMultipleDialog_confirmed"]
 [connection signal="response_no" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_no"]
 [connection signal="response_yes" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_yes"]
