@@ -644,8 +644,6 @@ func _start_game(world := "") -> void:
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
 		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
-	else:
-		Status.post(tr("Game launched. Monitoring process..."))
 
 
 func _on_game_process_exited() -> void:
