@@ -203,6 +203,261 @@ func refresh_available():
 				}
 			}
 		}
+	# Custom mods for Bright Nights (BN)
+	elif Settings.read("game") == "bn":
+		available = {
+			"CataclysmSecondChance": {
+				"location": "https://github.com/Tefnut/Cataclysm-Second-Chance",
+				"modinfo": {
+					"id": "cataclysm_second_chance",
+					"name": "Cataclysm: Second Chance",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A mod for Cataclysm: Bright Nights which adds my own custom content to it",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"MySweetCataclysmBN": {
+				"location": "https://github.com/Tefnut/My-Sweet-Cataclysm-BN",
+				"modinfo": {
+					"id": "my_sweet_cataclysm_bn",
+					"name": "My Sweet Cataclysm BN",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A Bright Nights adaptation of My Sweet Cataclysm",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"BetterHolsters": {
+				"location": "https://github.com/Tefnut/Better-Holsters",
+				"modinfo": {
+					"id": "better_holsters",
+					"name": "Better Holsters",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A mod for Cataclysm: Bright Nights that improves the holster experience",
+					"category": "items",
+					"dependencies": [],
+					"stability": 3
+				}
+			},
+			"FalloutNewEnglandRemastered": {
+				"location": "https://github.com/Tefnut/Fallout-New-England-Remastered",
+				"modinfo": {
+					"id": "fallout_new_england_remastered",
+					"name": "Fallout: New England Remastered",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A remastering of my original Fallout mod for C:DDA. Should work with newest Bright Nights release for as long as I update and maintain it.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"ReallyDarkSkies": {
+				"location": "https://github.com/Zlorthishen/Really_Dark_Skies",
+				"modinfo": {
+					"id": "really_dark_skies",
+					"name": "Really Dark Skies",
+					"authors": ["Zlorthishen"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Really Dark Skies. The community supported mod that enhances the Bright Nights experience by adding an inscrutable alien-humanoid paramilitary expeditionary force to your typical survival scenario.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 3
+				}
+			},
+			"TheArcologyMod": {
+				"location": "https://github.com/Zlorthishen/The_Arcology_Mod",
+				"modinfo": {
+					"id": "the_arcology_mod",
+					"name": "The Arcology Mod",
+					"authors": ["Zlorthishen"],
+					"maintainers": ["Zlorthishen"],
+					"description": "The mod that adds Arcology-type buildings, very large, self-contained buildings with a Cyberpunk aesthetic to Bright Nights.",
+					"category": "buildings",
+					"dependencies": [],
+					"stability": 3
+				}
+			},
+			"ZombieHighMod": {
+				"location": "https://github.com/Zlorthishen/ZombieHighMod",
+				"modinfo": {
+					"id": "zombie_high_mod",
+					"name": "Zombie High Mod",
+					"authors": ["thhoney08"],
+					"maintainers": ["Zlorthishen"],
+					"description": "A mod for cataclysm: Bright Nights, which sets on a bunker-like school.",
+					"category": "buildings",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"GrowMoreDrugs": {
+				"location": "https://github.com/Zlorthishen/grow_more_drugs",
+				"modinfo": {
+					"id": "grow_more_drugs",
+					"name": "Grow More Drugs",
+					"authors": ["jackledead"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Cataclysm - Bright Nights mod, adding different drug crops that would not grow in New England. Plants/seeds: Coca, coffee, tea, poppy, tobacco. Includes recipes for cocaine.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"MagicalNights": {
+				"location": "https://github.com/Zlorthishen/Magical-Nights",
+				"modinfo": {
+					"id": "magical_nights",
+					"name": "Magical Nights",
+					"authors": ["RobbieNeko"],
+					"maintainers": ["Zlorthishen"],
+					"description": "The Magical Nights mod for Cataclysm BN",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"LonesTechAndWeapons": {
+				"location": "https://github.com/Zlorthishen/Lones-Tech-and-Weapons-mod",
+				"modinfo": {
+					"id": "lones_tech_weapons",
+					"name": "Lone's Tech and Weapons",
+					"authors": ["thelonestander"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Weapons and tech for the game Bright Nights",
+					"category": "items",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"NoHopeAndDinos": {
+				"location": "https://github.com/Zlorthishen/No-Hope-and-Dinos",
+				"modinfo": {
+					"id": "no_hope_dinos",
+					"name": "No Hope and Dinos",
+					"authors": ["jackledead"],
+					"maintainers": ["Zlorthishen"],
+					"description": "CDDA Mod. It's like No Hope, but replaces zombies with dinosaurs, and requires TropiCataclysm and Dinomod. Removes portals and portal storms. Only spawn Dinosaurs, Robots, Cyborgs, Mutants, Insects.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 1
+				}
+			},
+			"AddBanditsExpanded": {
+				"location": "https://github.com/Zlorthishen/Compatible-Add-Bandits-Expanded",
+				"modinfo": {
+					"id": "add_bandits_expanded",
+					"name": "Compatible Add Bandits Expanded",
+					"authors": ["Jolmar7"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Adds a large amount of content to the Add Bandits mod, and a few NPCs as well",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"ArcanaAndMagicItems": {
+				"location": "https://github.com/Zlorthishen/cdda-arcana-mod",
+				"modinfo": {
+					"id": "arcana_magic_items",
+					"name": "Arcana and Magic Items",
+					"authors": ["chaosvolt"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Arcana and Magic Items mod for Cataclysm: Bright Nights",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
+			"SteampunkMod": {
+				"location": "https://github.com/Zlorthishen/CDDA-BN-Steampunk-Mod",
+				"modinfo": {
+					"id": "steampunk_mod",
+					"name": "Steampunk Mod",
+					"authors": ["Jolmar7"],
+					"maintainers": ["Zlorthishen"],
+					"description": "A mod that adds several steampunk inspired items, recipes, locations and a small NPC town. Inspired by the Arcanum: Of Steamworks of Magick Obscure RPG.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 1
+				}
+			},
+			"HackThePlanet": {
+				"location": "https://github.com/Zlorthishen/hacktheplanet",
+				"modinfo": {
+					"id": "hack_the_planet",
+					"name": "Hack The Planet",
+					"authors": ["kettleswordfang"],
+					"maintainers": ["Zlorthishen"],
+					"description": "CDDA Hacker Gear",
+					"category": "items",
+					"dependencies": [],
+					"stability": 1
+				}
+			}
+		}
+	# Custom mods for DDA (Dark Days Ahead)
+	elif Settings.read("game") == "dda":
+		available = {
+			"TefnutsExpansion": {
+				"location": "https://github.com/Tefnut/Tefnuts-Expansion",
+				"modinfo": {
+					"id": "tefnuts_expansion",
+					"name": "Tefnut's Expansion",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "An expansion for Cataclysm:DDA that intends to add a little of everything",
+					"category": "content",
+					"dependencies": [],
+					"stability": 1
+				}
+			},
+			"FalloutInCDDA": {
+				"location": "https://github.com/Tefnut/Fallout-in-CDDA",
+				"modinfo": {
+					"id": "fallout_in_cdda",
+					"name": "Fallout in CDDA",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A WIP mod that adds fallout to CDDA",
+					"category": "content",
+					"dependencies": [],
+					"stability": 0
+				}
+			},
+			"CDDATameAnts": {
+				"location": "https://github.com/Tefnut/CDDA-tame-ants",
+				"modinfo": {
+					"id": "cdda_tame_ants",
+					"name": "CDDA Tame Ants",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A mod for Cataclysm: Dark Days Ahead. Contains the ability to tame various insects.",
+					"category": "creatures",
+					"dependencies": [],
+					"stability": 4
+				}
+			},
+			"FalloutNewEnglandRemastered": {
+				"location": "https://github.com/Tefnut/Fallout-New-England-Remastered",
+				"modinfo": {
+					"id": "fallout_new_england_remastered",
+					"name": "Fallout: New England Remastered",
+					"authors": ["Tefnut"],
+					"maintainers": ["Tefnut"],
+					"description": "A remastering of my original Fallout mod for C:DDA. Should work with newest Bright Nights release for as long as I update and maintain it.",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			}
+		}
 	else:
 		available = parse_mods_dir(Paths.mod_repo)
 
@@ -291,6 +546,12 @@ func _on_release_info_received(result: int, response_code: int, headers: PoolStr
 	remove_child(http_request)
 	http_request.queue_free()
 	
+	# If no releases found (404), fall back to repository download
+	if response_code == 404:
+		Status.post("No releases found for %s, downloading repository directly..." % mod_name, Enums.MSG_INFO)
+		_download_repository_directly(mod_name)
+		return
+	
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
 		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
 		emit_signal("_done_installing_mod")
@@ -318,15 +579,110 @@ func _on_release_info_received(result: int, response_code: int, headers: PoolStr
 		if "zipball_url" in release_data:
 			download_url = release_data["zipball_url"]
 		else:
-			Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
-			emit_signal("_done_installing_mod")
+			Status.post("No download assets found in release for %s, downloading repository directly..." % mod_name, Enums.MSG_INFO)
+			_download_repository_directly(mod_name)
 			return
 	
 	# Continue with download using the release URL
 	_download_and_install_mod(download_url, mod_name)
 
 
-func _download_and_install_mod(download_url: String, mod_name: String) -> void:
+# Download repository directly when no releases are available
+func _download_repository_directly(mod_name: String) -> void:
+	
+	var mod_id = ""
+	var github_url = ""
+	
+	# Find the mod info from available mods
+	for id in available:
+		if available[id]["modinfo"]["name"] == mod_name:
+			mod_id = id
+			github_url = available[id]["location"]
+			break
+	
+	if github_url == "":
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	# Extract owner and repo from GitHub URL
+	var url_parts = github_url.replace("https://github.com/", "").split("/")
+	if len(url_parts) < 2:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	var owner = url_parts[0]
+	var repo = url_parts[1]
+	
+	# Use GitHub's archive download URL (downloads main branch as ZIP)
+	var download_url = "https://github.com/%s/%s/archive/refs/heads/main.zip" % [owner, repo]
+	
+	Status.post("Downloading repository %s/%s directly from main branch..." % [owner, repo], Enums.MSG_INFO)
+	
+	# Try main branch first, if it fails we'll try master branch
+	_download_and_install_mod_with_fallback(download_url, mod_name, owner, repo, "main")
+
+
+# Download with fallback to different branch names
+func _download_and_install_mod_with_fallback(download_url: String, mod_name: String, owner: String, repo: String, branch: String) -> void:
+	
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	
+	# Set up proxy if needed
+	if Settings.read("proxy_option") == "on":
+		var host = Settings.read("proxy_host")
+		var port = Settings.read("proxy_port") as int
+		http_request.set_http_proxy(host, port)
+		http_request.set_https_proxy(host, port)
+	
+	# Connect signal with additional parameters for fallback
+	http_request.connect("request_completed", self, "_on_repository_download_completed", [http_request, mod_name, owner, repo, branch])
+	
+	# Get authentication headers from the parent Catapult instance if available
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	
+	# Make the request
+	var error = http_request.request(download_url, headers)
+	
+	if error != OK:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		remove_child(http_request)
+		http_request.queue_free()
+		emit_signal("_done_installing_mod")
+
+
+# Handle repository download response with branch fallback
+func _on_repository_download_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String, owner: String, repo: String, branch: String) -> void:
+	
+	# Clean up HTTP request
+	remove_child(http_request)
+	http_request.queue_free()
+	
+	# If download failed and we were trying main branch, try master branch
+	if (result != HTTPRequest.RESULT_SUCCESS or response_code != 200) and branch == "main":
+		Status.post("Main branch not found for %s, trying master branch..." % mod_name, Enums.MSG_INFO)
+		var master_url = "https://github.com/%s/%s/archive/refs/heads/master.zip" % [owner, repo]
+		_download_and_install_mod_with_fallback(master_url, mod_name, owner, repo, "master")
+		return
+	
+	# If still failed, or we already tried master, give up
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	# Success! Continue with normal mod installation process
+	Status.post("Successfully downloaded repository for %s" % mod_name, Enums.MSG_INFO)
+	_process_downloaded_mod(body, mod_name)
+
+
+# Process downloaded mod data (common for both releases and repository downloads)
+func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	
 	var mod_id = ""
 	var mod = {}
@@ -348,15 +704,15 @@ func _download_and_install_mod(download_url: String, mod_name: String) -> void:
 	var archive = Paths.cache_dir.plus_file(filename)
 	var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
 	
-	# Download the mod
-	if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
-		Downloader.download_file(download_url, Paths.cache_dir, filename)
-		yield(Downloader, "download_finished")
-	
-	if not Directory.new().file_exists(archive):
+	# Save the downloaded data to cache
+	var file = File.new()
+	if file.open(archive, File.WRITE) != OK:
 		Status.post(tr("msg_mod_download_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
 		emit_signal("_done_installing_mod")
 		return
+	
+	file.store_var(body, true)
+	file.close()
 	
 	# Extract the mod
 	FS.extract(archive, tmp_dir)
@@ -386,6 +742,80 @@ func _download_and_install_mod(download_url: String, mod_name: String) -> void:
 	yield(FS, "rm_dir_done")
 	
 	emit_signal("_done_installing_mod")
+
+
+func _download_and_install_mod(download_url: String, mod_name: String) -> void:
+	
+	# Check if we have a cached version first
+	var mod_id = ""
+	for id in available:
+		if available[id]["modinfo"]["name"] == mod_name:
+			mod_id = id
+			break
+	
+	if mod_id == "":
+		Status.post(tr("msg_mod_not_found") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	var filename = mod_id + ".zip"
+	var archive = Paths.cache_dir.plus_file(filename)
+	
+	# Use cached version if available and caching is enabled
+	if not Settings.read("ignore_cache") and Directory.new().file_exists(archive):
+		Status.post("Using cached version of %s" % mod_name, Enums.MSG_INFO)
+		var file = File.new()
+		if file.open(archive, File.READ) == OK:
+			var body = file.get_buffer(file.get_len())
+			file.close()
+			_process_downloaded_mod(body, mod_name)
+			return
+	
+	# Download using HTTP request
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	
+	# Set up proxy if needed
+	if Settings.read("proxy_option") == "on":
+		var host = Settings.read("proxy_host")
+		var port = Settings.read("proxy_port") as int
+		http_request.set_http_proxy(host, port)
+		http_request.set_https_proxy(host, port)
+	
+	# Connect signal
+	http_request.connect("request_completed", self, "_on_mod_download_completed", [http_request, mod_name])
+	
+	# Get authentication headers from the parent Catapult instance if available
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	
+	# Make the request
+	Status.post("Downloading %s from %s..." % [mod_name, download_url], Enums.MSG_INFO)
+	var error = http_request.request(download_url, headers)
+	
+	if error != OK:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		remove_child(http_request)
+		http_request.queue_free()
+		emit_signal("_done_installing_mod")
+
+
+# Handle mod download completion
+func _on_mod_download_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String) -> void:
+	
+	# Clean up HTTP request
+	remove_child(http_request)
+	http_request.queue_free()
+	
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+		emit_signal("_done_installing_mod")
+		return
+	
+	# Success! Process the downloaded mod
+	_process_downloaded_mod(body, mod_name)
 
 
 func _install_mod(mod_id: String) -> void:
@@ -599,10 +1029,104 @@ func _on_mod_release_date_received(result: int, response_code: int, headers: Poo
 				Status.post("Retrieved release date for %s: %s" % [mod_id, release_date], Enums.MSG_DEBUG)
 			else:
 				Status.post("No published_at found for mod %s" % mod_id, Enums.MSG_DEBUG)
+		else:
+			Status.post("JSON parse error for mod %s" % mod_id, Enums.MSG_DEBUG)
+	elif response_code == 404:
+		# Repository has no releases, try to get last commit date instead
+		Status.post("No releases found for %s, trying last commit date..." % mod_id, Enums.MSG_DEBUG)
+		_fetch_mod_last_commit_date(mod_id)
+		return
 	else:
 		Status.post("Failed to fetch release date for mod %s (HTTP %d)" % [mod_id, response_code], Enums.MSG_DEBUG)
 	
 	_on_mod_release_date_received_internal(mod_id, release_date)
+
+
+# Fetch the last commit date as fallback when no releases exist
+func _fetch_mod_last_commit_date(mod_id: String) -> void:
+	
+	if not mod_id in available:
+		_on_mod_release_date_received_internal(mod_id, "")
+		return
+	
+	var mod = available[mod_id]
+	var location = mod["location"]
+	
+	# Extract owner and repo from GitHub URL
+	var url_parts = location.replace("https://github.com/", "").split("/")
+	if len(url_parts) < 2:
+		_on_mod_release_date_received_internal(mod_id, "")
+		return
+	
+	var owner = url_parts[0]
+	var repo = url_parts[1]
+	
+	# GitHub API endpoint for commits (get latest commit)
+	var api_url = "https://api.github.com/repos/%s/%s/commits?per_page=1" % [owner, repo]
+	
+	Status.post("Fetching last commit date for %s..." % mod_id, Enums.MSG_DEBUG)
+	
+	# Create HTTP request for GitHub API
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	
+	# Set up proxy if needed
+	if Settings.read("proxy_option") == "on":
+		var host = Settings.read("proxy_host")
+		var port = Settings.read("proxy_port") as int
+		http_request.set_http_proxy(host, port)
+		http_request.set_https_proxy(host, port)
+	
+	# Connect signal and make request
+	http_request.connect("request_completed", self, "_on_mod_commit_date_received", [http_request, mod_id])
+	
+	# Get authentication headers from the parent Catapult instance if available
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	
+	# Make the request with authentication if available
+	var error = http_request.request(api_url, headers)
+	
+	if error != OK:
+		remove_child(http_request)
+		http_request.queue_free()
+		_on_mod_release_date_received_internal(mod_id, "")
+
+
+# Handle response from GitHub API for mod commit date (fallback)
+func _on_mod_commit_date_received(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_id: String) -> void:
+	
+	# Clean up HTTP request
+	remove_child(http_request)
+	http_request.queue_free()
+	
+	var commit_date = ""
+	
+	if result == HTTPRequest.RESULT_SUCCESS and response_code == 200:
+		# Parse JSON response (array of commits)
+		var json = JSON.parse(body.get_string_from_utf8())
+		if json.error == OK:
+			var commits_data = json.result
+			if commits_data is Array and len(commits_data) > 0:
+				var latest_commit = commits_data[0]
+				if "commit" in latest_commit and "committer" in latest_commit["commit"] and "date" in latest_commit["commit"]["committer"]:
+					# Parse the ISO 8601 date format from GitHub API (e.g., "2024-01-15T10:30:00Z")
+					var date_str = latest_commit["commit"]["committer"]["date"]
+					# Extract just the date part (YYYY-MM-DD)
+					commit_date = date_str.split("T")[0]
+					Status.post("Retrieved last commit date for %s: %s" % [mod_id, commit_date], Enums.MSG_DEBUG)
+				else:
+					Status.post("No commit date found for mod %s" % mod_id, Enums.MSG_DEBUG)
+			else:
+				Status.post("No commits found for mod %s" % mod_id, Enums.MSG_DEBUG)
+		else:
+			Status.post("JSON parse error for commit data of mod %s" % mod_id, Enums.MSG_DEBUG)
+	else:
+		Status.post("Failed to fetch commit date for mod %s (HTTP %d)" % [mod_id, response_code], Enums.MSG_DEBUG)
+	
+	_on_mod_release_date_received_internal(mod_id, commit_date)
 
 
 # Internal handler for release date reception (both successful and failed)

@@ -40,7 +40,7 @@ For each mod, the system:
 
 Current mod assignments in the system:
 
-- **MindOverMatter**: Stability rating 2 (6 months)
+- **Matter**: Stability rating 2 (6 months)
   - *Real GitHub data*: Fetched from https://github.com/Vegetabs/MindOverMatter-CTLG
 - **BionicsExpanded**: Stability rating 1 (3 months)  
   - *Real GitHub data*: Fetched from https://github.com/Vegetabs/BionicsExpanded-CTLG
