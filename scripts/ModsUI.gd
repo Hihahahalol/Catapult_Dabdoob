@@ -159,6 +159,16 @@ func reload_available() -> void:
 
 func _sorting_comparison(a: Dictionary, b: Dictionary) -> bool:
 	
+	# Only apply outdated sorting for experimental channel
+	if Settings.read("channel") == "experimental":
+		var a_compatible = _mods.is_mod_compatible(a["id"])
+		var b_compatible = _mods.is_mod_compatible(b["id"])
+		
+		# If one is compatible and the other isn't, compatible comes first
+		if a_compatible != b_compatible:
+			return a_compatible
+	
+	# Otherwise, sort alphabetically by name
 	return (a["name"].nocasecmp_to(b["name"]) == -1)
 
 
