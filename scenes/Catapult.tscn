@@ -47,6 +47,7 @@
 [ext_resource path="res://icons/lang/tex_lang_ko.res" type="Texture" id=45]
 [ext_resource path="res://scripts/TilesetManager.gd" type="Script" id=46]
 [ext_resource path="res://scripts/TilesetsUI.gd" type="Script" id=47]
+[ext_resource path="res://scripts/AboutUI.gd" type="Script" id=48]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 content_margin_left = 4.0
@@ -501,8 +502,8 @@ margin_bottom = 308.0
 [node name="ModInfo" type="RichTextLabel" parent="Main/Tabs/Mods"]
 margin_top = 312.0
 margin_right = 577.0
-margin_bottom = 512.0
-rect_min_size = Vector2( 0, 200 )
+margin_bottom = 487.0
+rect_min_size = Vector2( 0, 175 )
 focus_mode = 2
 custom_constants/line_separation = 4
 bbcode_enabled = true
@@ -1447,6 +1448,103 @@ value = 100.0
 editable = false
 suffix = "%"
 
+[node name="About" type="VBoxContainer" parent="Main/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+script = ExtResource( 48 )
+
+[node name="AppInfo" type="VBoxContainer" parent="Main/Tabs/About"]
+margin_right = 577.0
+margin_bottom = 200.0
+
+[node name="AppTitle" type="Label" parent="Main/Tabs/About/AppInfo"]
+margin_right = 577.0
+margin_bottom = 32.0
+custom_fonts/font = null
+text = "about_app_title"
+align = 1
+valign = 1
+
+[node name="AppVersion" type="Label" parent="Main/Tabs/About/AppInfo"]
+margin_top = 36.0
+margin_right = 577.0
+margin_bottom = 60.0
+text = "Version: 1.0.0"
+align = 1
+
+[node name="AppDescription" type="RichTextLabel" parent="Main/Tabs/About/AppInfo"]
+margin_top = 64.0
+margin_right = 577.0
+margin_bottom = 140.0
+rect_min_size = Vector2( 0, 76 )
+focus_mode = 2
+bbcode_enabled = true
+bbcode_text = "about_app_desc"
+text = "about_app_desc"
+fit_content_height = true
+selection_enabled = true
+
+[node name="HSeparator" type="HSeparator" parent="Main/Tabs/About"]
+margin_top = 144.0
+margin_right = 577.0
+margin_bottom = 152.0
+
+[node name="Links" type="VBoxContainer" parent="Main/Tabs/About"]
+margin_top = 216.0
+margin_right = 577.0
+margin_bottom = 340.0
+
+[node name="LinksTitle" type="Label" parent="Main/Tabs/About/Links"]
+margin_right = 577.0
+margin_bottom = 20.0
+text = "about_links"
+align = 1
+
+[node name="LinksContainer" type="VBoxContainer" parent="Main/Tabs/About/Links"]
+margin_top = 24.0
+margin_right = 577.0
+margin_bottom = 124.0
+
+[node name="GitHubLink" type="RichTextLabel" parent="Main/Tabs/About/Links/LinksContainer"]
+margin_right = 577.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+focus_mode = 2
+bbcode_enabled = true
+bbcode_text = "[center][url=https://github.com/Hihahahalol/Catapult_Dabdoob/]GitHub Repository[/url][/center]"
+text = "GitHub Repository"
+fit_content_height = true
+selection_enabled = true
+
+[node name="DiscordLink" type="RichTextLabel" parent="Main/Tabs/About/Links/LinksContainer"]
+margin_top = 24.0
+margin_right = 577.0
+margin_bottom = 44.0
+rect_min_size = Vector2( 0, 20 )
+focus_mode = 2
+bbcode_enabled = true
+bbcode_text = "[center][url=https://discord.gg/cataclysm-bright-nights]TLG's Discord Community[/url][/center]"
+text = "TLG's Discord Community"
+fit_content_height = true
+selection_enabled = true
+
+[node name="DonationLink" type="RichTextLabel" parent="Main/Tabs/About/Links/LinksContainer"]
+margin_top = 48.0
+margin_right = 577.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 0, 20 )
+focus_mode = 2
+bbcode_enabled = true
+bbcode_text = "[center][url=https://ko-fi.com/hihahahalol]Support on Ko-fi[/url][/center]"
+text = "Support on Ko-fi"
+fit_content_height = true
+selection_enabled = true
+
 [node name="Debug" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
 anchor_right = 1.0
@@ -1596,6 +1694,7 @@ __meta__ = {
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Soundpacks" method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Fonts" method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Backups" method="_on_Tabs_tab_changed"]
+[connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/About" method="_on_Tabs_tab_changed"]
 [connection signal="meta_clicked" from="Main/Tabs/Game/Channel/HBox/ChangelogLink" to="." method="_on_ChangelogLink_meta_clicked"]
 [connection signal="item_selected" from="Main/Tabs/Game/Builds/BuildsList" to="." method="_on_BuildsList_item_selected"]
 [connection signal="pressed" from="Main/Tabs/Game/Builds/BtnRefresh" to="." method="_on_BtnRefresh_pressed"]
@@ -1684,6 +1783,12 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Debug/Button7" to="Main/Tabs/Debug" method="_on_Button7_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button8" to="Main/Tabs/Debug" method="_on_Button8_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button9" to="Main/Tabs/Debug" method="_on_Button9_pressed"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/GitHubLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmdDALink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmBNLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmTLGLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DiscordLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DonationLink" to="." method="_on_AboutLink_meta_clicked"]
 [connection signal="meta_clicked" from="Main/Log" to="." method="_on_Log_meta_clicked"]
 [connection signal="done_fetching_releases" from="Releases" to="." method="_on_Releases_done_fetching_releases"]
 [connection signal="started_fetching_releases" from="Releases" to="." method="_on_Releases_started_fetching_releases"]
