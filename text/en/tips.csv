@@ -1,7 +1,7 @@
 "keys","en"
 ,
 "tip_os_hopping","You can bring the Dabdoob folder from Windows to Linux (or vice versa) and keep using it, but you will have to download the correct Dabdoob executable and update your game at least once."
-"tip_dual_install","Both [i]C:DDA[/i] and [i]C:BN[/i] can be installed at the same time. Their installations are completely independent, and their updates, mods and soundpacks are managed separately."
+"tip_dual_install","All of [i]C:DDA[/i], [i]C:TLG[/i], [i]C:BN[/i] can be installed at the same time. Their installations are completely independent, and their updates, mods and soundpacks are managed separately."
 "tip_downgrading","You can downgrade your game version by choosing to \""update\"" to an earlier build, but beware of save compatibility issues."
 "tip_stock_mods","Mods that come with the game are not managed by Dabdoob. Dabdoob only deals with the [i]/mods[/i] folder, not [i]/data/mods[/i]."
 "tip_mod_multi_install","You can select multiple mods to install/delete by [i]Ctrl-clicking[/i] and [i]Shift-clicking[/i] in the lists."
@@ -11,4 +11,4 @@
 "tip_multi_install","You can now have multiple versions of the game installed at the same time and easily switch between them. However, saves and other user data are shared between installs, so beware of breakages or corruption when switching between too-dissimilar versions (e.g. stable and experimental)."
 "tip_discord","Want to chat with the dev? There is a dedicated channel to discuss the launcher on TLG's [color=#3b93f7][url=https://discord.com/invite/zT9sXmZNCK]Discord[/url][/color]."
 "tip_launcher","[color=#ff3300]Do not lose your save files![/color] The launcher stores your saves separately so that when updating the game they do not get lost. Make sure you run the game using the launcher"
-"tip_mods","You can now install mods to your game using the launcher! Just go to the mods tab and you can see which mods can be downloaded for your selected version of Cataclysm (Currently 2 mods are supported for TLG, but this will be expanded)"
+"tip_mods","You can now install mods to your game using the launcher! Just go to the mods tab and you can see which mods can be downloaded for your selected version of Cataclysm"
