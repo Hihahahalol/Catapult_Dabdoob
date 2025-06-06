@@ -219,19 +219,6 @@ func refresh_available():
 					"stability": 2
 				}
 			},
-			"MySweetCataclysmBN": {
-				"location": "https://github.com/Tefnut/My-Sweet-Cataclysm-BN",
-				"modinfo": {
-					"id": "my_sweet_cataclysm_bn",
-					"name": "My Sweet Cataclysm BN",
-					"authors": ["Tefnut"],
-					"maintainers": ["Tefnut"],
-					"description": "A Bright Nights adaptation of My Sweet Cataclysm",
-					"category": "content",
-					"dependencies": [],
-					"stability": 2
-				}
-			},
 			"BetterHolsters": {
 				"location": "https://github.com/Tefnut/Better-Holsters",
 				"modinfo": {
@@ -261,7 +248,7 @@ func refresh_available():
 			"ReallyDarkSkies": {
 				"location": "https://github.com/Zlorthishen/Really_Dark_Skies",
 				"modinfo": {
-					"id": "really_dark_skies",
+					"id": "realdarkskies",
 					"name": "Really Dark Skies",
 					"authors": ["Zlorthishen"],
 					"maintainers": ["Zlorthishen"],
@@ -274,7 +261,7 @@ func refresh_available():
 			"TheArcologyMod": {
 				"location": "https://github.com/Zlorthishen/The_Arcology_Mod",
 				"modinfo": {
-					"id": "the_arcology_mod",
+					"id": "arcology",
 					"name": "The Arcology Mod",
 					"authors": ["Zlorthishen"],
 					"maintainers": ["Zlorthishen"],
@@ -287,7 +274,7 @@ func refresh_available():
 			"ZombieHighMod": {
 				"location": "https://github.com/Zlorthishen/ZombieHighMod",
 				"modinfo": {
-					"id": "zombie_high_mod",
+					"id": "Zhigh_Mod",
 					"name": "Zombie High Mod",
 					"authors": ["thhoney08"],
 					"maintainers": ["Zlorthishen"],
@@ -310,24 +297,11 @@ func refresh_available():
 					"stability": 2
 				}
 			},
-			"MagicalNights": {
-				"location": "https://github.com/Zlorthishen/Magical-Nights",
-				"modinfo": {
-					"id": "magical_nights",
-					"name": "Magical Nights",
-					"authors": ["RobbieNeko"],
-					"maintainers": ["Zlorthishen"],
-					"description": "The Magical Nights mod for Cataclysm BN",
-					"category": "content",
-					"dependencies": [],
-					"stability": 2
-				}
-			},
 			"LonesTechAndWeapons": {
 				"location": "https://github.com/Zlorthishen/Lones-Tech-and-Weapons-mod",
 				"modinfo": {
-					"id": "lones_tech_weapons",
-					"name": "Lone's Tech and Weapons",
+					"id": "lonestweaks",
+					"name": "Lones Tweaks",
 					"authors": ["thelonestander"],
 					"maintainers": ["Zlorthishen"],
 					"description": "Weapons and tech for the game Bright Nights",
@@ -339,7 +313,7 @@ func refresh_available():
 			"NoHopeAndDinos": {
 				"location": "https://github.com/Zlorthishen/No-Hope-and-Dinos",
 				"modinfo": {
-					"id": "no_hope_dinos",
+					"id": "no_hope_and_dinos",
 					"name": "No Hope and Dinos",
 					"authors": ["jackledead"],
 					"maintainers": ["Zlorthishen"],
@@ -352,8 +326,8 @@ func refresh_available():
 			"AddBanditsExpanded": {
 				"location": "https://github.com/Zlorthishen/Compatible-Add-Bandits-Expanded",
 				"modinfo": {
-					"id": "add_bandits_expanded",
-					"name": "Compatible Add Bandits Expanded",
+					"id": "GOV_BANDITS_KAI_R",
+					"name": "Add Bandits Expanded+",
 					"authors": ["Jolmar7"],
 					"maintainers": ["Zlorthishen"],
 					"description": "Adds a large amount of content to the Add Bandits mod, and a few NPCs as well",
@@ -365,7 +339,7 @@ func refresh_available():
 			"ArcanaAndMagicItems": {
 				"location": "https://github.com/Zlorthishen/cdda-arcana-mod",
 				"modinfo": {
-					"id": "arcana_magic_items",
+					"id": "Arcana",
 					"name": "Arcana and Magic Items",
 					"authors": ["chaosvolt"],
 					"maintainers": ["Zlorthishen"],
@@ -378,7 +352,7 @@ func refresh_available():
 			"SteampunkMod": {
 				"location": "https://github.com/Zlorthishen/CDDA-BN-Steampunk-Mod",
 				"modinfo": {
-					"id": "steampunk_mod",
+					"id": "steampunk_arcanum",
 					"name": "Steampunk Mod",
 					"authors": ["Jolmar7"],
 					"maintainers": ["Zlorthishen"],
@@ -391,7 +365,7 @@ func refresh_available():
 			"HackThePlanet": {
 				"location": "https://github.com/Zlorthishen/hacktheplanet",
 				"modinfo": {
-					"id": "hack_the_planet",
+					"id": "hacktheplanet",
 					"name": "Hack The Planet",
 					"authors": ["kettleswordfang"],
 					"maintainers": ["Zlorthishen"],
@@ -402,14 +376,27 @@ func refresh_available():
 				}
 			}
 		}
-	# Custom mods for DDA (Dark Days Ahead)
+			# Custom mods for DDA (Dark Days Ahead)
 	elif Settings.read("game") == "dda":
 		available = {
+			"ArcanaAndMagicItems": {
+				"location": "https://github.com/Zlorthishen/cdda-arcana-mod",
+				"modinfo": {
+					"id": "Arcana",
+					"name": "Arcana and Magic Items",
+					"authors": ["chaosvolt"],
+					"maintainers": ["Zlorthishen"],
+					"description": "Arcana and Magic Items mod for Cataclysm: Dark Days Ahead",
+					"category": "content",
+					"dependencies": [],
+					"stability": 2
+				}
+			},
 			"TefnutsExpansion": {
 				"location": "https://github.com/Tefnut/Tefnuts-Expansion",
 				"modinfo": {
 					"id": "tefnuts_expansion",
-					"name": "Tefnut's Expansion",
+					"name": "Cataclysm: Second Chance",
 					"authors": ["Tefnut"],
 					"maintainers": ["Tefnut"],
 					"description": "An expansion for Cataclysm:DDA that intends to add a little of everything",
@@ -422,7 +409,7 @@ func refresh_available():
 				"location": "https://github.com/Tefnut/Fallout-in-CDDA",
 				"modinfo": {
 					"id": "fallout_in_cdda",
-					"name": "Fallout in CDDA",
+					"name": "Fallout New England",
 					"authors": ["Tefnut"],
 					"maintainers": ["Tefnut"],
 					"description": "A WIP mod that adds fallout to CDDA",
@@ -434,8 +421,8 @@ func refresh_available():
 			"CDDATameAnts": {
 				"location": "https://github.com/Tefnut/CDDA-tame-ants",
 				"modinfo": {
-					"id": "cdda_tame_ants",
-					"name": "CDDA Tame Ants",
+					"id": "tame_ants",
+					"name": "Tame Bugs",
 					"authors": ["Tefnut"],
 					"maintainers": ["Tefnut"],
 					"description": "A mod for Cataclysm: Dark Days Ahead. Contains the ability to tame various insects.",
@@ -725,9 +712,29 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 		var contents = FS.list_dir(tmp_dir)
 		if contents.size() > 0:
 			var extracted_dir = tmp_dir + "/" + contents[0]
-			FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
-			yield(FS, "move_dir_done")
-			Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+			
+			# Special handling for Arcana mod - contains multiple mods for different game forks
+			if mod_name == "Arcana and Magic Items":
+				var arcana_mod_dir = _find_arcana_mod_directory(extracted_dir)
+				if arcana_mod_dir != "":
+					Status.post("Installing Arcana mod from: %s" % arcana_mod_dir)
+					FS.move_dir(arcana_mod_dir, mods_dir.plus_file(mod_id))
+					yield(FS, "move_dir_done")
+					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+				else:
+					Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
+			else:
+				# Find the actual mod directory with modinfo.json
+				var mod_dir = _find_mod_directory(extracted_dir)
+				if mod_dir != "":
+					FS.move_dir(mod_dir, mods_dir.plus_file(mod_id))
+					yield(FS, "move_dir_done")
+					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
+				else:
+					# Fallback to installing the entire directory if no modinfo.json found
+					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
+					yield(FS, "move_dir_done")
+					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 		else:
 			Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
 			emit_signal("_done_installing_mod")
@@ -1179,6 +1186,159 @@ func _calculate_days_since_release(release_date: String) -> int:
 	var current_days = current_date.year * 365 + current_date.month * 30 + current_date.day
 	
 	return current_days - release_days
+
+
+func _find_mod_directory(extracted_dir: String) -> String:
+	
+	Status.post("Searching for mod directory in: %s" % extracted_dir)
+	
+	# Check if the root directory contains modinfo.json
+	var modinfo_path = extracted_dir + "/modinfo.json"
+	var file = File.new()
+	if file.file_exists(modinfo_path):
+		Status.post("Found modinfo.json in root directory")
+		return extracted_dir
+	
+	# Search through subdirectories for modinfo.json
+	var mod_candidates = []
+	var contents = FS.list_dir(extracted_dir)
+	
+	Status.post("Found %d subdirectories to check: %s" % [len(contents), str(contents)])
+	
+	for subdir in contents:
+		var subdir_path = extracted_dir + "/" + subdir
+		
+		# Skip non-directories
+		if not Directory.new().dir_exists(subdir_path):
+			continue
+			
+		var subdir_modinfo = subdir_path + "/modinfo.json"
+		Status.post("Checking for modinfo.json at: %s" % subdir_modinfo)
+		
+		if file.file_exists(subdir_modinfo):
+			Status.post("Found modinfo.json in subdirectory: %s" % subdir)
+			
+			# Verify it's a valid mod by checking the modinfo content
+			file.open(subdir_modinfo, File.READ)
+			var json_text = file.get_as_text()
+			file.close()
+			
+			var json = JSON.parse(json_text)
+			if json.error == OK:
+				var json_result = json.result
+				if typeof(json_result) == TYPE_DICTIONARY:
+					json_result = [json_result]
+				
+				for item in json_result:
+					if ("type" in item) and (item["type"] == "MOD_INFO"):
+						mod_candidates.append(subdir_path)
+						Status.post("Valid mod directory found: %s with mod ID: %s" % [subdir, item.get("id", "unknown")])
+						break
+			else:
+				Status.post("Invalid JSON in modinfo.json at: %s" % subdir_modinfo)
+		else:
+			# Also check for deeper nested modinfo.json files (up to 2 levels deep)
+			var nested_contents = FS.list_dir(subdir_path)
+			for nested_subdir in nested_contents:
+				var nested_path = subdir_path + "/" + nested_subdir
+				if Directory.new().dir_exists(nested_path):
+					var nested_modinfo = nested_path + "/modinfo.json"
+					if file.file_exists(nested_modinfo):
+						Status.post("Found nested modinfo.json at: %s" % nested_modinfo)
+						
+						file.open(nested_modinfo, File.READ)
+						var json_text = file.get_as_text()
+						file.close()
+						
+						var json = JSON.parse(json_text)
+						if json.error == OK:
+							var json_result = json.result
+							if typeof(json_result) == TYPE_DICTIONARY:
+								json_result = [json_result]
+							
+							for item in json_result:
+								if ("type" in item) and (item["type"] == "MOD_INFO"):
+									mod_candidates.append(nested_path)
+									Status.post("Valid nested mod directory found: %s/%s with mod ID: %s" % [subdir, nested_subdir, item.get("id", "unknown")])
+									break
+	
+	# Return the first valid mod directory found
+	if len(mod_candidates) > 0:
+		Status.post("Selected mod directory: %s" % mod_candidates[0])
+		return mod_candidates[0]
+	
+	# No valid mod directory found
+	Status.post("No valid mod directory found, will install entire repository")
+	return ""
+
+
+func _find_arcana_mod_directory(extracted_dir: String) -> String:
+	
+	# Look for appropriate mod directory based on game fork
+	var game = Settings.read("game")
+	var mod_contents = FS.list_dir(extracted_dir)
+	var target_mod_dir = ""
+	
+	Status.post("Arcana installation - searching for mod directory for game: %s" % game)
+	
+	# Find the appropriate mod directory
+	for subdir in mod_contents:
+		var subdir_path = extracted_dir + "/" + subdir
+		var modinfo_path = subdir_path + "/modinfo.json"
+		
+		# Check if this subdirectory contains a modinfo.json
+		var file = File.new()
+		if file.file_exists(modinfo_path):
+			file.open(modinfo_path, File.READ)
+			var json = JSON.parse(file.get_as_text())
+			file.close()
+			
+			if json.error == OK:
+				var json_result = json.result
+				if typeof(json_result) == TYPE_DICTIONARY:
+					json_result = [json_result]
+				
+				for item in json_result:
+					if ("type" in item) and (item["type"] == "MOD_INFO"):
+						var info = item
+						
+						# Check if this is the right mod for the current game fork
+						if "id" in info and info["id"] == "Arcana":
+							Status.post("Found Arcana mod directory: %s (for game: %s)" % [subdir, game])
+							target_mod_dir = subdir_path
+							
+							# For DDA, prefer directories with "dda" or "dark" in the name
+							if game == "dda" and (subdir.to_lower().find("dda") != -1 or subdir.to_lower().find("dark") != -1):
+								Status.post("Using DDA-specific Arcana directory: %s" % subdir)
+								break
+							# For BN, prefer directories with "bn" or "bright" in the name  
+							elif game == "bn" and (subdir.to_lower().find("bn") != -1 or subdir.to_lower().find("bright") != -1):
+								Status.post("Using BN-specific Arcana directory: %s" % subdir)
+								break
+		
+		# If we found a game-specific directory, use it immediately
+		if target_mod_dir != "" and ((game == "dda" and (subdir.to_lower().find("dda") != -1 or subdir.to_lower().find("dark") != -1)) or 
+		                             (game == "bn" and (subdir.to_lower().find("bn") != -1 or subdir.to_lower().find("bright") != -1))):
+			break
+	
+	# If no specific directory found but we have a general Arcana directory, use it
+	if target_mod_dir == "":
+		# Fallback: look for any directory containing "Arcana" 
+		for subdir in mod_contents:
+			if subdir.to_lower().find("arcana") != -1:
+				var subdir_path = extracted_dir + "/" + subdir
+				var modinfo_path = subdir_path + "/modinfo.json"
+				var file = File.new()
+				if file.file_exists(modinfo_path):
+					target_mod_dir = subdir_path
+					Status.post("Using fallback Arcana directory: %s" % subdir)
+					break
+	
+	Status.post("Arcana mod directory selection result: %s" % target_mod_dir)
+	return target_mod_dir
+
+
+
 
 
 
