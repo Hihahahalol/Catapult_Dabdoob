@@ -2,20 +2,11 @@ So you want your work to be included in Dabdoob? You came to the right file!
 
 Hello! I am honored to have you here, as I am always looking to include more content in my launcher, to apply you will need to reach out to me. Which you can do on TLG's Discord (https://discord.com/invite/zT9sXmZNCK) or by submitting an issue here on the github. We have some minimal requirements to make sure that your work is functional and not broken. Please read the part related to the type of work you made below to understand the process and requirements
 
-Note: For Tilesets and Soundpacks, anyone can make a request. For mods, you need to be someone working on the mod
+Note: Anyone can make a request, you don't need to be the maker of the content
 
 
 ## Mods:
 To apply, please provide a description of your mod with the link to the github repo. The earliest working release must be at least 2 weeks old and you have to confirm that it's working for the supported forks. Also provide an estimation for the following question: If you were to abandon your mod today, how long (in days/weeks/months/etc) do you think it will take for it to stop working on the latest experimental version?
-
-When you contact me with the aforementioned details, you will also need to include the following comment inside your modinfo.json file:
-
-```json 
-"//compatibility": [ "tlg-experimental" ],
-```
-
-replace "tlg-experimental" with whatever fork(s) your mod supports. The following formats are supported:
-`dda-stable`, `dda-experimental`, `tlg-experimental`, `bn-stable`, `bn-experimental`, `eod-experimental`, `tish-experimental`
 
 Based on your description and estimate, a stability rating will be given to your mod inside my repo. Meaning that the mod will be supported on experimental versions until X amount of time passed, depending on the rating then it will cease to be available for download on the launcher until it's updated again. Note that this doesn't apply for stable game versions, as well as tish and eod. If your mod supports those and you confirm that they work, then it will be considered working. Please note that your mod might be removed if you provide false information
 
