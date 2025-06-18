@@ -35,6 +35,8 @@ func install_release(release_info: Dictionary, game: String, update_in: String =
 					extracted_root = Paths.tmp_dir.plus_file(FS.list_dir(Paths.tmp_dir)[0])
 				"Windows":
 					extracted_root = Paths.tmp_dir
+				"OSX":
+					extracted_root = Paths.tmp_dir.plus_file(FS.list_dir(Paths.tmp_dir)[0])
 			
 			Helpers.create_info_file(extracted_root, release_info["name"])
 			

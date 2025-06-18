@@ -29,6 +29,10 @@ const _ASSET_FILTERS = {
 		"field": "name",
 		"substring": "cdda-windows-with-graphics-and-sounds-x64",
 	},
+	"dda-experimental-mac": {
+		"field": "name",
+		"substring": "cdda-osx-with-graphics-universal",
+	},
 	"bn-experimental-linux": {
 		"field": "name",
 		"substring": "cbn-linux-tiles-x64",
@@ -36,6 +40,10 @@ const _ASSET_FILTERS = {
 	"bn-experimental-win": {
 		"field": "name",
 		"substring": "cbn-windows-tiles-x64",
+	},
+	"bn-experimental-mac": {
+		"field": "name",
+		"substring": "cbn-osx-tiles",
 	},
 	"eod-experimental-linux": {
 		"field": "name",
@@ -45,6 +53,10 @@ const _ASSET_FILTERS = {
 		"field": "name",
 		"substring": "eod-windows-tiles-x64",
 	},
+	"eod-experimental-mac": {
+		"field": "name",
+		"substring": "eod-osx-tiles",
+	},
 	"tish-experimental-linux": {
 		"field": "name",
 		"substring": "tish-linux-tiles-x64",
@@ -53,6 +65,10 @@ const _ASSET_FILTERS = {
 		"field": "name",
 		"substring": "tish-windows-tiles-x64",
 	},
+	"tish-experimental-mac": {
+		"field": "name",
+		"substring": "tish-osx-tiles",
+	},
 	"tlg-experimental-linux": {
 		"field": "name",
 		"substring": "ctlg-linux-tiles-x64",
@@ -60,6 +76,10 @@ const _ASSET_FILTERS = {
 	"tlg-experimental-win": {
 		"field": "name",
 		"substring": "ctlg-windows-tiles-x64",
+	},
+	"tlg-experimental-mac": {
+		"field": "name",
+		"substring": "ctlg-osx-tiles",
 	},
 }
 
@@ -293,6 +313,8 @@ func _ready() -> void:
 			_platform = "linux"
 		"Windows":
 			_platform = "win"
+		"OSX":
+			_platform = "mac"
 		_:
 			Status.post(tr("msg_unsupported_platform") % p, Enums.MSG_ERROR)
 

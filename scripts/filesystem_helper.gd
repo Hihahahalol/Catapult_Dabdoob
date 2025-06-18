@@ -19,6 +19,9 @@ var last_zip_result: int = 0 setget , _get_last_zip_result
 func _enter_tree() -> void:
 	
 	_platform = OS.get_name()
+	# Normalize platform names for consistent usage
+	if _platform == "OSX":
+		_platform = "OSX"  # Keep OSX for consistency with Godot's naming
 
 
 func _get_last_extract_result() -> int:
@@ -161,12 +164,14 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows and Linux
-	# Falls back to system utilities on Linux if 7-Zip is not available.
+	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows, Linux, and macOS
+	# Falls back to system utilities on Linux/macOS if 7-Zip is not available.
 	
 	var sevenzip_exe
 	if OS.get_name() == "Windows":
 		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	elif OS.get_name() == "OSX":
+		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	else:  # Linux (X11)
 		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
@@ -184,7 +189,7 @@ func extract(path: String, dest_dir: String) -> void:
 		"name": "cmd",
 		"args": ["/C", "\"%s\" x \"%s\" -o\"%s\" -y" % [sevenzip_exe.replace("/", "\\"), path.replace("/", "\\"), dest_dir.replace("/", "\\")]]
 	}
-	var command_sevenzip_linux = {
+	var command_sevenzip_unix = {
 		"name": "/bin/bash",
 		"args": ["-c", "'%s' x '%s' -o'%s' -y" % [sevenzip_exe, path, dest_dir]]
 	}
@@ -192,20 +197,20 @@ func extract(path: String, dest_dir: String) -> void:
 	
 	var d = Directory.new()
 	
-	# On Linux, prefer system utilities for better compatibility
-	if (_platform == "X11") and (path.to_lower().ends_with(".tar.gz")):
+	# On Linux/macOS, prefer system utilities for better compatibility
+	if (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Using system tar for .tar.gz extraction")
 		command = command_linux_gz
-	elif (_platform == "X11") and (path.to_lower().ends_with(".zip")):
+	elif (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".zip")):
 		Status.post("[debug] Using system unzip for .zip extraction")
 		command = command_linux_zip
-	# Try to use 7-Zip on both platforms as fallback
+	# Try to use 7-Zip on all platforms as fallback
 	elif d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
 		if OS.get_name() == "Windows":
 			command = command_sevenzip_windows
-		else:  # Linux (X11)
-			command = command_sevenzip_linux
+		else:  # Linux (X11) or macOS (OSX)
+			command = command_sevenzip_unix
 	elif (_platform == "Windows") and (path.to_lower().ends_with(".zip")):
 		# On Windows, 7-Zip should always be available
 		if not d.file_exists(sevenzip_exe):
@@ -241,8 +246,8 @@ func extract(path: String, dest_dir: String) -> void:
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
-	# Creates a .zip using 7-Zip on Windows and Linux for better performance.
-	# Falls back to system zip on Linux if 7-Zip is not available.
+	# Creates a .zip using 7-Zip on Windows, Linux, and macOS for better performance.
+	# Falls back to system zip on Linux/macOS if 7-Zip is not available.
 	# parent: directory that zip command is run from  (Path.savegames)
 	# dir_to_zip: relative folder to zip up  (world_name)
 	# dest_zip: zip name   (world_name.zip)
@@ -253,10 +258,12 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 	var sevenzip_exe
 	if OS.get_name() == "Windows":
 		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+	elif OS.get_name() == "OSX":
+		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	else:  # Linux (X11)
 		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
-	var command_linux_zip = {
+	var command_unix_zip = {
 		"name": "/bin/bash",
 		"args": ["-c", "cd '%s' && zip -r '%s' '%s'" % [parent, dest_zip, dir_to_zip]]
 	}
@@ -264,7 +271,7 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 		"name": "cmd",
 		"args": ["/C", "cd /d \"%s\" && \"%s\" a \"%s\" \"%s\" -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
 	}
-	var command_sevenzip_linux = {
+	var command_sevenzip_unix = {
 		"name": "/bin/bash",
 		"args": ["-c", "cd '%s' && '%s' a '%s' '%s' -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
 	}
@@ -281,12 +288,12 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 	if d.file_exists(sevenzip_exe):
 		if OS.get_name() == "Windows":
 			command = command_sevenzip_windows
-		else:  # Linux (X11)
-			command = command_sevenzip_linux
-	# Fall back to system zip on Linux
-	elif _platform == "X11":
+		else:  # Linux (X11) or macOS (OSX)
+			command = command_sevenzip_unix
+	# Fall back to system zip on Linux/macOS
+	elif _platform == "X11" or _platform == "OSX":
 		Status.post("[debug] Using system zip for compression")
-		command = command_linux_zip
+		command = command_unix_zip
 	else:
 		Status.post(tr("msg_extract_unsupported") % dest_zip.get_file(), Enums.MSG_ERROR)
 		emit_signal("zip_done")
