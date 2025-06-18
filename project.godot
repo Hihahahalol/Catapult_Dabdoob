@@ -52,6 +52,7 @@ boot_splash/image="res://icons/transparent.png"
 boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0, 0, 0, 0 )
 config/icon="res://icons/appicon.svg"
+config/macos_native_icon="res://icons/appicon.icns"
 config/windows_native_icon="res://icons/appicon.ico"
 
 [audio]

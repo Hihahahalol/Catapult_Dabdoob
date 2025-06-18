@@ -194,7 +194,7 @@ func _unpack_utils() -> void:
 	# Platform-specific binary names
 	if OS.get_name() == "Windows":
 		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
-	else:  # Linux (X11)
+	else:  # Linux (X11) or macOS (OSX)
 		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
 	if not d.file_exists(sevenzip_exe):
@@ -254,8 +254,8 @@ func _unpack_utils() -> void:
 				Status.post("[error] Failed to copy 7-Zip binary: " + str(copy_error), Enums.MSG_ERROR)
 				return
 			
-			# Make executable on Linux
-			if OS.get_name() == "X11":
+			# Make executable on Linux and macOS
+			if OS.get_name() == "X11" or OS.get_name() == "OSX":
 				OS.execute("chmod", ["+x", sevenzip_exe], true)
 		else:
 			Status.post("[error] 7-Zip binary not found in any of the following locations:", Enums.MSG_ERROR)
@@ -627,6 +627,18 @@ func _start_game(world := "") -> void:
 			if world != "":
 				cmd_string += " --world \"%s\"" % world
 			command_args = ["/C", cmd_string]
+		"OSX":
+			# macOS executable is typically in a .app bundle or direct executable
+			var exe_file = "cataclysm-tiles"
+			if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles")):
+				exe_file = "cataclysm-bn-tiles"
+			if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles")):
+				exe_file = "cataclysm-tlg-tiles"
+			
+			command_path = Paths.game_dir.plus_file(exe_file)
+			command_args = ["--userdir", Paths.userdata + "/"]
+			if world != "":
+				command_args.append_array(["--world", world])
 		_:
 			Status.post(tr("Unsupported operating system for game launching"), Enums.MSG_ERROR)
 			return
@@ -640,6 +652,14 @@ func _start_game(world := "") -> void:
 			exe_file = "cataclysm-bn-tiles.exe"
 		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
 			exe_file = "cataclysm-tlg-tiles.exe"
+		game_name = exe_file
+	elif OS.get_name() == "OSX":
+		# For macOS, extract the actual game executable name
+		var exe_file = "cataclysm-tiles"
+		if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles")):
+			exe_file = "cataclysm-bn-tiles"
+		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles")):
+			exe_file = "cataclysm-tlg-tiles"
 		game_name = exe_file
 	
 	Status.post(tr("Starting game: %s") % game_name)
@@ -950,6 +970,13 @@ func _perform_update() -> void:
 			download_url = asset["url"]
 			asset_name = asset["name"]
 			Status.post(tr("Selected Linux asset: %s") % asset_name)
+			break
+		
+		# Check for macOS assets
+		elif os_name == "OSX" and (name.find("mac") >= 0 or name.find("osx") >= 0 or name.find("darwin") >= 0 or name.ends_with(".dmg")):
+			download_url = asset["url"]
+			asset_name = asset["name"]
+			Status.post(tr("Selected macOS asset: %s") % asset_name)
 			break
 	
 	# If no matching asset was found, use the first one as a fallback
