@@ -882,9 +882,8 @@ func install_mods(mod_ids: Array) -> void:
 # Check if a mod is compatible based on its stability rating and the latest release date
 func is_mod_compatible(mod_id: String) -> bool:
 	
-	# Only check compatibility for experimental channel
-	if Settings.read("channel") != "experimental":
-		return true
+	# Apply stability checking to all channels (both stable and experimental)
+	# This ensures mods are checked for compatibility regardless of the channel
 	
 	# Check if mod exists and has stability rating
 	if not mod_id in available:

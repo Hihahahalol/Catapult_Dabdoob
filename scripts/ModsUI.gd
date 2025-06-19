@@ -134,8 +134,8 @@ func reload_available() -> void:
 		var id = _available_mods_view[i]["id"]
 		if _mods.mod_status(id) in [1, 2, 4]:
 			_available_list.set_item_custom_fg_color(i, Color(0.5, 0.5, 0.5))
-		elif Settings.read("channel") == "experimental":
-			# Check if mod's GitHub release date has been fetched
+		else:
+			# Apply color and status indicators for all channels (both stable and experimental)
 			var mod_release_date = _mods._get_mod_latest_release_date(id)
 			var mod_location = _mods.available[id]["location"]
 			
@@ -149,6 +149,11 @@ func reload_available() -> void:
 				_available_list.set_item_custom_fg_color(i, Color(0.8, 0.2, 0.2))  # Red
 				var current_text = _available_list.get_item_text(i)
 				_available_list.set_item_text(i, "[OUTDATED] " + current_text)
+			elif _mods.is_mod_compatible(id) and mod_release_date != "":
+				# Has data and is compatible - show in green with "UP-TO-DATE" prefix
+				_available_list.set_item_custom_fg_color(i, Color(0.2, 0.8, 0.2))  # Green
+				var current_text = _available_list.get_item_text(i)
+				_available_list.set_item_text(i, "[UP-TO-DATE] " + current_text)
 				
 	if _available_list.get_item_count() == 0:
 		_btn_add_all.disabled = true
@@ -159,14 +164,13 @@ func reload_available() -> void:
 
 func _sorting_comparison(a: Dictionary, b: Dictionary) -> bool:
 	
-	# Only apply outdated sorting for experimental channel
-	if Settings.read("channel") == "experimental":
-		var a_compatible = _mods.is_mod_compatible(a["id"])
-		var b_compatible = _mods.is_mod_compatible(b["id"])
-		
-		# If one is compatible and the other isn't, compatible comes first
-		if a_compatible != b_compatible:
-			return a_compatible
+	# Apply outdated sorting for all channels (both stable and experimental)
+	var a_compatible = _mods.is_mod_compatible(a["id"])
+	var b_compatible = _mods.is_mod_compatible(b["id"])
+	
+	# If one is compatible and the other isn't, compatible comes first
+	if a_compatible != b_compatible:
+		return a_compatible
 	
 	# Otherwise, sort alphabetically by name
 	return (a["name"].nocasecmp_to(b["name"]) == -1)
@@ -238,8 +242,8 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 		else:
 			result += "[b][u]Last Updated:[/u][/b] [color=gray]Not available (non-GitHub mod)[/color]\n"
 	
-	# Add stability rating information for experimental channel only
-	if Settings.read("channel") == "experimental" and "stability" in modinfo:
+	# Add stability rating information for all channels (both stable and experimental)
+	if "stability" in modinfo:
 		var stability_rating = modinfo["stability"]
 		var stability_text = ""
 		
@@ -305,12 +309,9 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	reload_available()
 	
 	# Fetch mod release dates for all channels to show "Last Updated" information
-	# This will also trigger compatibility checking if experimental channel is selected
+	# This will also trigger compatibility checking for both stable and experimental channels
 	if len(_mods.available) > 0:
-		if Settings.read("channel") == "experimental":
-			Status.post("Fetching mod release dates for compatibility checking...")
-		else:
-			Status.post("Fetching mod release dates...")
+		Status.post("Fetching mod release dates for compatibility checking...")
 		_mods.fetch_all_mod_release_dates()
 
 
@@ -465,8 +466,8 @@ func _on_BtnAddSelectedMod_pressed() -> void:
 				num_stock += 1
 		else:
 			_mods_to_install.append(id)
-			# Check for incompatible mods in experimental channel
-			if Settings.read("channel") == "experimental" and not _mods.is_mod_compatible(id):
+			# Check for incompatible mods in all channels (both stable and experimental)
+			if not _mods.is_mod_compatible(id):
 				incompatible_mods.append(_mods.available[id]["modinfo"]["name"])
 
 	if num_stock == 1:
