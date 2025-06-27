@@ -337,12 +337,7 @@ exit 0
 		return
 		
 	if not d.dir_exists(dest_dir):
-		var make_dir_error = d.make_dir_recursive(dest_dir)
-		if make_dir_error != OK:
-			Status.post("[error] Failed to create extraction directory: " + dest_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
-			last_extract_result = make_dir_error
-			emit_signal("extract_done")
-			return
+		d.make_dir_recursive(dest_dir)
 		
 	Status.post(tr("msg_extracting_file") % path.get_file())
 	Status.post("[debug] Extract command: " + str(command), Enums.MSG_DEBUG)
@@ -379,8 +374,6 @@ exit 0
 func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 	# Simple fallback DMG extraction using step-by-step commands
 	Status.post("[debug] Attempting step-by-step DMG fallback extraction...")
-	Status.post("[debug] DMG file: " + path)
-	Status.post("[debug] Destination: " + dest_dir)
 	
 	# Step 1: Mount the DMG
 	Status.post("[debug] Step 1: Mounting DMG...")
@@ -473,11 +466,10 @@ func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 	# Step 3: Create destination directory
 	var dir = Directory.new()
 	if not dir.dir_exists(dest_dir):
-		Status.post("[debug] Creating destination directory: " + dest_dir)
-		var make_dir_error = dir.make_dir_recursive(dest_dir)
-		if make_dir_error != OK:
-			Status.post("[error] Failed to create destination directory: " + dest_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
-			last_extract_result = make_dir_error
+		var mkdir_error = dir.make_dir_recursive(dest_dir)
+		if mkdir_error != OK:
+			Status.post("[error] Failed to create destination directory: " + str(mkdir_error), Enums.MSG_ERROR)
+			last_extract_result = mkdir_error
 			emit_signal("extract_done")
 			return
 	
@@ -500,8 +492,21 @@ func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 		for line in oew_ls.error_output:
 			Status.post("[debug] ls error: " + line)
 	
-	# Step 5: Copy files using system cp command
+	# Check if mount point is accessible
+	if not dir.dir_exists(mount_point):
+		Status.post("[error] Mount point does not exist or is not accessible: " + mount_point, Enums.MSG_ERROR)
+		last_extract_result = 1
+		_cleanup_dmg_mount(mount_point)
+		emit_signal("extract_done")
+		return
+	
+	# Step 5: Try multiple copy methods
 	Status.post("[debug] Step 3: Copying files from " + mount_point + " to " + dest_dir)
+	
+	var copy_success = false
+	var copy_exit_code = 1
+	
+	# Method 1: Use cp -R to copy all contents
 	var copy_command = {
 		"name": "/bin/cp",
 		"args": ["-R", mount_point + "/.", dest_dir + "/"]
@@ -511,7 +516,7 @@ func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 	oew_copy.execute(copy_command["name"], copy_command["args"], true)
 	yield(oew_copy, "process_exited")
 	
-	Status.post("[debug] Copy exit code: " + str(oew_copy.exit_code))
+	Status.post("[debug] Copy method 1 exit code: " + str(oew_copy.exit_code))
 	if oew_copy.output.size() > 0:
 		for line in oew_copy.output:
 			Status.post("[debug] Copy output: " + line)
@@ -519,8 +524,59 @@ func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 		for line in oew_copy.error_output:
 			Status.post("[debug] Copy error: " + line)
 	
-	# Step 6: Unmount the DMG (always try, even if copy failed)
-	Status.post("[debug] Step 4: Unmounting DMG...")
+	if oew_copy.exit_code == 0:
+		copy_success = true
+		copy_exit_code = 0
+	else:
+		# Method 2: Try using ditto (macOS native copy tool)
+		Status.post("[debug] Copy method 1 failed, trying ditto...")
+		var ditto_command = {
+			"name": "/usr/bin/ditto",
+			"args": [mount_point, dest_dir]
+		}
+		
+		var oew_ditto = OSExecWrapper.new()
+		oew_ditto.execute(ditto_command["name"], ditto_command["args"], true)
+		yield(oew_ditto, "process_exited")
+		
+		Status.post("[debug] Ditto copy exit code: " + str(oew_ditto.exit_code))
+		if oew_ditto.output.size() > 0:
+			for line in oew_ditto.output:
+				Status.post("[debug] Ditto output: " + line)
+		if oew_ditto.error_output.size() > 0:
+			for line in oew_ditto.error_output:
+				Status.post("[debug] Ditto error: " + line)
+		
+		if oew_ditto.exit_code == 0:
+			copy_success = true
+			copy_exit_code = 0
+		else:
+			# Method 3: Try manual copy using Godot's file operations as last resort
+			Status.post("[debug] Both cp and ditto failed, trying manual file copy...")
+			copy_exit_code = _manual_copy_directory(mount_point, dest_dir)
+			if copy_exit_code == 0:
+				copy_success = true
+	
+	# Step 6: Always try to unmount the DMG
+	_cleanup_dmg_mount(mount_point)
+	
+	# Final result
+	last_extract_result = copy_exit_code
+	if copy_success:
+		Status.post("[debug] DMG fallback extraction succeeded!")
+	else:
+		Status.post("[error] DMG fallback extraction failed with copy exit code: " + str(copy_exit_code), Enums.MSG_ERROR)
+		Status.post("[error] All copy methods failed. Check permissions and disk space.", Enums.MSG_ERROR)
+	
+	emit_signal("extract_done")
+
+
+func _cleanup_dmg_mount(mount_point: String) -> void:
+	# Helper function to unmount DMG and handle errors
+	if mount_point == "":
+		return
+		
+	Status.post("[debug] Unmounting DMG...")
 	var unmount_command = {
 		"name": "/usr/bin/hdiutil",
 		"args": ["detach", mount_point, "-quiet"]
@@ -531,15 +587,64 @@ func _try_dmg_fallback(path: String, dest_dir: String) -> void:
 	yield(oew_unmount, "process_exited")
 	
 	Status.post("[debug] Unmount exit code: " + str(oew_unmount.exit_code))
+	if oew_unmount.exit_code != 0:
+		Status.post("[warning] Failed to cleanly unmount DMG, but this may not affect extraction", Enums.MSG_WARN)
+		# Try force unmount as last resort
+		var force_unmount_command = {
+			"name": "/usr/bin/hdiutil",
+			"args": ["detach", mount_point, "-force"]
+		}
+		var oew_force = OSExecWrapper.new()
+		oew_force.execute(force_unmount_command["name"], force_unmount_command["args"], true)
+		yield(oew_force, "process_exited")
+		Status.post("[debug] Force unmount exit code: " + str(oew_force.exit_code))
+
+
+func _manual_copy_directory(source_dir: String, dest_dir: String) -> int:
+	# Manual file copy using Godot's Directory and File classes as last resort
+	Status.post("[debug] Starting manual file copy from " + source_dir + " to " + dest_dir)
 	
-	# Final result
-	last_extract_result = oew_copy.exit_code
-	if oew_copy.exit_code == 0:
-		Status.post("[debug] DMG fallback extraction succeeded!")
-	else:
-		Status.post("[error] DMG fallback extraction failed with copy exit code: " + str(oew_copy.exit_code), Enums.MSG_ERROR)
+	var source_directory = Directory.new()
+	var dest_directory = Directory.new()
 	
-	emit_signal("extract_done")
+	# Ensure destination exists
+	if not dest_directory.dir_exists(dest_dir):
+		var mkdir_error = dest_directory.make_dir_recursive(dest_dir)
+		if mkdir_error != OK:
+			Status.post("[error] Manual copy: failed to create destination directory", Enums.MSG_ERROR)
+			return mkdir_error
+	
+	# List source directory contents
+	var source_contents = list_dir(source_dir)
+	if source_contents.empty():
+		Status.post("[error] Manual copy: source directory is empty or inaccessible", Enums.MSG_ERROR)
+		return 1
+	
+	Status.post("[debug] Manual copy: found " + str(source_contents.size()) + " items to copy")
+	
+	# Copy each item
+	for item_name in source_contents:
+		var source_path = source_dir.plus_file(item_name)
+		var dest_path = dest_dir.plus_file(item_name)
+		
+		if source_directory.file_exists(source_path):
+			# Copy file
+			var copy_error = source_directory.copy(source_path, dest_path)
+			if copy_error != OK:
+				Status.post("[error] Manual copy: failed to copy file " + item_name + " (error: " + str(copy_error) + ")", Enums.MSG_ERROR)
+				return copy_error
+			Status.post("[debug] Manual copy: copied file " + item_name)
+		elif source_directory.dir_exists(source_path):
+			# Recursively copy directory
+			var recursive_result = _manual_copy_directory(source_path, dest_path)
+			if recursive_result != OK:
+				return recursive_result
+			Status.post("[debug] Manual copy: copied directory " + item_name)
+		else:
+			Status.post("[warning] Manual copy: skipping unknown item type: " + item_name, Enums.MSG_WARN)
+	
+	Status.post("[debug] Manual copy completed successfully")
+	return 0
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:

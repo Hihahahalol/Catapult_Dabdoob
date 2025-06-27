@@ -34,25 +34,8 @@ var _last_active_install_dir := ""
 
 
 func _get_own_dir() -> String:
-	# On macOS, if we're running from within an app bundle, use a writable location
-	# instead of the app bundle's internal directory which is read-only
-	if OS.get_name() == "OSX":
-		var exe_path = OS.get_executable_path()
-		# Check if we're running from within a .app bundle
-		if ".app" in exe_path:
-			# Use the user's home directory for writable data
-			var home_dir = OS.get_environment("HOME")
-			if home_dir != "":
-				return home_dir.plus_file("Library/Application Support/Catapult")
-			else:
-				# Fallback to user data directory
-				return OS.get_user_data_dir()
-		else:
-			# Running from a standalone executable, use its directory
-			return exe_path.get_base_dir()
-	else:
-		# Windows and Linux: use executable directory
-		return OS.get_executable_path().get_base_dir()
+	
+	return OS.get_executable_path().get_base_dir()
 
 
 func _get_installs_summary() -> Dictionary:
@@ -82,7 +65,7 @@ func _get_installs_summary() -> Dictionary:
 
 
 func _get_cache_dir() -> String:
-	# Cache should always be in a writable location
+	
 	return _get_own_dir().plus_file("cache")
 
 
@@ -211,30 +194,11 @@ func _get_modrepo_dir() -> String:
 
 
 func _get_tmp_dir() -> String:
-	# On macOS, use the system temporary directory for better performance and permissions
-	if OS.get_name() == "OSX":
-		# Use system temp directory on macOS
-		var temp_base = OS.get_environment("TMPDIR")
-		if temp_base == "":
-			temp_base = "/tmp"
-		return temp_base.plus_file("catapult_" + Settings.read("game"))
-	else:
-		# Windows and Linux: use subdirectory of own directory
-		return _get_own_dir().plus_file(Settings.read("game")).plus_file("tmp")
+	
+	return _get_own_dir().plus_file(Settings.read("game")).plus_file("tmp")
 
 
 func _get_utils_dir() -> String:
-	# On macOS app bundles, try to find utils in the bundle first, then use writable location
-	if OS.get_name() == "OSX":
-		var exe_path = OS.get_executable_path()
-		if ".app" in exe_path:
-			# Try to find utils in the app bundle's Resources directory first
-			var app_bundle_utils = exe_path.get_base_dir().get_base_dir().plus_file("Resources/utils")
-			var d = Directory.new()
-			if d.dir_exists(app_bundle_utils):
-				return app_bundle_utils
-			# Fallback to writable location
-			return _get_own_dir().plus_file("utils")
 	
 	return _get_own_dir().plus_file("utils")
 
@@ -242,18 +206,3 @@ func _get_utils_dir() -> String:
 func _get_save_backups_dir() -> String:
 	
 	return _get_own_dir().plus_file(Settings.read("game")).plus_file("save_backups")
-
-
-func ensure_directory_exists(path: String) -> bool:
-	# Ensures a directory exists, creating it if necessary
-	# Returns true if the directory exists or was successfully created
-	var dir = Directory.new()
-	if dir.dir_exists(path):
-		return true
-	
-	var error = dir.make_dir_recursive(path)
-	if error == OK:
-		return true
-	else:
-		Status.post("[error] Failed to create directory: " + path + " (error: " + str(error) + ")", Enums.MSG_ERROR)
-		return false

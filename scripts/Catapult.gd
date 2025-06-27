@@ -199,10 +199,7 @@ func _unpack_utils() -> void:
 	
 	if not d.file_exists(sevenzip_exe):
 		if not d.dir_exists(Paths.utils_dir):
-			var make_dir_error = d.make_dir_recursive(Paths.utils_dir)
-			if make_dir_error != OK:
-				Status.post("[error] Failed to create utils directory: " + Paths.utils_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
-				return
+			d.make_dir(Paths.utils_dir)
 		
 		var source_found = false
 		var source_path = ""
@@ -216,11 +213,6 @@ func _unpack_utils() -> void:
 			"./utils/" + binary_name,  # Relative path
 			"utils/" + binary_name     # Current directory utils
 		]
-		
-		# On macOS app bundles, also check the Resources directory
-		if OS.get_name() == "OSX" and ".app" in OS.get_executable_path():
-			var resources_utils = OS.get_executable_path().get_base_dir().get_base_dir().plus_file("Resources/utils").plus_file(binary_name)
-			possible_locations.push_front(resources_utils)
 		
 		for location in possible_locations:
 			if location.begins_with("res://"):
