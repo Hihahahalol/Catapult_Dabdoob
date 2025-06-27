@@ -164,8 +164,9 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows, Linux, and macOS
+	# Extracts .zip, .tar.gz, or .dmg archives using 7-Zip on Windows, Linux, and macOS
 	# Falls back to system utilities on Linux/macOS if 7-Zip is not available.
+	# On macOS, uses hdiutil for .dmg file extraction.
 	
 	var sevenzip_exe
 	if OS.get_name() == "Windows":
@@ -204,6 +205,117 @@ func extract(path: String, dest_dir: String) -> void:
 	elif (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".zip")):
 		Status.post("[debug] Using system unzip for .zip extraction")
 		command = command_linux_zip
+	elif (_platform == "OSX") and (path.to_lower().ends_with(".dmg")):
+		Status.post("[debug] Using hdiutil for .dmg extraction on macOS")
+		# Create a temporary script for DMG extraction with better error handling
+		var script_content = """#!/bin/bash
+echo "=== DMG Extraction Debug ==="
+echo "DMG file: %s"
+echo "Destination: %s"
+echo "Current user: $(whoami)"
+echo "Current directory: $(pwd)"
+
+# Test if hdiutil is available (try common locations)
+HDIUTIL_PATH=""
+for path in /usr/bin/hdiutil /bin/hdiutil /usr/local/bin/hdiutil; do
+    if [ -x "$path" ]; then
+        HDIUTIL_PATH="$path"
+        break
+    fi
+done
+
+if [ -z "$HDIUTIL_PATH" ]; then
+    echo "ERROR: hdiutil command not found in common locations"
+    echo "Searched: /usr/bin/hdiutil /bin/hdiutil /usr/local/bin/hdiutil"
+    exit 1
+fi
+
+echo "Found hdiutil at: $HDIUTIL_PATH"
+
+# Test if DMG file exists and is readable
+if [ ! -f "%s" ]; then
+    echo "ERROR: DMG file does not exist: %s"
+    exit 1
+fi
+
+if [ ! -r "%s" ]; then
+    echo "ERROR: DMG file is not readable: %s"
+    exit 1
+fi
+
+echo "Attempting to mount DMG file..."
+MOUNT_OUTPUT=$("$HDIUTIL_PATH" attach '%s' -nobrowse -quiet 2>&1)
+MOUNT_RESULT=$?
+echo "hdiutil attach exit code: $MOUNT_RESULT"
+echo "hdiutil attach output: $MOUNT_OUTPUT"
+
+if [ $MOUNT_RESULT -ne 0 ]; then
+    echo "ERROR: Failed to mount DMG file"
+    echo "Mount output: $MOUNT_OUTPUT"
+    exit 2
+fi
+
+MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | tail -1 | cut -f3)
+echo "Extracted mount point: '$MOUNT_POINT'"
+
+if [ -z "$MOUNT_POINT" ] || [ ! -d "$MOUNT_POINT" ]; then
+    echo "ERROR: Invalid mount point: '$MOUNT_POINT'"
+    exit 3
+fi
+
+echo "Mount successful. Listing contents of mount point:"
+ls -la "$MOUNT_POINT" || echo "Failed to list mount point contents"
+
+echo "Creating destination directory if needed..."
+mkdir -p "%s"
+
+echo "Copying files from '$MOUNT_POINT' to '%s'..."
+echo "Source contents:"
+ls -la "$MOUNT_POINT" 2>&1 || echo "Failed to list source"
+echo "Destination before copy:"
+ls -la "%s" 2>&1 || echo "Destination doesn't exist yet"
+
+# Use more robust copy with better error handling
+echo "Executing: cp -R \"$MOUNT_POINT\"/. \"%s/\""
+cp -R "$MOUNT_POINT"/. "%s/" 2>&1
+COPY_RESULT=$?
+echo "Copy exit code: $COPY_RESULT"
+
+echo "Destination after copy:"
+ls -la "%s" 2>&1 || echo "Failed to list destination"
+
+if [ $COPY_RESULT -ne 0 ]; then
+    echo "ERROR: Failed to copy files"
+    "$HDIUTIL_PATH" detach "$MOUNT_POINT" -quiet 2>/dev/null || true
+    exit 4
+fi
+
+echo "Unmounting DMG..."
+"$HDIUTIL_PATH" detach "$MOUNT_POINT" -quiet 2>&1
+DETACH_RESULT=$?
+echo "Detach exit code: $DETACH_RESULT"
+
+if [ $DETACH_RESULT -ne 0 ]; then
+    echo "WARNING: Failed to cleanly unmount DMG, but extraction completed"
+fi
+
+echo "DMG extraction completed successfully"
+exit 0
+""" % [path, dest_dir, path, path, path, path, path, dest_dir, dest_dir, dest_dir]
+		
+		var script_path = OS.get_user_data_dir().plus_file("dmg_extract.sh")
+		var script_file = File.new()
+		script_file.open(script_path, File.WRITE)
+		script_file.store_string(script_content)
+		script_file.close()
+		
+		# Make script executable
+		OS.execute("chmod", ["+x", script_path], true)
+		
+		command = {
+			"name": "/bin/bash",
+			"args": [script_path]
+		}
 	# Try to use 7-Zip on all platforms as fallback
 	elif d.file_exists(sevenzip_exe) and (path.to_lower().ends_with(".zip") or path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
@@ -225,23 +337,208 @@ func extract(path: String, dest_dir: String) -> void:
 		return
 		
 	if not d.dir_exists(dest_dir):
-		d.make_dir_recursive(dest_dir)
+		var make_dir_error = d.make_dir_recursive(dest_dir)
+		if make_dir_error != OK:
+			Status.post("[error] Failed to create extraction directory: " + dest_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
+			last_extract_result = make_dir_error
+			emit_signal("extract_done")
+			return
 		
 	Status.post(tr("msg_extracting_file") % path.get_file())
 	Status.post("[debug] Extract command: " + str(command), Enums.MSG_DEBUG)
 		
 	var oew = OSExecWrapper.new()
-	oew.execute(command["name"], command["args"], false)
+	oew.execute(command["name"], command["args"], true)  # Enable output capture
 	yield(oew, "process_exited")
 	last_extract_result = oew.exit_code
+	
+	# Clean up temporary DMG script if it was created
+	if (_platform == "OSX") and (path.to_lower().ends_with(".dmg")):
+		var script_path = OS.get_user_data_dir().plus_file("dmg_extract.sh")
+		var cleanup_dir = Directory.new()
+		if cleanup_dir.file_exists(script_path):
+			cleanup_dir.remove(script_path)
+	
 	if oew.exit_code:
 		Status.post(tr("msg_extract_error") % oew.exit_code, Enums.MSG_ERROR)
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
 		if oew.output.size() > 0:
 			for i in range(oew.output.size()):
-				Status.post("[7-Zip output] " + str(oew.output[i]), Enums.MSG_ERROR)
+				Status.post("[DMG/7-Zip output] " + str(oew.output[i]), Enums.MSG_ERROR)
 		else:
-			Status.post("[7-Zip] No output captured", Enums.MSG_ERROR)
+			Status.post("[DMG/7-Zip] No output captured", Enums.MSG_ERROR)
+		
+		# For DMG files, try a simpler fallback approach
+		if (_platform == "OSX") and (path.to_lower().ends_with(".dmg")):
+			Status.post("[debug] Trying fallback DMG extraction method...")
+			yield(_try_dmg_fallback(path, dest_dir), "extract_done")
+			return
+	emit_signal("extract_done")
+
+
+func _try_dmg_fallback(path: String, dest_dir: String) -> void:
+	# Simple fallback DMG extraction using step-by-step commands
+	Status.post("[debug] Attempting step-by-step DMG fallback extraction...")
+	Status.post("[debug] DMG file: " + path)
+	Status.post("[debug] Destination: " + dest_dir)
+	
+	# Step 1: Mount the DMG
+	Status.post("[debug] Step 1: Mounting DMG...")
+	var mount_command = {
+		"name": "/usr/bin/hdiutil",
+		"args": ["attach", path, "-nobrowse", "-quiet"]
+	}
+	
+	var oew_mount = OSExecWrapper.new()
+	oew_mount.execute(mount_command["name"], mount_command["args"], true)
+	yield(oew_mount, "process_exited")
+	
+	Status.post("[debug] Mount exit code: " + str(oew_mount.exit_code))
+	if oew_mount.output.size() > 0:
+		for i in range(oew_mount.output.size()):
+			Status.post("[DMG Mount] " + str(oew_mount.output[i]), Enums.MSG_DEBUG)
+	
+	if oew_mount.exit_code != 0:
+		Status.post("[error] Failed to mount DMG", Enums.MSG_ERROR)
+		last_extract_result = oew_mount.exit_code
+		emit_signal("extract_done")
+		return
+	
+	# Step 2: Find the mount point from the output
+	var mount_point = ""
+	Status.post("[debug] hdiutil output lines: " + str(oew_mount.output.size()))
+	
+	if oew_mount.output.size() > 0:
+		for i in range(oew_mount.output.size()):
+			var line = oew_mount.output[i]
+			Status.post("[debug] Output line " + str(i) + ": " + line)
+			
+			# Try different parsing methods
+			if "/Volumes/" in line:
+				# Look for /Volumes/ path in the line
+				var volumes_start = line.find("/Volumes/")
+				if volumes_start != -1:
+					var path_part = line.substr(volumes_start)
+					# Extract just the path (stop at whitespace or tab)
+					var space_pos = path_part.find(" ")
+					var tab_pos = path_part.find("\t")
+					var end_pos = -1
+					
+					if space_pos != -1 and tab_pos != -1:
+						end_pos = min(space_pos, tab_pos)
+					elif space_pos != -1:
+						end_pos = space_pos
+					elif tab_pos != -1:
+						end_pos = tab_pos
+					
+					if end_pos != -1:
+						mount_point = path_part.substr(0, end_pos)
+					else:
+						mount_point = path_part.strip_edges()
+					break
+	
+	Status.post("[debug] Detected mount point: '" + mount_point + "'")
+	
+	if mount_point == "":
+		Status.post("[error] Could not determine mount point from hdiutil output", Enums.MSG_ERROR)
+		Status.post("[debug] Trying alternative: look for any /Volumes/ directory...")
+		
+		# Fallback: try to find the volume by listing /Volumes/
+		var volumes_command = {
+			"name": "/bin/ls",
+			"args": ["/Volumes/"]
+		}
+		
+		var oew_volumes = OSExecWrapper.new()
+		oew_volumes.execute(volumes_command["name"], volumes_command["args"], true)
+		yield(oew_volumes, "process_exited")
+		
+		if oew_volumes.exit_code == 0 and oew_volumes.output.size() > 0:
+			Status.post("[debug] Available volumes:")
+			for i in range(oew_volumes.output.size()):
+				var volume_name = oew_volumes.output[i].strip_edges()
+				Status.post("[debug] Volume: " + volume_name)
+				# Look for a volume that might be our DMG (contains common game-related keywords)
+				if "cdda" in volume_name.to_lower() or "cataclysm" in volume_name.to_lower() or "ctlg" in volume_name.to_lower():
+					mount_point = "/Volumes/" + volume_name
+					Status.post("[debug] Using detected game volume: " + mount_point)
+					break
+		
+		if mount_point == "":
+			Status.post("[error] Could not determine mount point even with fallback", Enums.MSG_ERROR)
+			last_extract_result = 1
+			emit_signal("extract_done")
+			return
+	
+	# Step 3: Create destination directory
+	var dir = Directory.new()
+	if not dir.dir_exists(dest_dir):
+		Status.post("[debug] Creating destination directory: " + dest_dir)
+		var make_dir_error = dir.make_dir_recursive(dest_dir)
+		if make_dir_error != OK:
+			Status.post("[error] Failed to create destination directory: " + dest_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
+			last_extract_result = make_dir_error
+			emit_signal("extract_done")
+			return
+	
+	# Step 4: Examine volume contents first
+	Status.post("[debug] Step 2: Examining volume contents...")
+	var ls_command = {
+		"name": "/bin/ls",
+		"args": ["-la", mount_point]
+	}
+	
+	var oew_ls = OSExecWrapper.new()
+	oew_ls.execute(ls_command["name"], ls_command["args"], true)
+	yield(oew_ls, "process_exited")
+	
+	Status.post("[debug] Volume contents (ls exit code: " + str(oew_ls.exit_code) + "):")
+	if oew_ls.output.size() > 0:
+		for line in oew_ls.output:
+			Status.post("[debug] " + line)
+	if oew_ls.error_output.size() > 0:
+		for line in oew_ls.error_output:
+			Status.post("[debug] ls error: " + line)
+	
+	# Step 5: Copy files using system cp command
+	Status.post("[debug] Step 3: Copying files from " + mount_point + " to " + dest_dir)
+	var copy_command = {
+		"name": "/bin/cp",
+		"args": ["-R", mount_point + "/.", dest_dir + "/"]
+	}
+	
+	var oew_copy = OSExecWrapper.new()
+	oew_copy.execute(copy_command["name"], copy_command["args"], true)
+	yield(oew_copy, "process_exited")
+	
+	Status.post("[debug] Copy exit code: " + str(oew_copy.exit_code))
+	if oew_copy.output.size() > 0:
+		for line in oew_copy.output:
+			Status.post("[debug] Copy output: " + line)
+	if oew_copy.error_output.size() > 0:
+		for line in oew_copy.error_output:
+			Status.post("[debug] Copy error: " + line)
+	
+	# Step 6: Unmount the DMG (always try, even if copy failed)
+	Status.post("[debug] Step 4: Unmounting DMG...")
+	var unmount_command = {
+		"name": "/usr/bin/hdiutil",
+		"args": ["detach", mount_point, "-quiet"]
+	}
+	
+	var oew_unmount = OSExecWrapper.new()
+	oew_unmount.execute(unmount_command["name"], unmount_command["args"], true)
+	yield(oew_unmount, "process_exited")
+	
+	Status.post("[debug] Unmount exit code: " + str(oew_unmount.exit_code))
+	
+	# Final result
+	last_extract_result = oew_copy.exit_code
+	if oew_copy.exit_code == 0:
+		Status.post("[debug] DMG fallback extraction succeeded!")
+	else:
+		Status.post("[error] DMG fallback extraction failed with copy exit code: " + str(oew_copy.exit_code), Enums.MSG_ERROR)
+	
 	emit_signal("extract_done")
 
 

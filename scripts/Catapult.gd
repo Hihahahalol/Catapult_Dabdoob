@@ -199,7 +199,10 @@ func _unpack_utils() -> void:
 	
 	if not d.file_exists(sevenzip_exe):
 		if not d.dir_exists(Paths.utils_dir):
-			d.make_dir(Paths.utils_dir)
+			var make_dir_error = d.make_dir_recursive(Paths.utils_dir)
+			if make_dir_error != OK:
+				Status.post("[error] Failed to create utils directory: " + Paths.utils_dir + " (error: " + str(make_dir_error) + ")", Enums.MSG_ERROR)
+				return
 		
 		var source_found = false
 		var source_path = ""
@@ -213,6 +216,11 @@ func _unpack_utils() -> void:
 			"./utils/" + binary_name,  # Relative path
 			"utils/" + binary_name     # Current directory utils
 		]
+		
+		# On macOS app bundles, also check the Resources directory
+		if OS.get_name() == "OSX" and ".app" in OS.get_executable_path():
+			var resources_utils = OS.get_executable_path().get_base_dir().get_base_dir().plus_file("Resources/utils").plus_file(binary_name)
+			possible_locations.push_front(resources_utils)
 		
 		for location in possible_locations:
 			if location.begins_with("res://"):
@@ -1044,14 +1052,14 @@ $ErrorActionPreference = "Stop"
 
 # Log function
 function Log-Message {
-    param([string]$Message)
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    "$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
+	param([string]$Message)
+	$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+	"$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
 }
 
 # Clear previous log and start a new one
 if (Test-Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt") {
-    Remove-Item -Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
+	Remove-Item -Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
 }
 
 Log-Message "Starting update process"
@@ -1059,66 +1067,66 @@ Log-Message "Downloaded file: %s"
 Log-Message "Target executable: %s"
 
 try {
-    # Wait for main process to exit
-    Log-Message "Waiting for application to close..."
-    Start-Sleep -Seconds 5
-    
-    $processName = [System.IO.Path]::GetFileNameWithoutExtension("%s")
-    Log-Message "Process name: $processName"
-    
-    # Check if process is still running
-    $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-    
-    if ($running) {
-        Log-Message "Process still running, waiting another 5 seconds..."
-        Start-Sleep -Seconds 5
-        
-        # Try to forcefully terminate if still running
-        $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-        if ($running) {
-            Log-Message "Terminating process..."
-            Stop-Process -Name $processName -Force
-            Start-Sleep -Seconds 2
-        }
-    }
-    
-    # Check if source and target files exist
-    if (-not (Test-Path "%s")) {
-        throw "Source file not found: %s"
-    }
-    
-    Log-Message "Source file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    
-    if (Test-Path "%s") {
-        Log-Message "Target file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        Log-Message "Target file does not exist yet"
-    }
-    
-    # Copy the executable
-    Log-Message "Copying executable file..."
-    Copy-Item -Path "%s" -Destination "%s" -Force
-    
-    # Verify the copy worked
-    if (Test-Path "%s") {
-        Log-Message "Verified: Target file now exists with size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        throw "Failed to create target file"
-    }
-    
-    # Start the updated application
-    Log-Message "Update complete, starting application..."
-    Start-Process -FilePath "%s"
-    
-    # Clean up
-    Log-Message "Cleaning up..."
-    Start-Sleep -Seconds 2
-    Remove-Item -Path "%s" -Force -ErrorAction SilentlyContinue
-    
-    Log-Message "Update completed successfully"
+	# Wait for main process to exit
+	Log-Message "Waiting for application to close..."
+	Start-Sleep -Seconds 5
+	
+	$processName = [System.IO.Path]::GetFileNameWithoutExtension("%s")
+	Log-Message "Process name: $processName"
+	
+	# Check if process is still running
+	$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+	
+	if ($running) {
+		Log-Message "Process still running, waiting another 5 seconds..."
+		Start-Sleep -Seconds 5
+		
+		# Try to forcefully terminate if still running
+		$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+		if ($running) {
+			Log-Message "Terminating process..."
+			Stop-Process -Name $processName -Force
+			Start-Sleep -Seconds 2
+		}
+	}
+	
+	# Check if source and target files exist
+	if (-not (Test-Path "%s")) {
+		throw "Source file not found: %s"
+	}
+	
+	Log-Message "Source file exists and has size: $((Get-Item -Path "%s").Length) bytes"
+	
+	if (Test-Path "%s") {
+		Log-Message "Target file exists and has size: $((Get-Item -Path "%s").Length) bytes"
+	} else {
+		Log-Message "Target file does not exist yet"
+	}
+	
+	# Copy the executable
+	Log-Message "Copying executable file..."
+	Copy-Item -Path "%s" -Destination "%s" -Force
+	
+	# Verify the copy worked
+	if (Test-Path "%s") {
+		Log-Message "Verified: Target file now exists with size: $((Get-Item -Path "%s").Length) bytes"
+	} else {
+		throw "Failed to create target file"
+	}
+	
+	# Start the updated application
+	Log-Message "Update complete, starting application..."
+	Start-Process -FilePath "%s"
+	
+	# Clean up
+	Log-Message "Cleaning up..."
+	Start-Sleep -Seconds 2
+	Remove-Item -Path "%s" -Force -ErrorAction SilentlyContinue
+	
+	Log-Message "Update completed successfully"
 } catch {
-    Log-Message "Error during update: $_"
-    Log-Message "Stack trace: $($_.ScriptStackTrace)"
+	Log-Message "Error during update: $_"
+	Log-Message "Stack trace: $($_.ScriptStackTrace)"
 }
 """ % [
 	downloaded_file.replace("/", "\\"),
