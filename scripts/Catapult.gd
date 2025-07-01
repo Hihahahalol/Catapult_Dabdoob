@@ -1031,8 +1031,15 @@ func _on_update_download_completed(result, response_code, headers, body, temp_di
 	
 	Status.post(tr("Download complete. Preparing update..."))
 	
-	# Create a PowerShell script to handle the update
-	_create_powershell_updater(downloaded_file)
+	# Create platform-specific updater
+	if OS.get_name() == "Windows":
+		_create_powershell_updater(downloaded_file)
+	elif OS.get_name() == "OSX":
+		_create_macos_updater(downloaded_file)
+	else:
+		Status.post(tr("Automatic updates are only supported on Windows and macOS. Please update manually."))
+		OS.shell_open(_release_page_url)
+		_cleanup_update(null, temp_dir)
 
 func _create_powershell_updater(downloaded_file):
 	var current_exe = OS.get_executable_path()
@@ -1169,6 +1176,323 @@ powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%s"
 		Status.post(tr("Automatic updates are only supported on Windows. Please update manually."))
 		OS.shell_open(_release_page_url)
 		_cleanup_update(null, OS.get_user_data_dir().plus_file("update_temp"))
+
+func _create_macos_updater(downloaded_file):
+	var current_exe = OS.get_executable_path()
+	# Use a more reliable log path that works across different macOS configurations
+	var log_file = "/tmp/dabdoob_update_log.txt"
+	
+	# Handle DMG files specially
+	if downloaded_file.to_lower().ends_with(".dmg"):
+		_create_macos_dmg_updater(downloaded_file)
+		return
+	
+	# Escape file paths for shell usage
+	var escaped_log_file = log_file.replace("'", "'\"'\"'")
+	var escaped_downloaded_file = downloaded_file.replace("'", "'\"'\"'")
+	var escaped_current_exe = current_exe.replace("'", "'\"'\"'")
+	
+		# Create simplified shell script
+	var shell_script = """#!/bin/bash
+# Dabdoob Update Script - macOS Executable Updater
+
+LOG_FILE='%s'
+DOWNLOADED_FILE='%s'
+TARGET_EXE='%s'
+
+# Simple log function
+log_msg() {
+    echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - $1" >> "$LOG_FILE"
+}
+
+# Initialize log
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - Executable Update Started" > "$LOG_FILE"
+
+log_msg "Starting executable update"
+log_msg "Downloaded: $DOWNLOADED_FILE"
+log_msg "Target: $TARGET_EXE"
+
+# Wait and kill processes
+log_msg "Waiting for app to close..."
+sleep 5
+log_msg "Terminating processes..."
+pkill -f "Dabdoob" 2>/dev/null || true
+sleep 2
+pkill -9 -f "Dabdoob" 2>/dev/null || true
+sleep 1
+
+# Check file exists
+if [ ! -f "$DOWNLOADED_FILE" ]; then
+    log_msg "ERROR: Downloaded file not found"
+    exit 1
+fi
+
+# Handle app bundles vs regular executables
+if [[ "$TARGET_EXE" == *".app"* ]]; then
+    # For app bundles
+    TARGET_APP=$(echo "$TARGET_EXE" | sed 's|/Contents/MacOS/.*||')
+    log_msg "App bundle mode: $TARGET_APP"
+    
+    # Remove quarantine and copy
+    log_msg "Removing quarantine and copying app..."
+    xattr -dr com.apple.quarantine "$DOWNLOADED_FILE" 2>/dev/null || true
+    if [ -d "$TARGET_APP" ]; then
+        rm -rf "$TARGET_APP"
+    fi
+    if cp -R "$DOWNLOADED_FILE" "$TARGET_APP"; then
+        log_msg "App bundle copy successful"
+    else
+        log_msg "ERROR: App bundle copy failed"
+        exit 2
+    fi
+    
+    # Fix permissions, quarantine, and sign
+    log_msg "Fixing permissions, quarantine, and signing..."
+    chmod -R +x "$TARGET_APP"
+    xattr -dr com.apple.quarantine "$TARGET_APP" 2>/dev/null || true
+    codesign --force --deep --sign - "$TARGET_APP" 2>/dev/null || true
+    
+    # Start app
+    log_msg "Starting updated app..."
+    open "$TARGET_APP" &
+else
+    # For regular executables
+    log_msg "Regular executable mode"
+    
+    # Remove quarantine and copy
+    log_msg "Removing quarantine and copying..."
+    xattr -dr com.apple.quarantine "$DOWNLOADED_FILE" 2>/dev/null || true
+    if cp "$DOWNLOADED_FILE" "$TARGET_EXE"; then
+        log_msg "Copy successful"
+    else
+        log_msg "ERROR: Copy failed"
+        exit 2
+    fi
+    
+    # Fix permissions, quarantine, and sign
+    log_msg "Fixing permissions, quarantine, and signing..."
+    chmod +x "$TARGET_EXE"
+    xattr -dr com.apple.quarantine "$TARGET_EXE" 2>/dev/null || true
+    codesign --force --sign - "$TARGET_EXE" 2>/dev/null || true
+    
+    # Start app
+    log_msg "Starting updated app..."
+    nohup "$TARGET_EXE" > /dev/null 2>&1 &
+fi
+
+# Cleanup
+sleep 2
+rm -f "$DOWNLOADED_FILE"
+
+log_msg "Update completed successfully"
+""" % [escaped_log_file, escaped_downloaded_file, escaped_current_exe]
+	
+	var script_path = "/tmp/dabdoob_update.sh"
+	var file = File.new()
+	file.open(script_path, File.WRITE)
+	file.store_string(shell_script)
+	file.close()
+	
+	# Make script executable
+	OS.execute("chmod", ["+x", script_path], true)
+	
+	# Log
+	Status.post(tr("Update ready! Dabdoob will restart to complete the update."))
+	Status.post(tr("Update logs will be saved to: %s") % log_file)
+	
+	# Execute the script using a more reliable method for macOS
+	# Create a .command file which is more reliable on macOS
+	var escaped_script_path = script_path.replace("'", "'\"'\"'")
+	var command_script = """#!/bin/bash
+# Immediate logging to confirm script starts
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - Update launcher script started" >> '%s'
+
+# Small delay to ensure main app exits
+sleep 2
+
+# Execute the actual update script
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - Executing update script" >> '%s'
+/bin/bash '%s'
+""" % [escaped_log_file, escaped_log_file, escaped_script_path]
+	
+	var command_path = "/tmp/dabdoob_update_launcher.command"
+	var command_file = File.new()
+	command_file.open(command_path, File.WRITE)
+	command_file.store_string(command_script)
+	command_file.close()
+	
+	# Make executable
+	OS.execute("chmod", ["+x", command_path], true)
+	
+	# Use open command which is more reliable for background execution on macOS
+	OS.execute("open", [command_path], false)
+	yield(get_tree().create_timer(0.5), "timeout")
+	get_tree().quit()
+
+func _create_macos_dmg_updater(downloaded_dmg):
+	var current_exe = OS.get_executable_path()
+	# Use a more reliable log path that works across different macOS configurations
+	var log_file = "/tmp/dabdoob_update_log.txt"
+	var temp_mount = "/tmp/dabdoob_update_mount"
+	
+	# Escape file paths for shell usage
+	var escaped_log_file = log_file.replace("'", "'\"'\"'")
+	var escaped_downloaded_dmg = downloaded_dmg.replace("'", "'\"'\"'")
+	var escaped_current_exe = current_exe.replace("'", "'\"'\"'")
+	var escaped_temp_mount = temp_mount.replace("'", "'\"'\"'")
+	
+			# Create simplified shell script that avoids complex syntax
+	var shell_script = """#!/bin/bash
+# Dabdoob Update Script - macOS DMG Updater
+
+LOG_FILE='%s'
+DMG_FILE='%s'
+TARGET_EXE='%s'
+MOUNT_POINT='%s'
+
+# Simple log function
+log_msg() {
+    echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - $1" >> "$LOG_FILE"
+}
+
+# Initialize log
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - DMG Update Started" > "$LOG_FILE"
+
+log_msg "Starting macOS DMG update"
+log_msg "DMG: $DMG_FILE"
+log_msg "Target: $TARGET_EXE"
+
+# Wait and kill processes
+log_msg "Waiting for app to close..."
+sleep 5
+log_msg "Terminating processes..."
+pkill -f "Dabdoob" 2>/dev/null || true
+sleep 2
+pkill -9 -f "Dabdoob" 2>/dev/null || true
+sleep 1
+
+# Check DMG exists
+if [ ! -f "$DMG_FILE" ]; then
+	log_msg "ERROR: DMG not found: $DMG_FILE"
+	exit 1
+fi
+
+# Remove quarantine
+log_msg "Removing quarantine from DMG..."
+xattr -dr com.apple.quarantine "$DMG_FILE" 2>/dev/null || true
+log_msg "Quarantine removed"
+
+# Mount DMG
+log_msg "Mounting DMG..."
+mkdir -p "$MOUNT_POINT"
+if hdiutil attach "$DMG_FILE" -mountpoint "$MOUNT_POINT" -nobrowse -quiet; then
+	log_msg "DMG mounted at $MOUNT_POINT"
+else
+	log_msg "ERROR: Failed to mount DMG"
+	exit 2
+fi
+
+# Find app in DMG
+APP_PATH=""
+if [ -d "$MOUNT_POINT/Dabdoob.app" ]; then
+	APP_PATH="$MOUNT_POINT/Dabdoob.app"
+	log_msg "Found Dabdoob.app"
+else
+	# Look for any .app
+	for item in "$MOUNT_POINT"/*.app; do
+		if [ -d "$item" ]; then
+			APP_PATH="$item"
+			log_msg "Found app: $item"
+			break
+		fi
+	done
+fi
+
+if [ -z "$APP_PATH" ]; then
+	log_msg "ERROR: No app found in DMG"
+	hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
+	exit 3
+fi
+
+# Replace app bundle
+log_msg "Replacing app..."
+TARGET_APP=$(echo "$TARGET_EXE" | sed 's|/Contents/MacOS/.*||')
+if [ -d "$TARGET_APP" ]; then
+	log_msg "Removing old app: $TARGET_APP"
+	rm -rf "$TARGET_APP"
+fi
+
+log_msg "Copying new app from $APP_PATH to $TARGET_APP"
+if cp -R "$APP_PATH" "$TARGET_APP"; then
+	log_msg "App copied successfully"
+else
+	log_msg "ERROR: Failed to copy app"
+	hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
+	exit 4
+fi
+
+# Fix permissions and quarantine
+log_msg "Fixing permissions and quarantine..."
+chmod -R +x "$TARGET_APP"
+xattr -dr com.apple.quarantine "$TARGET_APP" 2>/dev/null || true
+
+# Code sign
+log_msg "Code signing..."
+codesign --force --deep --sign - "$TARGET_APP" 2>/dev/null || true
+
+# Cleanup DMG
+log_msg "Cleaning up DMG..."
+hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
+rm -f "$DMG_FILE"
+
+# Start app
+log_msg "Starting updated app..."
+open "$TARGET_APP" &
+
+log_msg "Update completed successfully"
+""" % [escaped_log_file, escaped_downloaded_dmg, escaped_current_exe, escaped_temp_mount]
+	
+	var script_path = "/tmp/dabdoob_update_dmg.sh"
+	var file = File.new()
+	file.open(script_path, File.WRITE)
+	file.store_string(shell_script)
+	file.close()
+	
+	# Make script executable
+	OS.execute("chmod", ["+x", script_path], true)
+	
+	# Log
+	Status.post(tr("Update ready! Dabdoob will restart to complete the update."))
+	Status.post(tr("Update logs will be saved to: %s") % log_file)
+	
+	# Execute the script using a more reliable method for macOS
+	# Create a .command file which is more reliable on macOS
+	var escaped_script_path = script_path.replace("'", "'\"'\"'")
+	var command_script = """#!/bin/bash
+# Immediate logging to confirm script starts
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - DMG update launcher script started" >> '%s'
+
+# Small delay to ensure main app exits
+sleep 2
+
+# Execute the actual DMG update script
+echo "$(date '+%%Y-%%m-%%d %%H:%%M:%%S') - Executing DMG update script" >> '%s'
+/bin/bash '%s'
+""" % [escaped_log_file, escaped_log_file, escaped_script_path]
+	
+	var command_path = "/tmp/dabdoob_update_dmg_launcher.command"
+	var command_file = File.new()
+	command_file.open(command_path, File.WRITE)
+	command_file.store_string(command_script)
+	command_file.close()
+	
+	# Make executable
+	OS.execute("chmod", ["+x", command_path], true)
+	
+	# Use open command which is more reliable for background execution on macOS
+	OS.execute("open", [command_path], false)
+	yield(get_tree().create_timer(0.5), "timeout")
+	get_tree().quit()
 
 func _cleanup_update(http_request, temp_dir):
 	if http_request:
