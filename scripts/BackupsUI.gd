@@ -179,7 +179,18 @@ func _make_backup_info_string(index: int) -> String:
 
 func _on_BackupInfo_meta_clicked(meta) -> void:
 	
-	OS.shell_open(meta)
+	_open_directory(meta)
+
+
+func _open_directory(path: String) -> void:
+	# Cross-platform directory opening that handles paths with spaces properly
+	
+	if OS.get_name() == "OSX":
+		# On macOS, use the 'open' command which handles spaces properly
+		OS.execute("open", [path], false)
+	else:
+		# On Windows and Linux, use the standard shell_open
+		OS.shell_open(path)
 
 
 # Handlers for automatic backup controls
