@@ -30,3 +30,18 @@
 
 If you appreciate the work of any of the creators for Cataclysm and it's Mods/Tilesets/Soundpacks don't forget to check them out and if you appreciate the work I do, consider donating via the link below!"
 "about_links","Links"
+,
+"msg_extract_create_dir_failed","Failed to create extraction directory %s (error: %s)"
+"msg_extract_tool_not_found","Extraction tool not found: %s"
+"msg_dmg_only_macos","DMG files can only be extracted on macOS"
+"msg_mounting_dmg","Mounting DMG file: %s"
+"msg_dmg_mount_failed","Failed to mount DMG file (error: %s)"
+"msg_dmg_mount_point_failed","Failed to parse DMG mount point"
+"msg_copying_dmg_contents","Copying contents from: %s"
+"msg_unmounting_dmg","Unmounting DMG file"
+"msg_dmg_unmount_warning","Warning: Failed to unmount DMG (error: %s)"
+"msg_no_executable_found_macos","No executable found in game directory"
+"msg_fixing_executable_permissions","Fixing executable permissions for: %s"
+"msg_chmod_failed","Failed to set executable permissions for %s (error: %s)"
+"msg_setting_working_dir","Setting working directory to: %s"
+"Starting macOS app bundle: %s","Starting macOS app bundle: %s"

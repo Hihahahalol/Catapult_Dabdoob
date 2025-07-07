@@ -605,9 +605,10 @@ func _start_game(world := "") -> void:
 	match OS.get_name():
 		"X11":
 			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
-			command_args = ["--userdir", Paths.userdata + "/"]
+			command_args = ["--userdir", _escape_path(Paths.userdata)]
 			if world != "":
-				command_args.append_array(["--world", world])
+				command_args.append_array(["--world", _escape_path(world)])
+		
 		"Windows":
 			var world_str := ""
 			if world != "":
@@ -628,17 +629,57 @@ func _start_game(world := "") -> void:
 				cmd_string += " --world \"%s\"" % world
 			command_args = ["/C", cmd_string]
 		"OSX":
-			# macOS executable is typically in a .app bundle or direct executable
-			var exe_file = "cataclysm-tiles"
-			if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles")):
-				exe_file = "cataclysm-bn-tiles"
-			if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles")):
-				exe_file = "cataclysm-tlg-tiles"
+			# macOS - Check for cataclysm-launcher first, like Linux
+			var launcher_path = Paths.game_dir.plus_file("cataclysm-launcher")
+			var d = Directory.new()
 			
-			command_path = Paths.game_dir.plus_file(exe_file)
-			command_args = ["--userdir", Paths.userdata + "/"]
-			if world != "":
-				command_args.append_array(["--world", world])
+			if d.file_exists(launcher_path):
+				# Use cataclysm-launcher if available (like Linux)
+				command_path = launcher_path
+				command_args = ["--userdir", _escape_path(Paths.userdata)]
+				if world != "":
+					command_args.append_array(["--world", _escape_path(world)])
+				
+				# Verify executable permissions
+				if not _verify_executable_permissions(command_path):
+					Status.post(tr("msg_fixing_executable_permissions") % command_path.get_file())
+					var chmod_result = OS.execute("chmod", ["+x", command_path], true)
+					if chmod_result != 0:
+						Status.post(tr("msg_chmod_failed") % [command_path.get_file(), chmod_result], Enums.MSG_ERROR)
+						return
+				
+				# Use direct execution with working directory change
+				_launch_game_with_working_dir(command_path, command_args, Paths.game_dir, world)
+				return
+			else:
+				# No cataclysm-launcher, find game executable
+				var exe_info = _find_macos_executable(Paths.game_dir)
+				if exe_info.empty():
+					Status.post(tr("msg_no_executable_found_macos"), Enums.MSG_ERROR)
+					return
+				
+				if exe_info["type"] == "app_bundle":
+					# Use macOS 'open' command for proper app bundle launching
+					_launch_app_bundle(exe_info, world)
+					return
+				else:
+					# Direct executable - use with working directory change
+					command_path = exe_info["path"]
+					command_args = ["--userdir", _escape_path(Paths.userdata)]
+					if world != "":
+						command_args.append_array(["--world", _escape_path(world)])
+					
+					# Verify executable permissions
+					if not _verify_executable_permissions(command_path):
+						Status.post(tr("msg_fixing_executable_permissions") % command_path.get_file())
+						var chmod_result = OS.execute("chmod", ["+x", command_path], true)
+						if chmod_result != 0:
+							Status.post(tr("msg_chmod_failed") % [command_path.get_file(), chmod_result], Enums.MSG_ERROR)
+							return
+					
+					# Use direct execution with working directory change
+					_launch_game_with_working_dir(command_path, command_args, Paths.game_dir, world)
+					return
 		_:
 			Status.post(tr("Unsupported operating system for game launching"), Enums.MSG_ERROR)
 			return
@@ -652,14 +693,6 @@ func _start_game(world := "") -> void:
 			exe_file = "cataclysm-bn-tiles.exe"
 		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
 			exe_file = "cataclysm-tlg-tiles.exe"
-		game_name = exe_file
-	elif OS.get_name() == "OSX":
-		# For macOS, extract the actual game executable name
-		var exe_file = "cataclysm-tiles"
-		if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles")):
-			exe_file = "cataclysm-bn-tiles"
-		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles")):
-			exe_file = "cataclysm-tlg-tiles"
 		game_name = exe_file
 	
 	Status.post(tr("Starting game: %s") % game_name)
@@ -1222,6 +1255,154 @@ func _cleanup_automatic_backups() -> void:
 
 func _compare_backup_names(a, b) -> bool:
 	return a["name"] < b["name"]
+
+func _find_macos_executable(game_dir: String) -> Dictionary:
+	# Find the correct executable on macOS, handling both direct executables and .app bundles
+	
+	var d = Directory.new()
+	var game = Settings.read("game")
+	
+	# List of possible executable names based on game type
+	var exe_names = []
+	match game:
+		"bn":
+			exe_names = ["cataclysm-bn-tiles", "cataclysm-tiles"]
+		"tlg":
+			exe_names = ["cataclysm-tlg-tiles", "cataclysm-tiles"]
+		"eod":
+			exe_names = ["cataclysm-eod-tiles", "cataclysm-tiles"]
+		"tish":
+			exe_names = ["cataclysm-tish-tiles", "cataclysm-tiles"]
+		_:
+			exe_names = ["cataclysm-tiles"]
+	
+	# First, check for direct executables
+	for exe_name in exe_names:
+		var exe_path = game_dir.plus_file(exe_name)
+		if d.file_exists(exe_path):
+			return {"path": exe_path, "type": "direct", "name": exe_name}
+	
+	# If no direct executable found, look for .app bundles
+	var dir_contents = FS.list_dir(game_dir)
+	for item in dir_contents:
+		if item.ends_with(".app"):
+			var app_path = game_dir.plus_file(item)
+			var exe_info = _find_app_bundle_executable(app_path, exe_names)
+			if not exe_info.empty():
+				exe_info["type"] = "app_bundle"
+				exe_info["app_name"] = item
+				return exe_info
+	
+	return {}
+
+
+func _find_app_bundle_executable(app_path: String, preferred_names: Array) -> Dictionary:
+	# Find the executable inside a .app bundle
+	
+	var d = Directory.new()
+	var macos_path = app_path.plus_file("Contents").plus_file("MacOS")
+	
+	if not d.dir_exists(macos_path):
+		return {}
+	
+	var macos_contents = FS.list_dir(macos_path)
+	
+	# First, try to find preferred executable names
+	for preferred_name in preferred_names:
+		for exe_file in macos_contents:
+			if exe_file == preferred_name:
+				var full_path = macos_path.plus_file(exe_file)
+				if d.file_exists(full_path):
+					return {"path": full_path, "name": exe_file}
+	
+	# If no preferred name found, use the first executable file
+	for exe_file in macos_contents:
+		var full_path = macos_path.plus_file(exe_file)
+		if d.file_exists(full_path):
+			return {"path": full_path, "name": exe_file}
+	
+	return {}
+
+
+func _verify_executable_permissions(exe_path: String) -> bool:
+	# Verify that a file has executable permissions on Unix-like systems
+	
+	if OS.get_name() != "OSX" and OS.get_name() != "X11":
+		return true  # On Windows, we assume files are executable
+	
+	# Use 'test -x' to check if file is executable
+	var result = OS.execute("test", ["-x", exe_path], true)
+	return result == 0
+
+
+func _launch_game_with_working_dir(command_path: String, command_args: PoolStringArray, working_dir: String, world: String) -> void:
+	# Launch game with proper working directory and process monitoring
+	
+	# Show appropriate status message
+	var game_name = command_path.get_file()
+	Status.post(tr("Starting game: %s") % game_name)
+	Status.post(tr("msg_setting_working_dir") % working_dir)
+	
+	# For Unix systems, we need to use a shell command to change directory and launch
+	var shell_command = "cd '%s' && '%s'" % [working_dir, command_path]
+	for arg in command_args:
+		shell_command += " '%s'" % arg
+	
+	var final_command_path = "/bin/bash"
+	var final_command_args = ["-c", shell_command]
+	
+	# Launch game with process monitoring using the existing system
+	_game_process.execute(final_command_path, final_command_args, false)
+	
+	# Inform user about monitoring
+	if Settings.read("backup_after_closing"):
+		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+
+
+func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
+	# Launch macOS app bundle using 'open' command with proper monitoring
+	
+	var app_bundle_path = exe_info["path"].get_base_dir().get_base_dir().get_base_dir()  # Go up from Contents/MacOS to .app
+	var app_name = exe_info.get("app_name", app_bundle_path.get_file())
+	
+	Status.post(tr("Starting macOS app bundle: %s") % app_name)
+	
+	# Build 'open' command with arguments
+	var open_args = [app_bundle_path]
+	
+	# Add game arguments if needed
+	var has_args = false
+	if Paths.userdata != "":
+		if not has_args:
+			open_args.append("--args")
+			has_args = true
+		open_args.append("--userdir")
+		open_args.append(Paths.userdata)
+	
+	if world != "":
+		if not has_args:
+			open_args.append("--args")
+			has_args = true
+		open_args.append("--world")
+		open_args.append(world)
+	
+	# Launch using 'open' command with process monitoring
+	_game_process.execute("open", open_args, false)
+	
+	# Inform user about monitoring
+	if Settings.read("backup_after_closing"):
+		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+
+
+func _escape_path(path: String) -> String:
+	# Properly escape paths for Unix shells (bash/zsh)
+	if OS.get_name() == "Windows":
+		# Windows cmd.exe escaping
+		return "\"%s\"" % path.replace("\"", "\\\"")
+	else:
+		# Unix shell escaping - just quote the entire path
+		return path  # We'll use single quotes in the shell command
+
 
 func _exit_tree() -> void:
 	# Clean up game process monitoring if still active
