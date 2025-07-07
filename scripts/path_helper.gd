@@ -140,7 +140,15 @@ func _get_savegame_dir() -> String:
 
 func _get_mods_dir_default() -> String:
 	
-	return _get_game_dir().plus_file("data").plus_file("mods")
+	var game_dir = _get_game_dir()
+	
+	# On macOS, check if the game is packaged as an .app bundle
+	if OS.get_name() == "OSX":
+		var app_bundle_data_path = _get_app_bundle_data_path(game_dir)
+		if app_bundle_data_path != "":
+			return app_bundle_data_path.plus_file("mods")
+	
+	return game_dir.plus_file("data").plus_file("mods")
 
 
 func _get_mods_dir_user() -> String:
@@ -150,7 +158,15 @@ func _get_mods_dir_user() -> String:
 
 func _get_sound_dir_default() -> String:
 	
-	return _get_game_dir().plus_file("data").plus_file("sound")
+	var game_dir = _get_game_dir()
+	
+	# On macOS, check if the game is packaged as an .app bundle
+	if OS.get_name() == "OSX":
+		var app_bundle_data_path = _get_app_bundle_data_path(game_dir)
+		if app_bundle_data_path != "":
+			return app_bundle_data_path.plus_file("sound")
+	
+	return game_dir.plus_file("data").plus_file("sound")
 
 
 func _get_sound_dir_user() -> String:
@@ -160,7 +176,15 @@ func _get_sound_dir_user() -> String:
 
 func _get_gfx_dir_default() -> String:
 	
-	return _get_game_dir().plus_file("gfx")
+	var game_dir = _get_game_dir()
+	
+	# On macOS, check if the game is packaged as an .app bundle
+	if OS.get_name() == "OSX":
+		var app_bundle_gfx_path = _get_app_bundle_gfx_path(game_dir)
+		if app_bundle_gfx_path != "":
+			return app_bundle_gfx_path
+	
+	return game_dir.plus_file("gfx")
 
 
 func _get_gfx_dir_user() -> String:
@@ -170,7 +194,15 @@ func _get_gfx_dir_user() -> String:
 
 func _get_tileset_dir_default() -> String:
 	
-	return _get_game_dir().plus_file("gfx")
+	var game_dir = _get_game_dir()
+	
+	# On macOS, check if the game is packaged as an .app bundle
+	if OS.get_name() == "OSX":
+		var app_bundle_gfx_path = _get_app_bundle_gfx_path(game_dir)
+		if app_bundle_gfx_path != "":
+			return app_bundle_gfx_path
+	
+	return game_dir.plus_file("gfx")
 
 
 func _get_tileset_dir_user() -> String:
@@ -216,3 +248,45 @@ func _get_utils_dir() -> String:
 func _get_save_backups_dir() -> String:
 	
 	return _get_own_dir().plus_file(Settings.read("game")).plus_file("save_backups")
+
+
+func _get_app_bundle_gfx_path(game_dir: String) -> String:
+	# Check if the game directory contains a .app bundle and return the gfx path inside it
+	
+	if game_dir == "":
+		return ""
+	
+	var d = Directory.new()
+	var dir_contents = FS.list_dir(game_dir)
+	
+	for item in dir_contents:
+		if item.ends_with(".app"):
+			var app_path = game_dir.plus_file(item)
+			var resources_gfx_path = app_path.plus_file("Contents").plus_file("Resources").plus_file("gfx")
+			
+			# Check if the gfx directory exists inside Contents/Resources
+			if d.dir_exists(resources_gfx_path):
+				return resources_gfx_path
+	
+	return ""
+
+
+func _get_app_bundle_data_path(game_dir: String) -> String:
+	# Check if the game directory contains a .app bundle and return the data path inside it
+	
+	if game_dir == "":
+		return ""
+	
+	var d = Directory.new()
+	var dir_contents = FS.list_dir(game_dir)
+	
+	for item in dir_contents:
+		if item.ends_with(".app"):
+			var app_path = game_dir.plus_file(item)
+			var resources_data_path = app_path.plus_file("Contents").plus_file("Resources").plus_file("data")
+			
+			# Check if the data directory exists inside Contents/Resources
+			if d.dir_exists(resources_data_path):
+				return resources_data_path
+	
+	return ""
