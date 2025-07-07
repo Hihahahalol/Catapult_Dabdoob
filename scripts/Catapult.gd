@@ -1344,9 +1344,9 @@ func _launch_game_with_working_dir(command_path: String, command_args: PoolStrin
 	Status.post(tr("msg_setting_working_dir") % working_dir)
 	
 	# For Unix systems, we need to use a shell command to change directory and launch
-	var shell_command = "cd '%s' && '%s'" % [working_dir, command_path]
+	var shell_command = "cd '%s' && '%s'" % [_escape_path(working_dir), _escape_path(command_path)]
 	for arg in command_args:
-		shell_command += " '%s'" % arg
+		shell_command += " '%s'" % _escape_path(arg)
 	
 	var final_command_path = "/bin/bash"
 	var final_command_args = ["-c", shell_command]
@@ -1395,13 +1395,15 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 
 
 func _escape_path(path: String) -> String:
-	# Properly escape paths for Unix shells (bash/zsh)
+	# Properly escape paths for shells
 	if OS.get_name() == "Windows":
 		# Windows cmd.exe escaping
 		return "\"%s\"" % path.replace("\"", "\\\"")
 	else:
-		# Unix shell escaping - just quote the entire path
-		return path  # We'll use single quotes in the shell command
+		# Unix shell escaping - escape single quotes for use within single quotes
+		# Single quotes can't be escaped within single quotes, so we end the quote,
+		# add an escaped single quote, then start a new quoted string
+		return path.replace("'", "'\"'\"'")  # Replace ' with '"'"'
 
 
 func _exit_tree() -> void:
