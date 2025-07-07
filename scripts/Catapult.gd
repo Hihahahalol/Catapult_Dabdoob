@@ -471,18 +471,29 @@ func _get_release_key() -> String:
 	return key
 
 
+func _open_directory(path: String) -> void:
+	# Cross-platform directory opening that handles paths with spaces properly
+	
+	if OS.get_name() == "OSX":
+		# On macOS, use the 'open' command which handles spaces properly
+		OS.execute("open", [path], false)
+	else:
+		# On Windows and Linux, use the standard shell_open
+		OS.shell_open(path)
+
+
 func _on_GameDir_pressed() -> void:
 	
 	var gamedir = Paths.game_dir
 	if Directory.new().dir_exists(gamedir):
-		OS.shell_open(gamedir)
+		_open_directory(gamedir)
 
 
 func _on_UserDir_pressed() -> void:
 	
 	var userdir = Paths.userdata
 	if Directory.new().dir_exists(userdir):
-		OS.shell_open(userdir)
+		_open_directory(userdir)
 
 
 func _setup_ui() -> void:
@@ -717,7 +728,7 @@ func _on_InstallsList_item_activated(index: int) -> void:
 	var name = _lst_installs.get_item_text(index)
 	var path = _installs[Settings.read("game")][name]
 	if Directory.new().dir_exists(path):
-		OS.shell_open(path)
+		_open_directory(path)
 
 
 func _on_btnMakeActive_pressed() -> void:

@@ -35,7 +35,17 @@ var _last_active_install_dir := ""
 
 func _get_own_dir() -> String:
 	
-	return OS.get_executable_path().get_base_dir()
+	# On macOS, use the standard Application Support directory
+	if OS.get_name() == "OSX":
+		var home_dir = OS.get_environment("HOME")
+		if home_dir != "":
+			return home_dir.plus_file("Library").plus_file("Application Support").plus_file("Dabdoob")
+		else:
+			# Fallback if HOME environment variable is not available
+			return OS.get_user_data_dir().get_base_dir().get_base_dir().plus_file("Application Support").plus_file("Dabdoob")
+	else:
+		# On Windows and Linux, keep the current behavior (portable)
+		return OS.get_executable_path().get_base_dir()
 
 
 func _get_installs_summary() -> Dictionary:
