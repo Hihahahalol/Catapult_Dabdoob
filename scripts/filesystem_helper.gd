@@ -164,7 +164,7 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip or .tar.gz archive using 7-Zip on Windows, Linux, and macOS
+	# Extracts a .zip, .tar.gz, or .dmg archive using 7-Zip on Windows, Linux, and macOS
 	# Falls back to system utilities on Linux/macOS if 7-Zip is not available.
 	
 	var sevenzip_exe
@@ -197,6 +197,11 @@ func extract(path: String, dest_dir: String) -> void:
 	
 	var d = Directory.new()
 	
+	# Handle DMG files on macOS
+	if OS.get_name() == "OSX" and path.to_lower().ends_with(".dmg"):
+		_extract_dmg(path, dest_dir)
+		return
+	
 	# On Linux/macOS, prefer system utilities for better compatibility
 	if (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Using system tar for .tar.gz extraction")
@@ -215,20 +220,33 @@ func extract(path: String, dest_dir: String) -> void:
 		# On Windows, 7-Zip should always be available
 		if not d.file_exists(sevenzip_exe):
 			Status.post("[error] 7za.exe not found at: " + sevenzip_exe, Enums.MSG_ERROR)
+			last_extract_result = 1
 			emit_signal("extract_done")
 			return
 		Status.post("[debug] Extracting: " + path + " to: " + dest_dir)
 		command = command_sevenzip_windows
 	else:
 		Status.post(tr("msg_extract_unsupported") % path.get_file(), Enums.MSG_ERROR)
+		last_extract_result = 1
 		emit_signal("extract_done")
 		return
 		
 	if not d.dir_exists(dest_dir):
-		d.make_dir_recursive(dest_dir)
+		var make_dir_result = d.make_dir_recursive(dest_dir)
+		if make_dir_result != OK:
+			Status.post(tr("msg_extract_create_dir_failed") % [dest_dir, make_dir_result], Enums.MSG_ERROR)
+			last_extract_result = make_dir_result
+			emit_signal("extract_done")
+			return
 		
 	Status.post(tr("msg_extracting_file") % path.get_file())
 	Status.post("[debug] Extract command: " + str(command), Enums.MSG_DEBUG)
+	
+	# Check if extraction tool is available
+	if not _check_extraction_tool_available(command["name"]):
+		last_extract_result = 127  # Command not found
+		emit_signal("extract_done")
+		return
 		
 	var oew = OSExecWrapper.new()
 	oew.execute(command["name"], command["args"], false)
@@ -239,10 +257,134 @@ func extract(path: String, dest_dir: String) -> void:
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
 		if oew.output.size() > 0:
 			for i in range(oew.output.size()):
-				Status.post("[7-Zip output] " + str(oew.output[i]), Enums.MSG_ERROR)
+				Status.post("[Extract output] " + str(oew.output[i]), Enums.MSG_ERROR)
 		else:
-			Status.post("[7-Zip] No output captured", Enums.MSG_ERROR)
+			Status.post("[Extract] No output captured", Enums.MSG_ERROR)
 	emit_signal("extract_done")
+
+
+func _extract_dmg(dmg_path: String, dest_dir: String) -> void:
+	# Extract DMG files on macOS using hdiutil
+	
+	if OS.get_name() != "OSX":
+		Status.post(tr("msg_dmg_only_macos"), Enums.MSG_ERROR)
+		last_extract_result = 1
+		emit_signal("extract_done")
+		return
+	
+	var d = Directory.new()
+	if not d.dir_exists(dest_dir):
+		var make_dir_result = d.make_dir_recursive(dest_dir)
+		if make_dir_result != OK:
+			Status.post(tr("msg_extract_create_dir_failed") % [dest_dir, make_dir_result], Enums.MSG_ERROR)
+			last_extract_result = make_dir_result
+			emit_signal("extract_done")
+			return
+	
+	Status.post(tr("msg_mounting_dmg") % dmg_path.get_file())
+	
+	# Mount the DMG
+	var mount_command = {
+		"name": "hdiutil",
+		"args": ["attach", "-readonly", "-nobrowse", "-plist", dmg_path]
+	}
+	
+	var oew = OSExecWrapper.new()
+	oew.execute(mount_command["name"], mount_command["args"], true)
+	yield(oew, "process_exited")
+	
+	if oew.exit_code != 0:
+		Status.post(tr("msg_dmg_mount_failed") % oew.exit_code, Enums.MSG_ERROR)
+		last_extract_result = oew.exit_code
+		emit_signal("extract_done")
+		return
+	
+	# Parse the mount point from plist output
+	var mount_point = _parse_dmg_mount_point(oew.output)
+	if mount_point == "":
+		Status.post(tr("msg_dmg_mount_point_failed"), Enums.MSG_ERROR)
+		last_extract_result = 1
+		emit_signal("extract_done")
+		return
+	
+	Status.post(tr("msg_copying_dmg_contents") % mount_point)
+	
+	# Copy contents from mounted DMG
+	copy_dir(mount_point, dest_dir)
+	yield(self, "copy_dir_done")
+	
+	# Unmount the DMG
+	Status.post(tr("msg_unmounting_dmg"))
+	var unmount_command = {
+		"name": "hdiutil",
+		"args": ["detach", mount_point]
+	}
+	
+	var unmount_oew = OSExecWrapper.new()
+	unmount_oew.execute(unmount_command["name"], unmount_command["args"], false)
+	yield(unmount_oew, "process_exited")
+	
+	if unmount_oew.exit_code != 0:
+		Status.post(tr("msg_dmg_unmount_warning") % unmount_oew.exit_code, Enums.MSG_WARNING)
+	
+	last_extract_result = 0
+	emit_signal("extract_done")
+
+
+func _parse_dmg_mount_point(plist_output: Array) -> String:
+	# Parse the mount point from hdiutil plist output
+	
+	if plist_output.empty():
+		return ""
+	
+	var plist_text = ""
+	for line in plist_output:
+		plist_text += str(line) + "\n"
+	
+	# Look for mount-point in the plist output
+	var lines = plist_text.split("\n")
+	var found_mount_point = false
+	
+	for i in range(lines.size()):
+		var line = lines[i].strip_edges()
+		if line == "<key>mount-point</key>":
+			found_mount_point = true
+		elif found_mount_point and line.begins_with("<string>"):
+			# Extract mount point from <string>/Volumes/something</string>
+			var start_pos = line.find("<string>") + 8
+			var end_pos = line.find("</string>")
+			if end_pos > start_pos:
+				return line.substr(start_pos, end_pos - start_pos)
+	
+	return ""
+
+
+func _check_extraction_tool_available(tool_name: String) -> bool:
+	# Check if the extraction tool is available on the system
+	
+	var check_command = ""
+	var check_args = []
+	
+	match OS.get_name():
+		"Windows":
+			if tool_name == "cmd":
+				return true  # cmd is always available on Windows
+			else:
+				check_command = "where"
+				check_args = [tool_name]
+		"OSX", "X11":
+			check_command = "which"
+			check_args = [tool_name]
+	
+	if check_command == "":
+		return true  # Assume available if we can't check
+	
+	var result = OS.execute(check_command, check_args, true)
+	if result != 0:
+		Status.post(tr("msg_extract_tool_not_found") % tool_name, Enums.MSG_ERROR)
+		return false
+	
+	return true
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
