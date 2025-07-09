@@ -1141,7 +1141,7 @@ margin_top = 304.0
 margin_right = 577.0
 margin_bottom = 332.0
 size_flags_horizontal = 4
-hint_tooltip = "Automatically create a backup of your saves after closing the game"
+hint_tooltip = "Automatically create a backup of your saves after closing the game\n(Requires launcher to stay open)"
 text = "cbtn_backup_after_closing"
 
 [node name="MaxAutoBackups" type="HBoxContainer" parent="Main/Tabs/Backups"]
