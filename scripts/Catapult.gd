@@ -714,6 +714,12 @@ func _start_game(world := "") -> void:
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
 		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+	
+	# Close launcher immediately after starting game if setting is disabled
+	if _launcher_should_close_after_game:
+		Status.post(tr("Closing launcher..."))
+		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		get_tree().quit()
 
 
 func _on_game_process_exited() -> void:
@@ -741,12 +747,6 @@ func _on_game_process_exited() -> void:
 	# Clean up the process wrapper
 	if _game_process:
 		_game_process = null
-	
-	# Close launcher if that was the original setting
-	if _launcher_should_close_after_game:
-		Status.post(tr("Closing launcher..."))
-		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
-		get_tree().quit()
 
 
 func _on_InstallsList_item_selected(index: int) -> void:
@@ -1368,6 +1368,12 @@ func _launch_game_with_working_dir(command_path: String, command_args: PoolStrin
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
 		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+	
+	# Close launcher immediately after starting game if setting is disabled
+	if _launcher_should_close_after_game:
+		Status.post(tr("Closing launcher..."))
+		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		get_tree().quit()
 
 
 func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
@@ -1403,6 +1409,12 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
 		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+	
+	# Close launcher immediately after starting game if setting is disabled
+	if _launcher_should_close_after_game:
+		Status.post(tr("Closing launcher..."))
+		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		get_tree().quit()
 
 
 func _escape_path(path: String) -> String:
@@ -1422,5 +1434,3 @@ func _exit_tree() -> void:
 	if _game_process:
 		_game_process = null
 	
-	# Note: Backup creation is now handled in _on_game_process_exited()
-	# when the game actually closes, not when the launcher closes
