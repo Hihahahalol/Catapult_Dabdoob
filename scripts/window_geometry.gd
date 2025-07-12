@@ -79,7 +79,7 @@ func _on_SceneTree_idle():
 	ProjectSettings.call_deferred("set_setting", "display/window/per_pixel_transparency/allowed", false)
 	OS.set_deferred("window_per_pixel_transparency_enabled", false)
 	OS.set_deferred("window_borderless", false)
-	OS.call_deferred("set_icon", load("res://icons/appicon.svg").get_data())
+	OS.call_deferred("set_icon", load("res://icons/appiconpng.png").get_data())
 	recover_window_state()
 	_apply_scale()
 
