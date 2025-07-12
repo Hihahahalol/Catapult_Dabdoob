@@ -1458,29 +1458,43 @@ margin_right = -7.5
 margin_bottom = -7.5
 script = ExtResource( 48 )
 
-[node name="AppInfo" type="VBoxContainer" parent="Main/Tabs/About"]
+[node name="ThankYou" type="VBoxContainer" parent="Main/Tabs/About"]
 margin_right = 577.0
-margin_bottom = 200.0
+margin_bottom = 236.0
 
-[node name="AppTitle" type="Label" parent="Main/Tabs/About/AppInfo"]
+[node name="ThankYouTitle" type="Label" parent="Main/Tabs/About/ThankYou"]
 margin_right = 577.0
 margin_bottom = 32.0
-custom_fonts/font = null
-text = "about_app_title"
+custom_colors/font_color = Color( 0.0, 0.8, 0.8, 1.0 )
+text = "thank_you_title"
 align = 1
 valign = 1
 
-[node name="AppVersion" type="Label" parent="Main/Tabs/About/AppInfo"]
+[node name="ThankYouContent" type="RichTextLabel" parent="Main/Tabs/About/ThankYou"]
 margin_top = 36.0
 margin_right = 577.0
-margin_bottom = 60.0
-text = "Version: 1.0.0"
-align = 1
+margin_bottom = 200.0
+rect_min_size = Vector2( 0, 164 )
+focus_mode = 2
+bbcode_enabled = true
+bbcode_text = "thank_you_message"
+text = "thank_you_message"
+fit_content_height = true
+selection_enabled = true
+
+[node name="ThankYouSeparator" type="HSeparator" parent="Main/Tabs/About"]
+margin_top = 240.0
+margin_right = 577.0
+margin_bottom = 248.0
+
+[node name="AppInfo" type="VBoxContainer" parent="Main/Tabs/About"]
+margin_top = 252.0
+margin_right = 577.0
+margin_bottom = 328.0
 
 [node name="AppDescription" type="RichTextLabel" parent="Main/Tabs/About/AppInfo"]
-margin_top = 64.0
 margin_right = 577.0
-margin_bottom = 140.0
+margin_bottom = 76.0
 rect_min_size = Vector2( 0, 76 )
 focus_mode = 2
 bbcode_enabled = true
@@ -1490,14 +1504,14 @@ fit_content_height = true
 selection_enabled = true
 
 [node name="HSeparator" type="HSeparator" parent="Main/Tabs/About"]
-margin_top = 144.0
-margin_right = 577.0
-margin_bottom = 152.0
-
-[node name="Links" type="VBoxContainer" parent="Main/Tabs/About"]
-margin_top = 216.0
+margin_top = 332.0
 margin_right = 577.0
 margin_bottom = 340.0
+
+[node name="Links" type="VBoxContainer" parent="Main/Tabs/About"]
+margin_top = 344.0
+margin_right = 577.0
+margin_bottom = 468.0
 
 [node name="LinksTitle" type="Label" parent="Main/Tabs/About/Links"]
 margin_right = 577.0

@@ -1,10 +1,10 @@
 extends VBoxContainer
 
 
-onready var _version_label = $AppInfo/AppVersion
-onready var _title_label = $AppInfo/AppTitle
 onready var _description_label = $AppInfo/AppDescription
 onready var _links_title = $Links/LinksTitle
+onready var _thank_you_title = $ThankYou/ThankYouTitle
+onready var _thank_you_content = $ThankYou/ThankYouContent
 
 
 func _ready() -> void:
@@ -12,19 +12,16 @@ func _ready() -> void:
 
 
 func _set_localized_text() -> void:
-	# Set the version dynamically
-	var version = Settings.get_hardcoded_version()
-	_version_label.text = "Version: " + version
-	
-	# Set localized text
-	_title_label.text = tr("about_app_title")
-	
 	# Format description with colored "Dabdoob" text
 	var desc_text = tr("about_app_desc")
 	desc_text = desc_text.replace("Dabdoob", "[color=#CD853F]Dabdoob[/color]")
 	_description_label.bbcode_text = desc_text
 	
 	_links_title.text = tr("about_links")
+	
+	# Set thank you section text
+	_thank_you_title.text = tr("thank_you_title")
+	_thank_you_content.bbcode_text = tr("thank_you_message")
 
 
 func _on_Tabs_tab_changed(tab: int) -> void:
