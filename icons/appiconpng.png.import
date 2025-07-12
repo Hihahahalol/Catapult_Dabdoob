@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/appicon.svg-8cc715ee4138ca8734017aadc766ac44.stex"
+path="res://.import/appiconpng.png-1ce7118685751047d652a1fae2be4112.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icons/appicon.svg"
-dest_files=[ "res://.import/appicon.svg-8cc715ee4138ca8734017aadc766ac44.stex" ]
+source_file="res://icons/appiconpng.png"
+dest_files=[ "res://.import/appiconpng.png-1ce7118685751047d652a1fae2be4112.stex" ]
 
 [params]
 
