@@ -37,6 +37,10 @@ None required. The launcher is a single, self-contained executable. Just [downlo
 
 - For Arch Linux, an [official AUR package](https://aur.archlinux.org/packages/catapult-bin) is available.
 
+### Mac OS
+
+ - You only need to disable gatekeeper for Dabdoob, or disable it altogether. Check this guide for more information: https://disable-gatekeeper.github.io/
+
 ## System requirements
 
 - 64-bit operating system.
