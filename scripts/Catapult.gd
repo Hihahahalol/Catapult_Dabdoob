@@ -1210,7 +1210,7 @@ powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%s"
 		yield(get_tree().create_timer(2.0), "timeout")
 		get_tree().quit()
 	else:
-		Status.post(tr("Automatic updates are only supported on Windows. Please update manually."))
+		Status.post(tr("Automatic updates are only supported on Windows and MacOS. Please update manually."))
 		OS.shell_open(_release_page_url)
 		_cleanup_update(null, OS.get_user_data_dir().plus_file("update_temp"))
 
