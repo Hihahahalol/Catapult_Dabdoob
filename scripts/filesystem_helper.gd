@@ -309,9 +309,21 @@ func _extract_dmg(dmg_path: String, dest_dir: String) -> void:
 	
 	Status.post(tr("msg_copying_dmg_contents") % mount_point)
 	
-	# Copy contents from mounted DMG
-	copy_dir(mount_point, dest_dir)
-	yield(self, "copy_dir_done")
+	# Copy contents from mounted DMG, but skip the standard "Applications" symlink that many
+	# macOS installers include. Copy only the real game files/directories to avoid
+	# recursively copying the entire /Applications folder onto the user's disk.
+	for item in list_dir(mount_point):
+		if item == "Applications":
+			continue  # Ignore the /Applications symlink present in most DMGs
+		var item_path = mount_point.plus_file(item)
+		if d.dir_exists(item_path):
+			copy_dir(item_path, dest_dir)
+			yield(self, "copy_dir_done")
+		elif d.file_exists(item_path):
+			var err = d.copy(item_path, dest_dir.plus_file(item))
+			if err:
+				Status.post(tr("msg_copy_file_failed") % [item, err], Enums.MSG_ERROR)
+				Status.post(tr("msg_copy_file_failed_details") % [item_path, dest_dir.plus_file(item)])
 	
 	# Unmount the DMG
 	Status.post(tr("msg_unmounting_dmg"))

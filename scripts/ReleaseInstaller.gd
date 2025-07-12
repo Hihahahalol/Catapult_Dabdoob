@@ -43,7 +43,7 @@ func install_release(release_info: Dictionary, game: String, update_in: String =
 				emit_signal("operation_finished")
 				return
 			
-			Helpers.create_info_file(extracted_root, release_info["name"])
+			# Helpers.create_info_file(extracted_root, release_info["name"])
 			
 			var target_dir: String
 			if update_in:
@@ -53,8 +53,16 @@ func install_release(release_info: Dictionary, game: String, update_in: String =
 			else:
 				target_dir = Paths.next_install_dir
 			
-			FS.move_dir(extracted_root, target_dir)
+			# If the extracted root is a macOS .app bundle, preserve the bundle as a whole
+			var dest_for_move := target_dir
+			if OS.get_name() == "OSX" and extracted_root.ends_with(".app"):
+				dest_for_move = target_dir.plus_file(extracted_root.get_file())
+			
+			FS.move_dir(extracted_root, dest_for_move)
 			yield(FS, "move_dir_done")
+			
+			# Re-create the installation info file at the game0 root so Catapult can locate it
+			Helpers.create_info_file(target_dir, release_info["name"])
 			
 			# Set executable permissions on macOS/Linux after installation
 			if OS.get_name() == "OSX" or OS.get_name() == "X11":
