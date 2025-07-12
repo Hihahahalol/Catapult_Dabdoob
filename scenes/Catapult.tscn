@@ -1460,7 +1460,7 @@ script = ExtResource( 48 )
 
 [node name="ThankYou" type="VBoxContainer" parent="Main/Tabs/About"]
 margin_right = 577.0
-margin_bottom = 236.0
+margin_bottom = 136.0
 
 [node name="ThankYouTitle" type="Label" parent="Main/Tabs/About/ThankYou"]
 margin_right = 577.0
@@ -1473,8 +1473,8 @@ valign = 1
 [node name="ThankYouContent" type="RichTextLabel" parent="Main/Tabs/About/ThankYou"]
 margin_top = 36.0
 margin_right = 577.0
-margin_bottom = 200.0
-rect_min_size = Vector2( 0, 164 )
+margin_bottom = 100.0
+rect_min_size = Vector2( 0, 100 )
 focus_mode = 2
 bbcode_enabled = true
 bbcode_text = "thank_you_message"
@@ -1483,14 +1483,14 @@ fit_content_height = true
 selection_enabled = true
 
 [node name="ThankYouSeparator" type="HSeparator" parent="Main/Tabs/About"]
-margin_top = 240.0
+margin_top = 140.0
 margin_right = 577.0
-margin_bottom = 248.0
+margin_bottom = 148.0
 
 [node name="AppInfo" type="VBoxContainer" parent="Main/Tabs/About"]
-margin_top = 252.0
+margin_top = 152.0
 margin_right = 577.0
-margin_bottom = 328.0
+margin_bottom = 288.0
 
 [node name="AppDescription" type="RichTextLabel" parent="Main/Tabs/About/AppInfo"]
 margin_right = 577.0
@@ -1504,14 +1504,14 @@ fit_content_height = true
 selection_enabled = true
 
 [node name="HSeparator" type="HSeparator" parent="Main/Tabs/About"]
-margin_top = 332.0
+margin_top = 232.0
 margin_right = 577.0
-margin_bottom = 340.0
+margin_bottom = 240.0
 
 [node name="Links" type="VBoxContainer" parent="Main/Tabs/About"]
-margin_top = 344.0
+margin_top = 244.0
 margin_right = 577.0
-margin_bottom = 468.0
+margin_bottom = 368.0
 
 [node name="LinksTitle" type="Label" parent="Main/Tabs/About/Links"]
 margin_right = 577.0
