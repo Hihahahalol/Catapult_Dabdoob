@@ -26,10 +26,18 @@
 "tab_settings","Settings"
 "tab_about","About"
 "about_app_title","Dabdoob - Cataclysm Launcher"
-"about_app_desc","Dabdoob is a launcher that continues the development of the now abandoned Catapult launcher. It is developed and maintained by a single person. You can find me on Discord and Github in the links below. 
+"about_app_desc","Dabdoob continues the development of the now abandoned Catapult launcher. It is developed and maintained by a single person. You can find me on Discord and Github in the links below. 
 
-If you appreciate the work of any of the creators for Cataclysm and it's Mods/Tilesets/Soundpacks don't forget to check them out and if you appreciate the work I do, consider donating via the link below!"
+If you appreciate the work of any of the creators for Cataclysm and it's Mods/Tilesets/Soundpacks don't forget to check them out and if you appreciate the work I do, consider donating on kofi!"
 "about_links","Links"
+"thank_you_title","Thank you for downloading Dabdoob!"
+"thank_you_message","Thank you for installing Dabdoob! I hope you enjoy it.
+
+This may not be relevant to you right now, but if you are feeling depressed, anxious or unsure of yourself, please reach out to a loved one, a friend or someone you trust.
+This does not make you a burden.
+The way you may feel is not final and things will get better.
+
+I wish you a pleasant day and I hope you have fun with my launcher."
 ,
 "msg_extract_create_dir_failed","Failed to create extraction directory %s (error: %s)"
 "msg_extract_tool_not_found","Extraction tool not found: %s"
