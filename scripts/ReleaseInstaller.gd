@@ -180,18 +180,47 @@ func _set_app_bundle_permissions(install_dir: String) -> void:
 	for item in contents:
 		if item.ends_with(".app"):
 			var app_path = install_dir.plus_file(item)
-			var exe_path = app_path.plus_file("Contents").plus_file("MacOS")
 			
-			if d.dir_exists(exe_path):
-				var exe_contents = FS.list_dir(exe_path)
-				for exe_file in exe_contents:
-					var full_exe_path = exe_path.plus_file(exe_file)
+			# Check Contents/MacOS directory (standard location)
+			var macos_path = app_path.plus_file("Contents").plus_file("MacOS")
+			if d.dir_exists(macos_path):
+				var macos_contents = FS.list_dir(macos_path)
+				for exe_file in macos_contents:
+					var full_exe_path = macos_path.plus_file(exe_file)
 					if d.file_exists(full_exe_path):
 						var result = OS.execute("chmod", ["+x", full_exe_path], true)
 						if result == 0:
 							Status.post(tr("msg_install_set_app_executable") % [item, exe_file], Enums.MSG_DEBUG)
 						else:
 							Status.post(tr("msg_install_app_chmod_failed") % [item, exe_file, result], Enums.MSG_WARNING)
+			
+			# Check Contents/Resources directory (alternative location for some games like TLG)
+			var resources_path = app_path.plus_file("Contents").plus_file("Resources")
+			if d.dir_exists(resources_path):
+				var resources_contents = FS.list_dir(resources_path)
+				for exe_file in resources_contents:
+					var full_exe_path = resources_path.plus_file(exe_file)
+					if d.file_exists(full_exe_path):
+						# Check if this looks like an executable (common game executable patterns)
+						var is_executable = false
+						var exe_patterns = [
+							"cataclysm-tiles", "cataclysm-bn-tiles", "cataclysm-tlg-tiles",
+							"cataclysm-eod-tiles", "cataclysm-tish-tiles"
+						]
+						
+						for pattern in exe_patterns:
+							if exe_file == pattern:
+								is_executable = true
+								break
+						
+						# Also check if file has no extension (typical for Unix executables)
+						if not is_executable and not exe_file.contains("."):
+							is_executable = true
+						
+						if is_executable:
+							var result = OS.execute("chmod", ["+x", full_exe_path], true)
+							if result == 0:
+								Status.post(tr("msg_install_set_app_executable") % [item, "Resources/" + exe_file], Enums.MSG_DEBUG)
 
 
 func remove_release_by_name(name: String) -> void:
