@@ -970,6 +970,12 @@ func _on_BtnUpdate_pressed() -> void:
 		Status.post(tr("No update available"))
 
 func _perform_update() -> void:
+	# Check if automatic updates are supported on this platform
+	if OS.get_name() != "Windows":
+		Status.post(tr("Automatic updates are only supported on Windows. Please update manually."))
+		OS.shell_open(_release_page_url)
+		return
+	
 	# Check if we have download URLs available
 	if _download_urls.empty():
 		Status.post(tr("No download URLs found. Opening release page in browser..."))
@@ -1204,15 +1210,10 @@ powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%s"
 	Status.post(tr("Update logs will be saved to: %s") % OS.get_user_data_dir().plus_file("update_log.txt"))
 	
 	# Execute the batch file and exit
-	if OS.get_name() == "Windows":
-		# Run the PowerShell script without showing a window
-		OS.execute("cmd.exe", ["/c", "start", "/b", bat_path], false)
-		yield(get_tree().create_timer(2.0), "timeout")
-		get_tree().quit()
-	else:
-		Status.post(tr("Automatic updates are only supported on Windows and MacOS. Please update manually."))
-		OS.shell_open(_release_page_url)
-		_cleanup_update(null, OS.get_user_data_dir().plus_file("update_temp"))
+	# Run the PowerShell script without showing a window
+	OS.execute("cmd.exe", ["/c", "start", "/b", bat_path], false)
+	yield(get_tree().create_timer(2.0), "timeout")
+	get_tree().quit()
 
 func _cleanup_update(http_request, temp_dir):
 	if http_request:
