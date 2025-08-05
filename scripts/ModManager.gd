@@ -56,7 +56,7 @@ func parse_mods_dir(mods_dir: String) -> Dictionary:
 	
 	for subdir in FS.list_dir(mods_dir):
 		var f = File.new()
-		var modinfo = mods_dir.plus_file(subdir).plus_file("/modinfo.json")
+		var modinfo = mods_dir.plus_file(subdir).plus_file("modinfo.json")
 		
 		if f.file_exists(modinfo):
 			
@@ -84,7 +84,7 @@ func parse_mods_dir(mods_dir: String) -> Dictionary:
 							info["id"] = info["name"]
 					
 					result[info["id"]] = {
-						"location": mods_dir + "/" + subdir,
+						"location": mods_dir.plus_file(subdir),
 						"modinfo": info
 					}
 					break
@@ -691,6 +691,21 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	var archive = Paths.cache_dir.plus_file(filename)
 	var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
 	
+	# Ensure the mods directory exists with proper permissions on macOS
+	var d = Directory.new()
+	if not d.dir_exists(mods_dir):
+		var err = d.make_dir_recursive(mods_dir)
+		if err:
+			Status.post("Failed to create mods directory: %s (error: %d)" % [mods_dir, err], Enums.MSG_ERROR)
+			emit_signal("_done_installing_mod")
+			return
+		
+		# On macOS, ensure the directory has proper permissions
+		if OS.get_name() == "OSX":
+			var chmod_result = OS.execute("chmod", ["755", mods_dir], true)
+			if chmod_result != 0:
+				Status.post("Warning: Could not set mods directory permissions", Enums.MSG_WARNING)
+	
 	# Save the downloaded data to cache
 	var file = File.new()
 	if file.open(archive, File.WRITE) != OK:
@@ -700,6 +715,12 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	
 	file.store_var(body, true)
 	file.close()
+	
+	# On macOS, ensure the downloaded file has proper permissions
+	if OS.get_name() == "OSX":
+		var chmod_result = OS.execute("chmod", ["644", archive], true)
+		if chmod_result != 0:
+			Status.post("Warning: Could not set archive file permissions", Enums.MSG_WARNING)
 	
 	# Extract the mod
 	FS.extract(archive, tmp_dir)
@@ -711,7 +732,7 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 		# Find the extracted directory (GitHub releases can have various structures)
 		var contents = FS.list_dir(tmp_dir)
 		if contents.size() > 0:
-			var extracted_dir = tmp_dir + "/" + contents[0]
+			var extracted_dir = tmp_dir.plus_file(contents[0])
 			
 			# Special handling for Arcana mod - contains multiple mods for different game forks
 			if mod_name == "Arcana and Magic Items":
@@ -720,6 +741,7 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 					Status.post("Installing Arcana mod from: %s" % arcana_mod_dir)
 					FS.move_dir(arcana_mod_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
+					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
 					Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
@@ -729,11 +751,13 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 				if mod_dir != "":
 					FS.move_dir(mod_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
+					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
 					# Fallback to installing the entire directory if no modinfo.json found
 					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
+					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 		else:
 			Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
@@ -749,6 +773,22 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	yield(FS, "rm_dir_done")
 	
 	emit_signal("_done_installing_mod")
+
+
+# Fix file permissions for installed mods on macOS
+func _fix_mod_permissions_macos(mod_path: String) -> void:
+	if OS.get_name() != "OSX":
+		return
+		
+	# Set directory permissions recursively
+	var chmod_result = OS.execute("chmod", ["-R", "755", mod_path], true)
+	if chmod_result != 0:
+		Status.post("Warning: Could not set mod directory permissions for %s" % mod_path, Enums.MSG_WARNING)
+	
+	# Set file permissions recursively  
+	var find_result = OS.execute("find", [mod_path, "-type", "f", "-exec", "chmod", "644", "{}", "+"], true)
+	if find_result != 0:
+		Status.post("Warning: Could not set mod file permissions for %s" % mod_path, Enums.MSG_WARNING)
 
 
 func _download_and_install_mod(download_url: String, mod_name: String) -> void:
@@ -1192,7 +1232,7 @@ func _find_mod_directory(extracted_dir: String) -> String:
 	Status.post("Searching for mod directory in: %s" % extracted_dir)
 	
 	# Check if the root directory contains modinfo.json
-	var modinfo_path = extracted_dir + "/modinfo.json"
+	var modinfo_path = extracted_dir.plus_file("modinfo.json")
 	var file = File.new()
 	if file.file_exists(modinfo_path):
 		Status.post("Found modinfo.json in root directory")
@@ -1205,13 +1245,13 @@ func _find_mod_directory(extracted_dir: String) -> String:
 	Status.post("Found %d subdirectories to check: %s" % [len(contents), str(contents)])
 	
 	for subdir in contents:
-		var subdir_path = extracted_dir + "/" + subdir
+		var subdir_path = extracted_dir.plus_file(subdir)
 		
 		# Skip non-directories
 		if not Directory.new().dir_exists(subdir_path):
 			continue
 			
-		var subdir_modinfo = subdir_path + "/modinfo.json"
+		var subdir_modinfo = subdir_path.plus_file("modinfo.json")
 		Status.post("Checking for modinfo.json at: %s" % subdir_modinfo)
 		
 		if file.file_exists(subdir_modinfo):
@@ -1239,9 +1279,9 @@ func _find_mod_directory(extracted_dir: String) -> String:
 			# Also check for deeper nested modinfo.json files (up to 2 levels deep)
 			var nested_contents = FS.list_dir(subdir_path)
 			for nested_subdir in nested_contents:
-				var nested_path = subdir_path + "/" + nested_subdir
+				var nested_path = subdir_path.plus_file(nested_subdir)
 				if Directory.new().dir_exists(nested_path):
-					var nested_modinfo = nested_path + "/modinfo.json"
+					var nested_modinfo = nested_path.plus_file("modinfo.json")
 					if file.file_exists(nested_modinfo):
 						Status.post("Found nested modinfo.json at: %s" % nested_modinfo)
 						
@@ -1282,8 +1322,8 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 	
 	# Find the appropriate mod directory
 	for subdir in mod_contents:
-		var subdir_path = extracted_dir + "/" + subdir
-		var modinfo_path = subdir_path + "/modinfo.json"
+		var subdir_path = extracted_dir.plus_file(subdir)
+		var modinfo_path = subdir_path.plus_file("modinfo.json")
 		
 		# Check if this subdirectory contains a modinfo.json
 		var file = File.new()
@@ -1325,8 +1365,8 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 		# Fallback: look for any directory containing "Arcana" 
 		for subdir in mod_contents:
 			if subdir.to_lower().find("arcana") != -1:
-				var subdir_path = extracted_dir + "/" + subdir
-				var modinfo_path = subdir_path + "/modinfo.json"
+				var subdir_path = extracted_dir.plus_file(subdir)
+				var modinfo_path = subdir_path.plus_file("modinfo.json")
 				var file = File.new()
 				if file.file_exists(modinfo_path):
 					target_mod_dir = subdir_path

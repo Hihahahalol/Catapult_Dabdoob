@@ -116,7 +116,7 @@ func install_tileset(tileset_index: int, from_file = null, reinstall = false, ke
 			return
 		
 	if reinstall:
-		FS.rm_dir(tileset_dir + "/" + tileset["name"])
+		FS.rm_dir(tileset_dir.plus_file(tileset["name"]))
 		yield(FS, "rm_dir_done")
 		
 	FS.extract(archive, tmp_dir)
@@ -126,10 +126,18 @@ func install_tileset(tileset_index: int, from_file = null, reinstall = false, ke
 	
 	if FS.last_extract_result == 0:
 		# Check if the expected directory exists after extraction
-		var source_path = tmp_dir + "/" + tileset["internal_path"]
+		var source_path = tmp_dir.plus_file(tileset["internal_path"])
 		if Directory.new().dir_exists(source_path):
-			FS.move_dir(source_path, tileset_dir + "/" + tileset["name"])
+			FS.move_dir(source_path, tileset_dir.plus_file(tileset["name"]))
 			yield(FS, "move_dir_done")
+			
+			# On macOS, ensure proper permissions for the installed tileset
+			if OS.get_name() == "OSX":
+				var installed_tileset_path = tileset_dir.plus_file(tileset["name"])
+				var chmod_result = OS.execute("chmod", ["-R", "755", installed_tileset_path], true)
+				if chmod_result != 0:
+					Status.post("Warning: Could not set tileset directory permissions", Enums.MSG_WARNING)
+			
 			Status.post(tr("msg_tileset_installed"))
 		else:
 			Status.post(tr("msg_tileset_extraction_failed") % tileset["internal_path"], Enums.MSG_ERROR)

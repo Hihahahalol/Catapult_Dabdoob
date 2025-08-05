@@ -45,12 +45,19 @@ func download_file(url: String, target_dir: String, target_filename: String) -> 
 			Status.post(tr("msg_download_failed") % target_filename, Enums.MSG_ERROR)
 			emit_signal("download_finished")
 			return
+		
+		# On macOS, ensure the directory has proper permissions
+		if OS.get_name() == "OSX":
+			var chmod_result = OS.execute("chmod", ["755", target_dir], true)
+			if chmod_result != 0:
+				Status.post("Warning: Could not set directory permissions for %s" % target_dir, Enums.MSG_WARNING)
 	
 	Status.post(tr("msg_downloading_file") % target_filename)
 	emit_signal("download_started")
 	_current_filename = target_filename
 	_current_file_path = target_dir.plus_file(target_filename)
-	_http.download_file = target_dir + "/" + target_filename
+	# Fix: Use proper path joining instead of string concatenation
+	_http.download_file = target_dir.plus_file(target_filename)
 	_http.request(url)
 	_download_ongoing = true
 	var last_progress_time = OS.get_system_time_msecs()

@@ -168,15 +168,23 @@ func install_pack(soundpack_index: int, from_file = null, reinstall = false, kee
 			return
 		
 	if reinstall:
-		FS.rm_dir(sound_dir + "/" + pack["name"])
+		FS.rm_dir(sound_dir.plus_file(pack["name"]))
 		yield(FS, "rm_dir_done")
 		
 	FS.extract(archive, tmp_dir)
 	yield(FS, "extract_done")
 	if not keep_archive and not Settings.read("keep_cache"):
 		Directory.new().remove(archive)
-	FS.move_dir(tmp_dir + "/" + pack["internal_path"], sound_dir + "/" + pack["name"])
+	FS.move_dir(tmp_dir.plus_file(pack["internal_path"]), sound_dir.plus_file(pack["name"]))
 	yield(FS, "move_dir_done")
+	
+	# On macOS, ensure proper permissions for the installed soundpack
+	if OS.get_name() == "OSX":
+		var installed_pack_path = sound_dir.plus_file(pack["name"])
+		var chmod_result = OS.execute("chmod", ["-R", "755", installed_pack_path], true)
+		if chmod_result != 0:
+			Status.post("Warning: Could not set soundpack directory permissions", Enums.MSG_WARNING)
+	
 	FS.rm_dir(tmp_dir)
 	yield(FS, "rm_dir_done")
 	
