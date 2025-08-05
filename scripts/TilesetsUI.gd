@@ -190,18 +190,25 @@ func _get_preview_filename_for_tileset(tileset_name: String) -> String:
 	# Create a mapping of tileset names to preview image files
 	var name_mappings = {
 		"Altica": "Altica",
+		"ASCII_Overmap": "ASCII_Overmap",
 		"ASCIITileset2": "ASCIITileset2", 
 		"BrownLikeBears": "BrownLikeBears",
 		"ChestHole": "ChestHole",
 		"ChibiUltica": "ChibiUltica",
 		"Cuteclysm": "Cuteclysm",
+		"GiantDays": "GiantDays",
 		"HitButtonISO": "HitButtonISO",
 		"Hoder Tileset": "Hoder Tileset",
 		"HollowMoon": "HollowMoon",
+		"Larwick_Overmap": "Larwick_Overmap",
 		"MShockXotto+": "MShockXotto+",
-		"NeoDaysTileset": "NeoDaysTileset", 
+		"NeoDaysTileset": "NeoDaysTileset",
+		"PenAndPaper": "PenAndPaper",
 		"RetroDaysTileset": "RetroDaysTileset",
+		"SmashButton_iso": "SmashButton_iso",
+		"SurveyorsMap": "SurveyorsMap",
 		"UltimateCataclysm": "UltimateCataclysm",
+		"Ultica_iso": "Ultica_iso",
 		"UndeadPeople": "UndeadPeople"
 	}
 	
