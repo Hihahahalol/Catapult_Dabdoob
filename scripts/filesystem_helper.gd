@@ -175,9 +175,14 @@ func extract(path: String, dest_dir: String) -> void:
 	else:  # Linux (X11)
 		sevenzip_exe = Paths.utils_dir.plus_file("7za")
 	
+	# Fixed macOS unzip command with proper path escaping
+	var command_macos_zip = {
+		"name": "/usr/bin/unzip",
+		"args": ["-o", path, "-d", dest_dir]
+	}
 	var command_linux_zip = {
 		"name": "unzip",
-		"args": ["-o", "%s" % path, "-d", "%s" % dest_dir]
+		"args": ["-o", path, "-d", dest_dir]
 	}
 	var command_linux_gz = {
 		"name": "tar",
@@ -202,11 +207,30 @@ func extract(path: String, dest_dir: String) -> void:
 		_extract_dmg(path, dest_dir)
 		return
 	
+	# On macOS, try multiple extraction methods in order of preference
+	if OS.get_name() == "OSX" and path.to_lower().ends_with(".zip"):
+		# First try 7-Zip if available
+		if d.file_exists(sevenzip_exe):
+			Status.post("[debug] Using 7-Zip for .zip extraction on macOS")
+			command = command_sevenzip_unix
+		# Then try system unzip with full path
+		elif _check_extraction_tool_available("/usr/bin/unzip"):
+			Status.post("[debug] Using /usr/bin/unzip for .zip extraction")
+			command = command_macos_zip
+		# Finally try unzip in PATH
+		elif _check_extraction_tool_available("unzip"):
+			Status.post("[debug] Using system unzip for .zip extraction")
+			command = command_linux_zip
+		else:
+			Status.post("No ZIP extraction tool available on macOS", Enums.MSG_ERROR)
+			last_extract_result = 127
+			emit_signal("extract_done")
+			return
 	# On Linux/macOS, prefer system utilities for better compatibility
-	if (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".tar.gz")):
+	elif (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".tar.gz")):
 		Status.post("[debug] Using system tar for .tar.gz extraction")
 		command = command_linux_gz
-	elif (_platform == "X11" or _platform == "OSX") and (path.to_lower().ends_with(".zip")):
+	elif (_platform == "X11") and (path.to_lower().ends_with(".zip")):
 		Status.post("[debug] Using system unzip for .zip extraction")
 		command = command_linux_zip
 	# Try to use 7-Zip on all platforms as fallback
@@ -239,6 +263,12 @@ func extract(path: String, dest_dir: String) -> void:
 			emit_signal("extract_done")
 			return
 		
+		# On macOS, ensure the destination directory has proper permissions
+		if OS.get_name() == "OSX":
+			var chmod_result = OS.execute("chmod", ["755", dest_dir], true)
+			if chmod_result != 0:
+				Status.post("Warning: Could not set extraction directory permissions", Enums.MSG_WARNING)
+		
 	Status.post(tr("msg_extracting_file") % path.get_file())
 	Status.post("[debug] Extract command: " + str(command), Enums.MSG_DEBUG)
 	
@@ -255,12 +285,104 @@ func extract(path: String, dest_dir: String) -> void:
 	if oew.exit_code:
 		Status.post(tr("msg_extract_error") % oew.exit_code, Enums.MSG_ERROR)
 		Status.post(tr("msg_extract_failed_cmd") % str(command), Enums.MSG_DEBUG)
+		
+		# Enhanced error output for macOS debugging
+		if OS.get_name() == "OSX":
+			Status.post("macOS extraction failed. Command: %s %s" % [command["name"], PoolStringArray(command["args"]).join(" ")], Enums.MSG_DEBUG)
+			Status.post("Archive path exists: %s" % File.new().file_exists(path), Enums.MSG_DEBUG)
+			Status.post("Destination dir exists: %s" % Directory.new().dir_exists(dest_dir), Enums.MSG_DEBUG)
+			Status.post("Destination dir writable: %s" % _test_directory_writable(dest_dir), Enums.MSG_DEBUG)
+		
 		if oew.output.size() > 0:
 			for i in range(oew.output.size()):
 				Status.post("[Extract output] " + str(oew.output[i]), Enums.MSG_ERROR)
 		else:
 			Status.post("[Extract] No output captured", Enums.MSG_ERROR)
+			
+		# On macOS, try a fallback extraction method using Python if available
+		if OS.get_name() == "OSX" and path.to_lower().ends_with(".zip"):
+			Status.post("Attempting fallback extraction using Python...", Enums.MSG_INFO)
+			_extract_zip_python_fallback(path, dest_dir)
+			return
+	else:
+		# Success
+		Status.post("Extraction completed successfully", Enums.MSG_DEBUG)
+	
 	emit_signal("extract_done")
+
+
+# Fallback extraction method for macOS using Python's zipfile module
+func _extract_zip_python_fallback(zip_path: String, dest_dir: String) -> void:
+	
+	var python_script = """
+import zipfile
+import sys
+import os
+
+try:
+    zip_path = sys.argv[1]
+    dest_dir = sys.argv[2]
+    
+    # Create destination directory if it doesn't exist
+    os.makedirs(dest_dir, exist_ok=True)
+    
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(dest_dir)
+    
+    print("Python extraction successful")
+    sys.exit(0)
+except Exception as e:
+    print(f"Python extraction failed: {e}")
+    sys.exit(1)
+"""
+	
+	# Write Python script to temporary file
+	var temp_script = Paths.tmp_dir.plus_file("extract_fallback.py")
+	var file = File.new()
+	if file.open(temp_script, File.WRITE) != OK:
+		Status.post("Failed to create Python fallback script", Enums.MSG_ERROR)
+		last_extract_result = 1
+		emit_signal("extract_done")
+		return
+	
+	file.store_string(python_script)
+	file.close()
+	
+	# Execute Python script
+	var python_command = {
+		"name": "python3",
+		"args": [temp_script, zip_path, dest_dir]
+	}
+	
+	var oew = OSExecWrapper.new()
+	oew.execute(python_command["name"], python_command["args"], false)
+	yield(oew, "process_exited")
+	
+	# Clean up temporary script
+	Directory.new().remove(temp_script)
+	
+	last_extract_result = oew.exit_code
+	if oew.exit_code == 0:
+		Status.post("Python fallback extraction successful", Enums.MSG_INFO)
+	else:
+		Status.post("Python fallback extraction also failed", Enums.MSG_ERROR)
+		if oew.output.size() > 0:
+			for i in range(oew.output.size()):
+				Status.post("[Python Extract] " + str(oew.output[i]), Enums.MSG_ERROR)
+	
+	emit_signal("extract_done")
+
+
+# Test if a directory is writable
+func _test_directory_writable(dir_path: String) -> bool:
+	var test_file = dir_path.plus_file(".write_test")
+	var file = File.new()
+	var result = file.open(test_file, File.WRITE)
+	if result == OK:
+		file.close()
+		Directory.new().remove(test_file)
+		return true
+	return false
 
 
 func _extract_dmg(dmg_path: String, dest_dir: String) -> void:
@@ -360,7 +482,7 @@ func _parse_dmg_mount_point(plist_output: Array) -> String:
 
 
 func _check_extraction_tool_available(tool_name: String) -> bool:
-	# Check if the extraction tool is available on the system
+	# Check if extraction tool is available and working
 	
 	var check_command = ""
 	var check_args = []
@@ -381,8 +503,20 @@ func _check_extraction_tool_available(tool_name: String) -> bool:
 	
 	var result = OS.execute(check_command, check_args, true)
 	if result != 0:
-		Status.post(tr("msg_extract_tool_not_found") % tool_name, Enums.MSG_ERROR)
+		Status.post(tr("msg_extract_tool_not_found") % tool_name, Enums.MSG_DEBUG)
 		return false
+	
+	# On macOS, also check if 7za binary has executable permissions
+	if OS.get_name() == "OSX" and tool_name.ends_with("7za"):
+		var chmod_result = OS.execute("chmod", ["+x", tool_name], true)
+		if chmod_result != 0:
+			Status.post("Warning: Could not set executable permissions for 7za", Enums.MSG_WARNING)
+		
+		# Verify it's now executable
+		var test_result = OS.execute("test", ["-x", tool_name], true)
+		if test_result != 0:
+			Status.post("7za binary is not executable: %s" % tool_name, Enums.MSG_DEBUG)
+			return false
 	
 	return true
 
