@@ -9,10 +9,10 @@ signal tileset_deletion_finished
 
 const TILESETS = [
 	{
-		"name": "Currently there are no supported tilesets",
-		"url": "https://github.com/I-am-Erk/CDDA-Tilesets/releases/latest/download/MSXotto.zip",
-		"filename": "Currently there are no supported tilesets.zip",
-		"internal_path": "Currently there are no supported tilesets",
+		"name": "MSX++UnDeadPeopleEdition",
+		"url": "https://github.com/Theawesomeboophis/UndeadPeopleTileset/archive/refs/heads/master.zip",
+		"filename": "UndeadPeopleTileset.zip",
+		"internal_path": "UndeadPeopleTileset-master/TILESETS/gfx/MSX++UnDeadPeopleEdition",
 	},
 ]
 
