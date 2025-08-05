@@ -38,11 +38,26 @@ func _get_own_dir() -> String:
 	# On macOS, use the standard Application Support directory
 	if OS.get_name() == "OSX":
 		var home_dir = OS.get_environment("HOME")
+		var dabdoob_dir = ""
 		if home_dir != "":
-			return home_dir.plus_file("Library").plus_file("Application Support").plus_file("Dabdoob")
+			dabdoob_dir = home_dir.plus_file("Library").plus_file("Application Support").plus_file("Dabdoob")
 		else:
 			# Fallback if HOME environment variable is not available
-			return OS.get_user_data_dir().get_base_dir().get_base_dir().get_base_dir().get_base_dir().plus_file("Application Support").plus_file("Dabdoob")
+			dabdoob_dir = OS.get_user_data_dir().get_base_dir().get_base_dir().get_base_dir().get_base_dir().plus_file("Application Support").plus_file("Dabdoob")
+		
+		# Ensure the directory exists with proper permissions
+		var d = Directory.new()
+		if not d.dir_exists(dabdoob_dir):
+			var err = d.make_dir_recursive(dabdoob_dir)
+			if err == OK:
+				# Set proper permissions for the newly created directory
+				var chmod_result = OS.execute("chmod", ["755", dabdoob_dir], true)
+				if chmod_result != 0:
+					print("Warning: Could not set permissions for Dabdoob directory")
+			else:
+				print("Error creating Dabdoob directory: ", err)
+		
+		return dabdoob_dir
 	else:
 		# On Windows and Linux, keep the current behavior (portable)
 		return OS.get_executable_path().get_base_dir()
