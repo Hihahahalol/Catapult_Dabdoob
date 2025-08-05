@@ -290,6 +290,112 @@ const _BN_STABLE_WIN = [
 	}
 ]
 
+const _DDA_STABLE_MAC = [
+	{
+		"name": "0.H Herbert",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.H-RELEASE/cdda-osx-with-graphics-universal-2024-11-23-1857.dmg",
+		"filename": "cdda-osx-with-graphics-universal-2024-11-23-1857.dmg"
+	},
+	{
+		"name": "0.G Gaiman",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.G/cdda-osx-with-graphics-universal-2023-03-01-0054.dmg",
+		"filename": "cdda-osx-with-graphics-universal-2023-03-01-0054.dmg"
+	},
+	{
+		"name": "0.F-3 Frank-3",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-3/cataclysmdda-0.F-OSX-Tiles-0.F-3.dmg",
+		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-3.dmg"
+	},
+	{
+		"name": "0.F-2 Frank-2",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-2/cataclysmdda-0.F-OSX-Tiles-0.F-2.dmg",
+		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-2.dmg"
+	},
+	{
+		"name": "0.F-1 Frank-1",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-1/cataclysmdda-0.F-OSX-Tiles-0.F-1.dmg",
+		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-1.dmg"
+	},
+	{
+		"name": "0.F Frank",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F/cdda-osx-with-graphics-universal-2021-07-03-0512.dmg",
+		"filename": "cdda-osx-with-graphics-universal-2021-07-03-0512.dmg"
+	},
+	{
+		"name": "0.E-3 Ellison-3",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-3/cataclysmdda-0.E-OSX-Tiles-0.E-3.dmg",
+		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-3.dmg"
+	},
+	{
+		"name": "0.E-2 Ellison-2",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-2/cataclysmdda-0.E-OSX-Tiles-0.E-2.dmg",
+		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-2.dmg"
+	},
+	{
+		"name": "0.E-1 Ellison-1",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-1/cataclysmdda-0.E-OSX-Tiles-0.E-1.dmg",
+		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-1.dmg"
+	},
+	{
+		"name": "0.E Ellison",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E/cataclysmdda-0.E-OSX-Tiles-0.E.dmg",
+		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E.dmg"
+	},
+	{
+		"name": "0.D Danny",
+		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.D/cataclysmdda-0.D-8574-OSX-Tiles.dmg",
+		"filename": "cataclysmdda-0.D-8574-OSX-Tiles.dmg"
+	},
+]
+
+const _BN_STABLE_MAC = [
+	{
+		"name": "0.7.0",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.7.0/cbn-osx-tiles-v0.7.0.dmg",
+		"filename": "cbn-osx-tiles-v0.7.0.dmg"
+	},
+	{
+		"name": "0.6.0",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.6.0/cbn-osx-tiles-v0.6.0.dmg",
+		"filename": "cbn-osx-tiles-v0.6.0.dmg"
+	},
+	{
+		"name": "0.5.2",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.5.2/cbn-osx-tiles-v0.5.2.dmg",
+		"filename": "cbn-osx-tiles-v0.5.2.dmg"
+	},
+	{
+		"name": "0.5.1",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5.1/cbn-osx-tiles-0.5.1.dmg",
+		"filename": "cbn-osx-tiles-0.5.1.dmg"
+	},
+	{
+		"name": "0.5",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5/cbn-osx-tiles-0.5.dmg",
+		"filename": "cbn-osx-tiles-0.5.dmg"
+	},
+	{
+		"name": "0.4",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.4/cbn-osx-tiles-0.4.dmg",
+		"filename": "cbn-osx-tiles-0.4.dmg"
+	},
+	{
+		"name": "0.3",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.3/cbn-osx-tiles-0.3.dmg",
+		"filename": "cbn-osx-tiles-0.3.dmg"
+	},
+	{
+		"name": "0.2",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.2/cbn-osx-tiles-0.2.dmg",
+		"filename": "cbn-osx-tiles-0.2.dmg"
+	},
+	{
+		"name": "0.1",
+		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.1/cbn-osx-tiles-0.1.dmg",
+		"filename": "cbn-osx-tiles-0.1.dmg"
+	}
+]
+
 var releases = {
 	"dda-stable": [],
 	"dda-experimental": [],
@@ -459,6 +565,8 @@ func fetch(release_key: String) -> void:
 					releases["dda-stable"] = _DDA_STABLE_LINUX
 				"win":
 					releases["dda-stable"] = _DDA_STABLE_WIN
+				"mac":
+					releases["dda-stable"] = _DDA_STABLE_MAC
 			emit_signal("done_fetching_releases")
 		"dda-experimental":
 			Status.post(tr("msg_fetching_releases_dda"))
@@ -469,6 +577,8 @@ func fetch(release_key: String) -> void:
 					releases["bn-stable"] = _BN_STABLE_LINUX
 				"win":
 					releases["bn-stable"] = _BN_STABLE_WIN
+				"mac":
+					releases["bn-stable"] = _BN_STABLE_MAC
 			emit_signal("done_fetching_releases")
 		"bn-experimental":
 			Status.post(tr("msg_fetching_releases_bn"))
