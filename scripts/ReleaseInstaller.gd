@@ -172,18 +172,24 @@ func _set_app_bundle_permissions(install_dir: String) -> void:
 	for item in contents:
 		if item.ends_with(".app"):
 			var app_path = install_dir.plus_file(item)
-			var exe_path = app_path.plus_file("Contents").plus_file("MacOS")
 			
-			if d.dir_exists(exe_path):
-				var exe_contents = FS.list_dir(exe_path)
-				for exe_file in exe_contents:
-					var full_exe_path = exe_path.plus_file(exe_file)
-					if d.file_exists(full_exe_path):
-						var result = OS.execute("chmod", ["+x", full_exe_path], true)
-						if result == 0:
-							Status.post(tr("msg_install_set_app_executable") % [item, exe_file], Enums.MSG_DEBUG)
-						else:
-							Status.post(tr("msg_install_app_chmod_failed") % [item, exe_file, result], Enums.MSG_WARNING)
+			# Check both Contents/MacOS and Contents/Resources for executables
+			var exe_paths = [
+				app_path.plus_file("Contents").plus_file("MacOS"),
+				app_path.plus_file("Contents").plus_file("Resources")
+			]
+			
+			for exe_path in exe_paths:
+				if d.dir_exists(exe_path):
+					var exe_contents = FS.list_dir(exe_path)
+					for exe_file in exe_contents:
+						var full_exe_path = exe_path.plus_file(exe_file)
+						if d.file_exists(full_exe_path):
+							var result = OS.execute("chmod", ["+x", full_exe_path], true)
+							if result == 0:
+								Status.post(tr("msg_install_set_app_executable") % [item, exe_file], Enums.MSG_DEBUG)
+							else:
+								Status.post(tr("msg_install_app_chmod_failed") % [item, exe_file, result], Enums.MSG_WARNING)
 
 
 func remove_release_by_name(name: String) -> void:

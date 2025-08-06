@@ -1312,26 +1312,32 @@ func _find_app_bundle_executable(app_path: String, preferred_names: Array) -> Di
 	# Find the executable inside a .app bundle
 	
 	var d = Directory.new()
-	var macos_path = app_path.plus_file("Contents").plus_file("MacOS")
 	
-	if not d.dir_exists(macos_path):
-		return {}
+	# Check both Contents/MacOS and Contents/Resources for executables
+	var search_paths = [
+		app_path.plus_file("Contents").plus_file("MacOS"),
+		app_path.plus_file("Contents").plus_file("Resources")
+	]
 	
-	var macos_contents = FS.list_dir(macos_path)
+	# First, try to find preferred executable names in any search path
+	for search_path in search_paths:
+		if d.dir_exists(search_path):
+			var contents = FS.list_dir(search_path)
+			for preferred_name in preferred_names:
+				for exe_file in contents:
+					if exe_file == preferred_name:
+						var full_path = search_path.plus_file(exe_file)
+						if d.file_exists(full_path):
+							return {"path": full_path, "name": exe_file}
 	
-	# First, try to find preferred executable names
-	for preferred_name in preferred_names:
-		for exe_file in macos_contents:
-			if exe_file == preferred_name:
-				var full_path = macos_path.plus_file(exe_file)
+	# If no preferred name found, use the first executable file from any search path
+	for search_path in search_paths:
+		if d.dir_exists(search_path):
+			var contents = FS.list_dir(search_path)
+			for exe_file in contents:
+				var full_path = search_path.plus_file(exe_file)
 				if d.file_exists(full_path):
 					return {"path": full_path, "name": exe_file}
-	
-	# If no preferred name found, use the first executable file
-	for exe_file in macos_contents:
-		var full_path = macos_path.plus_file(exe_file)
-		if d.file_exists(full_path):
-			return {"path": full_path, "name": exe_file}
 	
 	return {}
 
