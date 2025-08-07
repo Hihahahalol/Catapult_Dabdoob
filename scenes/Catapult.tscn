@@ -1542,7 +1542,7 @@ margin_bottom = 44.0
 rect_min_size = Vector2( 0, 20 )
 focus_mode = 2
 bbcode_enabled = true
-bbcode_text = "[center][url=https://discord.gg/cataclysm-bright-nights]TLG's Discord Community[/url][/center]"
+bbcode_text = "[center][url=https://discord.com/invite/zT9sXmZNCK]TLG's Discord Community[/url][/center]"
 text = "TLG's Discord Community"
 fit_content_height = true
 selection_enabled = true
