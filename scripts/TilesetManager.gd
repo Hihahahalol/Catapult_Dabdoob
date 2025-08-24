@@ -8,12 +8,6 @@ signal tileset_deletion_finished
 
 
 const TILESETS = [
-	{
-		"name": "MSX++UnDeadPeopleEdition",
-		"url": "https://github.com/Theawesomeboophis/UndeadPeopleTileset/archive/refs/heads/master.zip",
-		"filename": "UndeadPeopleTileset.zip",
-		"internal_path": "UndeadPeopleTileset-master/TILESETS/gfx/MSX++UnDeadPeopleEdition",
-	},
 ]
 
 
