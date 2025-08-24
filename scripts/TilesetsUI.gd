@@ -208,8 +208,7 @@ func _get_preview_filename_for_tileset(tileset_name: String) -> String:
 		"SmashButton_iso": "SmashButton_iso",
 		"SurveyorsMap": "SurveyorsMap",
 		"UltimateCataclysm": "UltimateCataclysm",
-		"Ultica_iso": "Ultica_iso",
-		"UndeadPeople": "UndeadPeople"
+		"Ultica_iso": "Ultica_iso"
 	}
 	
 	# Try exact match first
