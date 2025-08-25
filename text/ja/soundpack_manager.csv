@@ -1,0 +1,6 @@
+"keys","ja"
+,
+"msg_soundpack_installed","サウンドパックがインストールされました：%s"
+"msg_soundpack_deleted","サウンドパックが削除されました：%s"
+"msg_soundpack_installation_failed","サウンドパックのインストールに失敗しました：%s"
+"msg_soundpack_deletion_failed","サウンドパックの削除に失敗しました：%s" 

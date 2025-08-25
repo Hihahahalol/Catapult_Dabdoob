@@ -1,0 +1,12 @@
+"keys","ja"
+,
+"msg_font_installed","フォントがインストールされました：%s"
+"msg_font_deleted","フォントが削除されました：%s"
+"msg_font_installation_failed","フォントのインストールに失敗しました：%s"
+"msg_font_deletion_failed","フォントの削除に失敗しました：%s"
+"msg_downloading_font","フォントをダウンロード中：%s"
+"msg_extracting_font","フォントを展開中：%s"
+"msg_font_set_ui","UIフォントが設定されました：%s"
+"msg_font_set_map","マップフォントが設定されました：%s"
+"msg_font_set_overmap","オーバーマップフォントが設定されました：%s"
+"msg_font_reset","フォントがリセットされました" 

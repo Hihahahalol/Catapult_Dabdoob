@@ -1,0 +1,9 @@
+"keys","ja"
+,
+"msg_installing_release","リリースをインストール中：%s"
+"msg_installation_complete","インストールが完了しました"
+"msg_installation_failed","インストールに失敗しました：%s"
+"msg_extracting_archive","アーカイブを展開中"
+"msg_setting_permissions","権限を設定中"
+"msg_creating_directories","ディレクトリを作成中"
+"msg_copying_files","ファイルをコピー中" 

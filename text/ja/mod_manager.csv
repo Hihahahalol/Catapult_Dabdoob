@@ -1,0 +1,8 @@
+"keys","ja"
+,
+"msg_mod_installed","MODがインストールされました：%s"
+"msg_mod_deleted","MODが削除されました：%s"
+"msg_mod_installation_failed","MODのインストールに失敗しました：%s"
+"msg_mod_deletion_failed","MODの削除に失敗しました：%s"
+"msg_downloading_mod","MODをダウンロード中：%s"
+"msg_extracting_mod","MODを展開中：%s" 

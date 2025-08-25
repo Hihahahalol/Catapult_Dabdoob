@@ -1,0 +1,7 @@
+"keys","ja"
+,
+"msg_release_installed","リリースがインストールされました：%s"
+"msg_release_updated","リリースが更新されました：%s"
+"msg_release_installation_failed","リリースのインストールに失敗しました：%s"
+"msg_downloading_release","リリースをダウンロード中：%s"
+"msg_extracting_release","リリースを展開中：%s" 
