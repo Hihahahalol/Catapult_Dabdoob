@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://text/ja/mod_reinstall_dialog.ja.translation" ]
+
+source_file="res://text/ja/mod_reinstall_dialog.csv"
+dest_files=[ "res://text/ja/mod_reinstall_dialog.ja.translation" ]
+
+[params]
+
+compress=true
+delimiter=0

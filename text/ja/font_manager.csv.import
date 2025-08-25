@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://text/ja/font_manager.ja.translation" ]
+
+source_file="res://text/ja/font_manager.csv"
+dest_files=[ "res://text/ja/font_manager.ja.translation" ]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,0 +1,10 @@
+"keys","ja"
+,
+"msg_creating_directory","ディレクトリを作成中：%s"
+"msg_directory_created","ディレクトリが作成されました：%s"
+"msg_directory_exists","ディレクトリは既に存在します：%s"
+"msg_copying_file","ファイルをコピー中：%s"
+"msg_file_copied","ファイルがコピーされました：%s"
+"msg_deleting_file","ファイルを削除中：%s"
+"msg_file_deleted","ファイルが削除されました：%s"
+"msg_operation_failed","操作に失敗しました：%s" 

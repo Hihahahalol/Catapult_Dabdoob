@@ -1,0 +1,8 @@
+"keys","ja"
+,
+"msg_tileset_installed","タイルセットがインストールされました：%s"
+"msg_tileset_deleted","タイルセットが削除されました：%s"
+"msg_tileset_installation_failed","タイルセットのインストールに失敗しました：%s"
+"msg_tileset_deletion_failed","タイルセットの削除に失敗しました：%s"
+"msg_downloading_tileset","タイルセットをダウンロード中：%s"
+"msg_extracting_tileset","タイルセットを展開中：%s" 

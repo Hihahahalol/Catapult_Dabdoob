@@ -1,0 +1,8 @@
+"keys","ja"
+,
+"msg_backup_created","バックアップが作成されました：%s"
+"msg_backup_restored","バックアップが復元されました：%s"
+"msg_backup_deleted","バックアップが削除されました：%s"
+"msg_backup_creation_failed","バックアップの作成に失敗しました：%s"
+"msg_backup_restoration_failed","バックアップの復元に失敗しました：%s"
+"msg_backup_deletion_failed","バックアップの削除に失敗しました：%s" 

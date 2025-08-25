@@ -1,0 +1,19 @@
+"keys","ja"
+,
+"lbl_installed_sound","インストール済み："
+"lbl_avail_sound","ダウンロード可能："
+"cbtn_stock_sound","標準を表示"
+"btn_delete_sound","選択したものを削除"
+"btn_install_sound","選択したものをインストール"
+"btn_reinstall_sound","選択したものを再インストール"
+,
+"tooltip_stock_sound","data/soundからのサウンドパックをリストに表示します。"
+"tooltip_delete_sound","選択したサウンドパックをゲームインストールから削除します。"
+"tooltip_install_sound","選択したサウンドパックをダウンロードしてゲームインストールに追加します。"
+,
+"dlg_sound_deletion_title","サウンドパック削除の確認"
+"dlg_sound_deletion_text","%s を削除しています。"
+"dlg_sound_manual_dl_title","手動ダウンロードが必要"
+"dlg_sound_manual_dl_text","このサウンドパックは自動的にダウンロードできません。OKをクリックしてブラウザーでダウンロードし、ファイル選択ダイアログで保存した場所を選択してください。"
+,
+"str_no_sound_desc","説明は提供されていません。" 

@@ -1,0 +1,19 @@
+"keys","ja"
+,
+"lbl_installed_tilesets","インストール済み："
+"lbl_avail_tilesets","ダウンロード可能："
+"cbtn_stock_tilesets","標準を表示"
+"btn_delete_tilesets","選択したものを削除"
+"btn_install_tilesets","選択したものをインストール"
+"btn_reinstall_tilesets","選択したものを再インストール"
+,
+"tooltip_stock_tilesets","data/gfxからのタイルセットをリストに表示します。"
+"tooltip_delete_tilesets","選択したタイルセットをゲームインストールから削除します。"
+"tooltip_install_tilesets","選択したタイルセットをダウンロードしてゲームインストールに追加します。"
+,
+"dlg_tileset_deletion_title","タイルセット削除の確認"
+"dlg_tileset_deletion_text","%s を削除しています。"
+"dlg_tileset_manual_dl_title","手動ダウンロードが必要"
+"dlg_tileset_manual_dl_text","このタイルセットは自動的にダウンロードできません。OKをクリックしてブラウザーでダウンロードし、ファイル選択ダイアログで保存した場所を選択してください。"
+,
+"str_no_tileset_desc","説明は提供されていません。" 

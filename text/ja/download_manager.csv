@@ -1,0 +1,6 @@
+"keys","ja"
+,
+"msg_download_started","ダウンロードを開始しました：%s"
+"msg_download_completed","ダウンロードが完了しました：%s"
+"msg_download_failed","ダウンロードに失敗しました：%s"
+"msg_download_cancelled","ダウンロードがキャンセルされました：%s" 

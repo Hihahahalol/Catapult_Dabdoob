@@ -1,0 +1,55 @@
+"keys","ja"
+,
+"window_title","Dabdoob — Cataclysmのランチャー"
+"str_welcome","Dabdoobへようこそ！"
+"str_tip_of_the_day","\n\n[u]今日のヒント：[/u]\n"
+"msg_theme_load_error","テーマ %s を読み込めませんでした。"
+"debug_test","これは翻訳取得をテストするためのデバッグテキストです。"
+,
+"tag_warning","警告"
+"tag_error","エラー"
+"tag_debug","デバッグ"
+,
+"lbl_game","ゲーム："
+"desc_dda","[b]Cataclysm: Dark Days Ahead[/b]は、ポストアポカリプスの世界を舞台にしたターンベースのサバイバルゲームです。スカベンジ、探索、クラフト、建築、農業、車両の修理と改造、バイオニクスの導入、変異、[color=#009900]ゾンビ[/color]やその他無数の化け物からの防御など、すべてが無限で手続き的に生成される世界で行われます！"
+"desc_bn","[b]Cataclysm: Bright Nights[/b]。細かいことは気にせず、[color=#ff3300]!!楽しみ!![/color]を受け入れよう。このフォークはゲームをSFローグライクのルーツに戻し、DDAチームによる多くの論争的な変更（ポケット、熟練、凍結、[color=#3b93f7][url=https://docs.cataclysmbn.org/en/game/changelog/]その他[/url][/color]）を元に戻します。戦闘、ゲームバランス、ペーシングに特別な注意が払われています。"
+"desc_eod","[b]Cataclysm: Era of Decay[/b]はDDAのフォークで、主にオリジナルゲームの機能やコンテンツを完全に削除することなく、可能な限り多くのプレイヤーがアクセス可能な設定可能性を持つことを目指し、デフォルト設定でゲームをリアルに保ちます。[color=#ff3300]あなた[/color]が望む方法で楽しんでください。"
+"desc_tish","[b]Cataclysm: There Is Still Hope[/b]は、何よりもゲームが面白いことに焦点を当てたDDAのフォークで、「リアリズムか楽しさか」や「リアリティか楽しさか」という二分法を拒否しています。"
+"desc_tlg","[b]Cataclysm: The Last Generation[/b]の主な目標は、Cataclysmの深さともっともらしさへの敬意を保ちながら、ゲームとして常に最も得意としてきたことを洗練させ、あなたのサバイバルスキルを試す世界でキャラクター成長と没入型ライフシム要素を前面に押し出すことです。"
+,
+"tab_game","ゲーム"
+"tab_mods","MOD"
+"tab_soundpacks","サウンドパック"
+"tab_tilesets","タイルセット"
+"tab_fonts","フォント"
+"tab_backups","バックアップ"
+"tab_settings","設定"
+"tab_about","概要"
+"about_app_title","Dabdoob - Cataclysmランチャー"
+"about_app_desc","Dabdoobは現在放棄されたCatapultランチャーの開発を継続しています。一人の開発者によって開発・維持されています。以下のリンクからDiscordやGithubで私を見つけることができます。
+
+Cataclysmやそのモッド/タイルセット/サウンドパックの制作者の作品を評価していただける場合は、彼らをチェックアウトすることを忘れないでください。私の作品を評価していただける場合は、kofiでの寄付をご検討ください！"
+"about_links","リンク"
+"thank_you_title","Dabdoobをダウンロードしていただき、ありがとうございます！"
+"thank_you_message","Dabdoobをインストールしていただき、ありがとうございます！楽しんでいただけることを願っています。
+
+今すぐには関係ないかもしれませんが、もし落ち込んでいたり、不安だったり、自分に自信が持てない場合は、愛する人、友人、または信頼できる人に連絡を取ってください。
+これはあなたを負担にするものではありません。
+あなたが感じているかもしれない気持ちは最終的なものではなく、状況は良くなります。
+
+素晴らしい一日をお過ごしいただき、私のランチャーを楽しんでいただけることを願っています。"
+,
+"msg_extract_create_dir_failed","展開ディレクトリ %s の作成に失敗しました（エラー：%s）"
+"msg_extract_tool_not_found","展開ツールが見つかりません：%s"
+"msg_dmg_only_macos","DMGファイルはmacOSでのみ展開できます"
+"msg_mounting_dmg","DMGファイルをマウント中：%s"
+"msg_dmg_mount_failed","DMGファイルのマウントに失敗しました（エラー：%s）"
+"msg_dmg_mount_point_failed","DMGマウントポイントの解析に失敗しました"
+"msg_copying_dmg_contents","次の場所からコンテンツをコピー中：%s"
+"msg_unmounting_dmg","DMGファイルをアンマウント中"
+"msg_dmg_unmount_warning","警告：DMGのアンマウントに失敗しました（エラー：%s）"
+"msg_no_executable_found_macos","ゲームディレクトリに実行可能ファイルが見つかりません"
+"msg_fixing_executable_permissions","実行可能ファイルの権限を修正中：%s"
+"msg_chmod_failed","%s の実行権限の設定に失敗しました（エラー：%s）"
+"msg_setting_working_dir","作業ディレクトリを設定中：%s"
+"Starting macOS app bundle: %s","macOSアプリバンドルを開始中：%s" 

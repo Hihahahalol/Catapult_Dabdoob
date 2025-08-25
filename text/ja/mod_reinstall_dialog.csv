@@ -1,0 +1,6 @@
+"keys","ja"
+,
+"dlg_mod_reinstall_title","MOD再インストールの確認"
+"dlg_mod_reinstall_text_single","選択されたMODの1つは既にインストールされています。\n削除して再インストールしますか？"
+"dlg_mod_reinstall_text_multiple","選択されたMODのうち%s個は既にインストールされています。\n削除して再インストールしますか？"
+ 
