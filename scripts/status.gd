@@ -11,13 +11,26 @@ var _buffer := []  # Just in case there are any messages before the status label
 
 func _ready() -> void:
 	
-	while true:
-		_status_view = get_node(_STATUS_LBL_PATH)
+	# Add timeout to prevent infinite waiting (max 10 seconds)
+	var max_attempts = 50  # 50 * 0.2s = 10 seconds
+	var attempt = 0
+	
+	while attempt < max_attempts:
+		_status_view = get_node_or_null(_STATUS_LBL_PATH)
 		
 		if _status_view:
 			_flush_buffer()
 			break
 		else:
+			attempt += 1
+			if attempt >= max_attempts:
+				# Timeout reached - UI didn't load properly
+				push_error("Status label not found after " + str(max_attempts * 0.2) + " seconds. UI may not have loaded correctly.")
+				# Print buffered messages to console as fallback
+				for msg in _buffer:
+					print(msg["text"])
+				_buffer.clear()
+				break
 			yield(get_tree().create_timer(0.2), "timeout")
 
 

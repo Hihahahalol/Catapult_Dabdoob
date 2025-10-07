@@ -46,6 +46,14 @@ const _HARDCODED_DEFAULTS = {
 
 var _settings_file = ""
 var _current = {}
+var _initialized = false
+
+
+func _ready() -> void:
+	# Eagerly initialize settings on startup to avoid race conditions
+	if not _initialized:
+		_load()
+		_initialized = true
 
 
 func get_hardcoded_version() -> String:
@@ -61,15 +69,34 @@ func _exit_tree() -> void:
 
 
 func _load() -> void:
+	# Guard against recursive calls during initialization
+	if _initialized:
+		return
 	
 	_settings_file = Paths.own_dir.plus_file(_SETTINGS_FILENAME)
 	
+	# Ensure the directory exists before trying to read/write
+	var dir = Directory.new()
+	var own_dir = Paths.own_dir
+	if not dir.dir_exists(own_dir):
+		var err = dir.make_dir_recursive(own_dir)
+		if err != OK:
+			push_error("Failed to create settings directory: " + str(err))
+			_current = _HARDCODED_DEFAULTS
+			_initialized = true
+			return
+	
 	if File.new().file_exists(_settings_file):
 		_current = _read_from_file(_settings_file)
-		
+		# If reading failed, use defaults
+		if _current.empty():
+			_current = _HARDCODED_DEFAULTS
+			_write_to_file(_HARDCODED_DEFAULTS, _settings_file)
 	else:
 		_current = _HARDCODED_DEFAULTS
 		_write_to_file(_HARDCODED_DEFAULTS, _settings_file)
+	
+	_initialized = true
 
 
 func _read_from_file(path: String) -> Dictionary:
@@ -95,14 +122,18 @@ func _write_to_file(data: Dictionary, path: String) -> void:
 	
 	var f = File.new()
 	var content = JSON.print(data, "    ")
-	f.open(path, File.WRITE)
+	var err = f.open(path, File.WRITE)
+	if err != OK:
+		push_error("Failed to write settings file: " + str(err))
+		return
 	f.store_string(content)
 	f.close()
 
 
 func read(setting_name: String):
 	
-	if len(_current) == 0:
+	# Ensure settings are loaded (should be done in _ready, but check anyway)
+	if not _initialized:
 		_load()
 	
 	if not setting_name in _current:

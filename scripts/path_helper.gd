@@ -60,7 +60,16 @@ func _get_own_dir() -> String:
 		return dabdoob_dir
 	else:
 		# On Windows and Linux, keep the current behavior (portable)
-		return OS.get_executable_path().get_base_dir()
+		var exe_path = OS.get_executable_path()
+		if exe_path.empty():
+			# Fallback if executable path is not available (can happen in some Linux environments)
+			push_error("Unable to determine executable path, using current directory as fallback")
+			return "."
+		var base_dir = exe_path.get_base_dir()
+		if base_dir.empty():
+			push_error("Unable to determine base directory from executable path, using current directory as fallback")
+			return "."
+		return base_dir
 
 
 func _get_installs_summary() -> Dictionary:
@@ -68,23 +77,37 @@ func _get_installs_summary() -> Dictionary:
 	var result = {}
 	var d = Directory.new()
 	
+	# Add error handling for directory operations
+	var own_directory = Paths.own_dir
+	if own_directory.empty():
+		push_error("Own directory is empty, cannot get installs summary")
+		return {}
+	
 	for game in ["dda", "tlg", "bn", "eod", "tish"]:
 		var installs = {}
-		var base_dir = Paths.own_dir.plus_file(game)
-		for subdir in FS.list_dir(base_dir):
+		var base_dir = own_directory.plus_file(game)
+		
+		# Skip if base directory doesn't exist yet (first run)
+		if not d.dir_exists(base_dir):
+			continue
+			
+		var subdirs = FS.list_dir(base_dir)
+		for subdir in subdirs:
 			var info_file = base_dir.plus_file(subdir).plus_file(Helpers.INFO_FILENAME)
 			if d.file_exists(info_file):
 				var info = Helpers.load_json_file(info_file)
-				installs[info["name"]] = base_dir.plus_file(subdir)
+				if info and "name" in info:
+					installs[info["name"]] = base_dir.plus_file(subdir)
 		if not installs.empty():
 			result[game] = installs
 	
 	# Ensure that some installation of the game is set as active
 	var game = Settings.read("game")
-	var active_name = Settings.read("active_install_" + game)
-	if game in result:
-		if (active_name == "") or (not active_name in result[game]):
-			Settings.store("active_install_" + game, result[game].keys()[0])
+	if game:
+		var active_name = Settings.read("active_install_" + game)
+		if game in result:
+			if (active_name == "") or (not active_name in result[game]):
+				Settings.store("active_install_" + game, result[game].keys()[0])
 	
 	return result
 
