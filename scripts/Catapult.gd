@@ -1,6 +1,7 @@
 extends Node
 
 
+onready var _title_bar = $TitleBar
 onready var _debug_ui = $Main/Tabs/Debug
 onready var _log = $Main/Log
 onready var _game_info = $Main/GameInfo
@@ -141,7 +142,9 @@ func _save_icon_sizes() -> void:
 func assign_localized_text() -> void:
 	
 	var version = Settings.read("version")
-	OS.set_window_title(tr("window_title"))	
+	var window_title_text = tr("window_title")
+	OS.set_window_title(window_title_text)
+	_title_bar.set_title(window_title_text)
 	
 	_tabs.set_tab_title(0, tr("tab_game"))
 	_tabs.set_tab_title(1, tr("tab_mods"))
@@ -181,6 +184,9 @@ func load_ui_theme(theme_file: String) -> void:
 	if new_theme:
 		new_theme.apply_scale(Geom.scale)
 		self.theme = new_theme
+		# Update title bar to match new theme
+		if _title_bar:
+			_title_bar._apply_dark_theme()
 	else:
 		self.theme.apply_scale(Geom.scale)
 		Status.post(tr("msg_theme_load_error") % theme_file, Enums.MSG_ERROR)
