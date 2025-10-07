@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://icons/info.svg" type="Texture" id=1]
 [ext_resource path="res://icons/buttons/tex_resume.tex" type="Texture" id=2]
@@ -49,6 +49,7 @@
 [ext_resource path="res://scripts/TilesetsUI.gd" type="Script" id=47]
 [ext_resource path="res://scripts/AboutUI.gd" type="Script" id=48]
 [ext_resource path="res://icons/lang/lang_ja.svg" type="Texture" id=49]
+[ext_resource path="res://scenes/CustomTitleBar.tscn" type="PackedScene" id=50]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 content_margin_left = 4.0
@@ -64,11 +65,13 @@ anchor_bottom = 1.0
 theme = ExtResource( 11 )
 script = ExtResource( 4 )
 
+[node name="TitleBar" parent="." instance=ExtResource( 50 )]
+
 [node name="Main" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 4.0
+margin_top = 36.0
 margin_right = -4.0
 margin_bottom = -4.0
 

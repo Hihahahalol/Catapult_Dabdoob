@@ -1,0 +1,93 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scripts/CustomTitleBar.gd" type="Script" id=1]
+[ext_resource path="res://icons/titlebar/minimize.svg" type="Texture" id=2]
+[ext_resource path="res://icons/titlebar/maximize.svg" type="Texture" id=3]
+[ext_resource path="res://icons/titlebar/close.svg" type="Texture" id=4]
+[ext_resource path="res://icons/titlebar/restore.svg" type="Texture" id=5]
+
+[node name="CustomTitleBar" type="PanelContainer"]
+anchor_right = 1.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 32 )
+mouse_filter = 1
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+maximize_icon = ExtResource( 3 )
+restore_icon = ExtResource( 5 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 600.0
+margin_bottom = 32.0
+mouse_filter = 2
+custom_constants/margin_right = 4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 8.0
+margin_top = 4.0
+margin_right = 596.0
+margin_bottom = 28.0
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+margin_right = 24.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 24, 24 )
+mouse_filter = 2
+expand = true
+stretch_mode = 6
+
+[node name="Title" type="Label" parent="MarginContainer/HBoxContainer"]
+margin_left = 28.0
+margin_top = 5.0
+margin_right = 103.0
+margin_bottom = 19.0
+mouse_filter = 2
+text = "Dabdoob"
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
+margin_left = 107.0
+margin_right = 456.0
+margin_bottom = 24.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="MinimizeButton" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+margin_left = 460.0
+margin_right = 492.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 32, 24 )
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource( 2 )
+expand = true
+stretch_mode = 5
+
+[node name="MaximizeButton" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+margin_left = 496.0
+margin_right = 528.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 32, 24 )
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 5
+
+[node name="CloseButton" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+margin_left = 532.0
+margin_right = 564.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 32, 24 )
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MinimizeButton" to="." method="_on_MinimizeButton_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MaximizeButton" to="." method="_on_MaximizeButton_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CloseButton" to="." method="_on_CloseButton_pressed"]
+
