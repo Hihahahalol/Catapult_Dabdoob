@@ -97,6 +97,29 @@ func reload_installed() -> void:
 
 func reload_available() -> void:
 	
+	# Check if mods are not supported for the current game fork
+	var game = Settings.read("game")
+	if game == "tish":
+		_available_mods_view.clear()
+		_available_list.clear()
+		_available_list.add_item("Mods are not supported for There is Still Hope")
+		_available_list.set_item_disabled(0, true)
+		_available_list.set_item_custom_fg_color(0, Color(0.7, 0.7, 0.7))
+		_lbl_repo.text = tr("lbl_mod_repo") % ""
+		_btn_add.disabled = true
+		_btn_add_all.disabled = true
+		return
+	elif game == "eod":
+		_available_mods_view.clear()
+		_available_list.clear()
+		_available_list.add_item("Mods are not supported for Era Of Decay")
+		_available_list.set_item_disabled(0, true)
+		_available_list.set_item_custom_fg_color(0, Color(0.7, 0.7, 0.7))
+		_lbl_repo.text = tr("lbl_mod_repo") % ""
+		_btn_add.disabled = true
+		_btn_add_all.disabled = true
+		return
+	
 	var include_installed = Settings.read("show_installed_mods_in_available")
 	var hidden_mods = 0
 

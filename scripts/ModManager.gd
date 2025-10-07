@@ -160,6 +160,16 @@ func refresh_installed():
 
 func refresh_available():
 	
+	# Mods are not supported for TISH
+	if Settings.read("game") == "tish":
+		available = {}
+		return
+	
+	# Mods are not supported for EOD
+	if Settings.read("game") == "eod":
+		available = {}
+		return
+	
 	# Custom mods for TLG (Cataclysm: The Last Generation)
 	if Settings.read("game") == "tlg":
 		available = {
