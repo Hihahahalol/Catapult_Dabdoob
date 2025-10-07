@@ -978,23 +978,45 @@ func _get_mod_latest_release_date(mod_id: String) -> String:
 	return ""
 
 
-# Fetch release dates for all mods asynchronously
+# Fetch release dates for all mods asynchronously using batch API
 func fetch_all_mod_release_dates() -> void:
 	
 	_pending_api_calls.clear()
 	
+	# Check if we have a GitHubBatchAPI node, if not create one
+	var batch_api = get_node_or_null("GitHubBatchAPI")
+	if batch_api == null:
+		batch_api = load("res://scripts/GitHubBatchAPI.gd").new()
+		batch_api.name = "GitHubBatchAPI"
+		add_child(batch_api)
+		batch_api.connect("batch_request_completed", self, "_on_batch_api_completed")
+	
+	# Clear any previous queue
+	batch_api.clear_queue()
+	
+	# Queue all mods that need fetching
+	var mods_to_fetch = 0
 	for mod_id in available:
 		var mod = available[mod_id]
 		var location = mod["location"]
 		
 		# Only fetch for GitHub mods that aren't already cached
 		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache:
-			_pending_api_calls.append(mod_id)
-			_fetch_mod_release_date_async(mod_id)
+			# Extract owner and repo from GitHub URL
+			var url_parts = location.replace("https://github.com/", "").split("/")
+			if len(url_parts) >= 2:
+				var owner = url_parts[0]
+				var repo = url_parts[1]
+				batch_api.queue_mod(mod_id, owner, repo)
+				_pending_api_calls.append(mod_id)
+				mods_to_fetch += 1
 	
 	# If no API calls are needed (everything is cached), immediately check compatibility
-	if len(_pending_api_calls) == 0:
+	if mods_to_fetch == 0:
 		_check_all_mod_compatibility()
+	else:
+		Status.post("Fetching release dates for %d mod(s) using batch API..." % mods_to_fetch, Enums.MSG_DEBUG)
+		batch_api.execute_batches()
 
 
 # Fetch the latest release date for a specific mod from GitHub API (async)
@@ -1175,7 +1197,39 @@ func _on_mod_commit_date_received(result: int, response_code: int, headers: Pool
 	_on_mod_release_date_received_internal(mod_id, commit_date)
 
 
+# Handle batch API results
+func _on_batch_api_completed(results: Dictionary) -> void:
+	
+	Status.post("Batch API completed with %d results" % len(results), Enums.MSG_DEBUG)
+	
+	# Process all results
+	var processed_count = 0
+	for mod_id in results:
+		var release_date = results[mod_id]
+		_mod_release_date_cache[mod_id] = release_date
+		processed_count += 1
+		
+		# Remove from pending calls
+		if mod_id in _pending_api_calls:
+			_pending_api_calls.erase(mod_id)
+	
+	Status.post("Processed %d mod release dates" % processed_count, Enums.MSG_DEBUG)
+	
+	# Clear any remaining pending calls and proceed (in case some failed)
+	if len(_pending_api_calls) > 0:
+		Status.post("Warning: %d mods still pending, proceeding anyway" % len(_pending_api_calls), Enums.MSG_DEBUG)
+		# Cache empty results for pending mods to unblock the UI
+		for mod_id in _pending_api_calls:
+			if not mod_id in _mod_release_date_cache:
+				_mod_release_date_cache[mod_id] = ""
+		_pending_api_calls.clear()
+	
+	# Always proceed to compatibility check
+	_check_all_mod_compatibility()
+
+
 # Internal handler for release date reception (both successful and failed)
+# This is kept for backward compatibility with individual requests if needed
 func _on_mod_release_date_received_internal(mod_id: String, release_date: String) -> void:
 	
 	# Cache the result (even if empty)
