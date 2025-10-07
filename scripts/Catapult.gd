@@ -19,6 +19,8 @@ onready var _btn_game_dir = $Main/Tabs/Game/ActiveInstall/Build/GameDir
 onready var _btn_user_dir = $Main/Tabs/Game/ActiveInstall/Build/UserDir
 onready var _btn_play = $Main/Tabs/Game/ActiveInstall/Launch/BtnPlay
 onready var _btn_resume = $Main/Tabs/Game/ActiveInstall/Launch/BtnResume
+onready var _wiki_search_input = $Main/Tabs/Game/ActiveInstall/Launch/WikiSearchInput
+onready var _btn_search_wiki = $Main/Tabs/Game/ActiveInstall/Launch/BtnSearchWiki
 # Button removed - update check now happens automatically
 onready var _btn_update = $Main/Tabs/Game/ActiveInstall/Update/BtnUpdate
 onready var _lst_builds = $Main/Tabs/Game/Builds/BuildsList
@@ -328,6 +330,7 @@ func _on_GamesList_item_selected(index: int) -> void:
 	_tabs.current_tab = 0
 	apply_game_choice()
 	_refresh_currently_installed()
+	_update_wiki_button()
 	
 	_mods.refresh_installed()
 	_mods.refresh_available()
@@ -575,6 +578,18 @@ func apply_game_choice() -> void:
 		_releases.fetch(_get_release_key())
 	else:
 		reload_builds_list()
+	
+	_update_wiki_button()
+
+
+func _update_wiki_button() -> void:
+	var game = Settings.read("game")
+	if game == "tlg":
+		_wiki_search_input.editable = true
+		_btn_search_wiki.disabled = false
+	else:
+		_wiki_search_input.editable = false
+		_btn_search_wiki.disabled = true
 
 
 func _on_BtnPlay_pressed() -> void:
@@ -586,6 +601,28 @@ func _on_BtnResume_pressed() -> void:
 	var info = Helpers.load_json_file(lastworld)
 	if info:
 		_start_game(info["world_name"])
+
+
+func _on_BtnSearchWiki_pressed() -> void:
+	_perform_wiki_search()
+
+
+func _on_WikiSearchInput_text_entered(text: String) -> void:
+	_perform_wiki_search()
+
+
+func _perform_wiki_search() -> void:
+	var game = Settings.read("game")
+	if game == "tlg":
+		var search_term = _wiki_search_input.text.strip_edges()
+		if search_term != "":
+			# URL encode the search term
+			var encoded_term = search_term.http_escape()
+			var search_url = "https://cataclysmtlg.miraheze.org/w/index.php?title=Special%3ASearch&fulltext=1&search=" + encoded_term
+			OS.shell_open(search_url)
+		else:
+			# Open the wiki homepage if no search term provided
+			OS.shell_open("https://cataclysmtlg.miraheze.org/")
 
 
 func _start_game(world := "") -> void:
@@ -834,6 +871,8 @@ func _refresh_currently_installed() -> void:
 
 	for i in [1, 2, 3, 4, 5]:
 		_tabs.set_tab_disabled(i, not game in _installs)
+	
+	_update_wiki_button()
 
 
 func _on_InfoIcon_gui_input(event: InputEvent) -> void:

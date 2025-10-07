@@ -30,6 +30,8 @@
 "tooltip_user_dir","Open user data directory (contains saves, \ngame configuration, user mods, sound, etc.)"
 "tooltip_play","Launch the game."
 "tooltip_resume","Skip main menu and quick-load last played world.\n(First character will always be loaded if there are multiple.)"
+"tooltip_wiki","Open the wiki for this game fork (currently available for TLG)."
+"tooltip_search_wiki","Search the TLG wiki for the entered term (only available for TLG)."
 "tooltip_activate","Set the selected game install as active (i.e. in use).\n""Active"" install is the one that will be launched\nwhen you click Play/Resume, or updated when\nyou click Install."
 "tooltip_delete","Delete the selected copy of the game.\n(Saves, settings and other user data\nare stored separately and will not be lost.)"
 "tooltip_installs_item","Location:\n%s\n(double-click to open folder)"
