@@ -36,6 +36,7 @@ onready var _panel_installs = $Main/Tabs/Game/GameInstalls
 onready var _version_check_request = HTTPRequest.new()
 onready var _cb_backup_before_launch = $Main/Tabs/Backups/BackupBeforeLaunch
 onready var _backups = $Backups
+onready var _sound = $Sound
 
 var _disable_savestate := {}
 var _installs := {}
@@ -359,6 +360,7 @@ func _on_Releases_done_fetching_releases() -> void:
 	_smart_reenable_controls("disable_while_fetching_releases")
 	reload_builds_list()
 	_refresh_currently_installed()
+	_check_soundpack_warning()
 
 
 func _on_ReleaseInstaller_operation_started() -> void:
@@ -390,6 +392,7 @@ func _on_soundpack_operation_started() -> void:
 func _on_soundpack_operation_finished() -> void:
 	
 	_smart_reenable_controls("disable_during_soundpack_operations")
+	_update_soundpack_tab_color()
 
 
 func _on_tileset_operation_started() -> void:
@@ -590,6 +593,73 @@ func _update_wiki_button() -> void:
 	else:
 		_wiki_search_input.editable = false
 		_btn_search_wiki.disabled = true
+
+
+func _update_soundpack_tab_color() -> void:
+	# Check if only the "Basic" (stock) soundpack is installed
+	# If there are no user-installed soundpacks, only the stock one exists
+	
+	# Tab 3 is the Soundpacks tab
+	var soundpack_tab_index = 3
+	var base_title = tr("tab_soundpacks")
+	
+	# Check if game is installed first
+	var game = Settings.read("game")
+	if not game in _installs:
+		# Game not installed, use normal title
+		_tabs.set_tab_title(soundpack_tab_index, base_title)
+		return
+	
+	var user_soundpacks = _sound.get_installed(false)  # Don't include stock
+	var stock_soundpacks = _sound.get_installed(true)  # Include stock
+	
+	# Determine if we should show the warning
+	var show_warning = false
+	
+	if user_soundpacks.size() == 0:
+		# No user soundpacks installed, check if only "Basic" stock soundpack exists
+		# Count stock soundpacks (those marked with is_stock = true)
+		var stock_only = []
+		for pack in stock_soundpacks:
+			if pack.get("is_stock", false):
+				stock_only.append(pack)
+		
+		# Show warning only if there's exactly one stock soundpack and it's "Basic"
+		if stock_only.size() == 1 and stock_only[0]["name"] == "Basic":
+			show_warning = true
+	
+	if show_warning:
+		# Only Basic soundpack is installed, add warning symbols before and after
+		_tabs.set_tab_title(soundpack_tab_index, "⚠ " + base_title + " ⚠")
+	else:
+		# User has installed additional soundpacks or stock has more than Basic
+		_tabs.set_tab_title(soundpack_tab_index, base_title)
+
+
+func _check_soundpack_warning() -> void:
+	# Check if we should display the soundpack warning in the log
+	# This displays after fetching releases to remind users about soundpacks
+	
+	# Check if game is installed first
+	var game = Settings.read("game")
+	if not game in _installs:
+		# Game not installed, don't check soundpacks
+		return
+	
+	var user_soundpacks = _sound.get_installed(false)  # Don't include stock
+	var stock_soundpacks = _sound.get_installed(true)  # Include stock
+	
+	# Check if only "Basic" soundpack exists
+	if user_soundpacks.size() == 0:
+		# Count stock soundpacks (those marked with is_stock = true)
+		var stock_only = []
+		for pack in stock_soundpacks:
+			if pack.get("is_stock", false):
+				stock_only.append(pack)
+		
+		# Show warning only if there's exactly one stock soundpack and it's "Basic"
+		if stock_only.size() == 1 and stock_only[0]["name"] == "Basic":
+			Status.post("No installed soundpack for the selected game version", Enums.MSG_WARN)
 
 
 func _on_BtnPlay_pressed() -> void:
@@ -873,6 +943,7 @@ func _refresh_currently_installed() -> void:
 		_tabs.set_tab_disabled(i, not game in _installs)
 	
 	_update_wiki_button()
+	_update_soundpack_tab_color()
 
 
 func _on_InfoIcon_gui_input(event: InputEvent) -> void:
