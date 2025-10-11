@@ -42,6 +42,7 @@ const _HARDCODED_DEFAULTS = {
 	"backup_before_launch": false,
 	"backup_after_closing": false,
 	"max_auto_backups": 5,
+	"mod_download_dates": {},
 }
 
 var _settings_file = ""

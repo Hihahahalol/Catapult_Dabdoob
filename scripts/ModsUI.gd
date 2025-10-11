@@ -76,6 +76,31 @@ func reload_installed() -> void:
 			})
 			if (show_obsolete) and (status == 3):
 				_installed_mods_view[-1]["name"] += " [obsolete]"
+			
+			# Check for updates (skip stock mods)
+			if not mod["is_stock"]:
+				# Find this mod in available list by matching modinfo ID
+				var available_key = ""
+				for key in _mods.available:
+					if _mods.available[key]["modinfo"]["id"] == id:
+						available_key = key
+						break
+				
+				# Check if this is a GitHub mod
+				if available_key != "":
+					var mod_location = _mods.available[available_key]["location"]
+					if mod_location.begins_with("https://github.com/"):
+						# Get stored download date
+						var download_dates = Settings.read("mod_download_dates")
+						if download_dates != null and id in download_dates:
+							var download_date = download_dates[id]
+							# Get latest GitHub release date
+							var release_date = _mods._get_mod_latest_release_date(available_key)
+							if release_date != "" and release_date > download_date:
+								_installed_mods_view[-1]["name"] += " [update available]"
+						else:
+							# No download date found
+							_installed_mods_view[-1]["name"] += " [Date Unavailable]"
 	
 	_installed_mods_view.sort_custom(self, "_sorting_comparison")
 	
@@ -90,9 +115,17 @@ func reload_installed() -> void:
 	
 	for i in len(_installed_mods_view):
 		var id = _installed_mods_view[i]["id"]
+		var mod_name = _installed_mods_view[i]["name"]
+		
 		if _mods.installed[id]["is_stock"]:
 			_installed_list.set_item_custom_fg_color(i, Color(0.5, 0.5, 0.5))
 			# TODO: Get color from the theme instead.
+		elif mod_name.find("[update available]") != -1:
+			# Green color for mods with updates available
+			_installed_list.set_item_custom_fg_color(i, Color(0.2, 0.8, 0.2))
+		elif mod_name.find("[Date Unavailable]") != -1:
+			# Orange/yellow color for mods with unknown date
+			_installed_list.set_item_custom_fg_color(i, Color(1.0, 0.65, 0.0))
 
 
 func reload_available() -> void:
@@ -238,11 +271,12 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 	
 	# Add mod URL for downloadable mods
 	var mod_dict_key = ""
-	# Find the dictionary key for this mod in available mods
-	for key in _mods.available:
-		if _mods.available[key]["modinfo"] == modinfo:
-			mod_dict_key = key
-			break
+	# Find the dictionary key for this mod in available mods by matching ID
+	if "id" in modinfo:
+		for key in _mods.available:
+			if _mods.available[key]["modinfo"]["id"] == modinfo["id"]:
+				mod_dict_key = key
+				break
 	
 	if mod_dict_key != "":
 		var mod_location = _mods.available[mod_dict_key]["location"]
@@ -308,6 +342,18 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 		var formatted_description = _format_links_in_text(modinfo["description"])
 		result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_description"), formatted_description]
 	
+	# Check if mod is installed and missing download date
+	if mod_dict_key != "" and "id" in modinfo:
+		var mod_id = modinfo["id"]
+		# Check if mod is installed (and not a stock mod)
+		if mod_id in _mods.installed and not _mods.installed[mod_id]["is_stock"]:
+			var mod_location = _mods.available[mod_dict_key]["location"]
+			# Only check for GitHub mods
+			if mod_location.begins_with("https://github.com/"):
+				var download_dates = Settings.read("mod_download_dates")
+				if download_dates == null or not mod_id in download_dates:
+					result += "\n[b][color=#FF8C00]No download date recorded. Redownload this mod to enable update checking.[/color][/b]\n"
+	
 	result = result.rstrip("\n")
 	return result
 
@@ -333,8 +379,9 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	
 	# Fetch mod release dates for all channels to show "Last Updated" information
 	# This will also trigger compatibility checking for both stable and experimental channels
+	# This also fetches for installed mods to enable update checking
 	if len(_mods.available) > 0:
-		Status.post("Fetching mod release dates for compatibility checking...")
+		Status.post("Fetching mod release dates for compatibility and update checking...")
 		_mods.fetch_all_mod_release_dates()
 
 
@@ -348,6 +395,9 @@ func _on_mod_compatibility_checked(compatible_count: int, incompatible_count: in
 	
 	# Reload the available mods list to update visual indicators
 	reload_available()
+	
+	# Reload the installed mods list to show update notifications
+	reload_installed()
 	
 	# Refresh the currently selected mod's description to show updated release date info
 	_refresh_selected_mod_description()

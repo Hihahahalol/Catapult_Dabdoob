@@ -752,6 +752,7 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 					FS.move_dir(arcana_mod_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
 					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
 					Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
@@ -762,12 +763,14 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 					FS.move_dir(mod_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
 					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
 					# Fallback to installing the entire directory if no modinfo.json found
 					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
 					yield(FS, "move_dir_done")
 					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 		else:
 			Status.post(tr("msg_mod_extraction_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
@@ -903,7 +906,8 @@ func _install_mod(mod_id: String) -> void:
 				var f = File.new()
 				f.open(mods_dir.plus_file(mod["location"].get_file()).plus_file("modinfo.json"), File.WRITE)
 				f.store_string(JSON.print(modinfo, "    "))
-						
+			
+			_store_mod_download_date(mod_id)
 			Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 	else:
 		Status.post(tr("msg_mod_not_found") % mod_id, Enums.MSG_ERROR)
@@ -1441,6 +1445,28 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 	return target_mod_dir
 
 
+# Store the download date for a mod in settings
+func _store_mod_download_date(mod_id: String) -> void:
+	
+	# Get current date
+	var current_date = OS.get_datetime()
+	var date_string = "%04d-%02d-%02d" % [current_date.year, current_date.month, current_date.day]
+	
+	# Read existing download dates
+	var download_dates = Settings.read("mod_download_dates")
+	if download_dates == null:
+		download_dates = {}
+	
+	# Get the actual modinfo ID (mod_id might be the available key)
+	var actual_mod_id = mod_id
+	if mod_id in available:
+		actual_mod_id = available[mod_id]["modinfo"]["id"]
+	
+	# Store the date for this mod using the modinfo ID
+	download_dates[actual_mod_id] = date_string
+	Settings.store("mod_download_dates", download_dates)
+	
+	Status.post("Stored download date for mod %s: %s" % [actual_mod_id, date_string], Enums.MSG_DEBUG)
 
 
 
