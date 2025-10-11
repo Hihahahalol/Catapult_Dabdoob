@@ -754,6 +754,17 @@ size_flags_horizontal = 4
 disabled = true
 text = "btn_delete_sound"
 
+[node name="BtnActivate" type="Button" parent="Main/Tabs/Soundpacks/HBox/Installed" groups=["disable_during_soundpack_operations"]]
+margin_left = 70.0
+margin_top = 292.0
+margin_right = 208.0
+margin_bottom = 316.0
+hint_tooltip = "tooltip_activate_sound"
+size_flags_horizontal = 4
+disabled = true
+icon = ExtResource( 41 )
+text = "btn_activate_sound"
+
 [node name="VSeparator" type="VSeparator" parent="Main/Tabs/Soundpacks/HBox"]
 margin_left = 284.0
 margin_right = 292.0
@@ -1763,6 +1774,7 @@ __meta__ = {
 [connection signal="item_selected" from="Main/Tabs/Soundpacks/HBox/Installed/InstalledList" to="Main/Tabs/Soundpacks" method="_on_InstalledList_item_selected"]
 [connection signal="toggled" from="Main/Tabs/Soundpacks/HBox/Installed/ShowStock" to="Main/Tabs/Soundpacks" method="_on_ShowStock_toggled"]
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Installed/BtnDelete" to="Main/Tabs/Soundpacks" method="_on_BtnDelete_pressed"]
+[connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Installed/BtnActivate" to="Main/Tabs/Soundpacks" method="_on_BtnActivate_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Soundpacks/HBox/Downloadable/AvailableList" to="Main/Tabs/Soundpacks" method="_on_AvailableList_item_selected"]
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Downloadable/BtnInstall" to="Main/Tabs/Soundpacks" method="_on_BtnInstall_pressed"]
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmDelete" to="Main/Tabs/Soundpacks" method="_on_ConfirmDelete_confirmed"]

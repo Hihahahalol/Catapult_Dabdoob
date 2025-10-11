@@ -5,6 +5,7 @@ onready var _sound = $"/root/Catapult/Sound"
 onready var _installed_list = $HBox/Installed/InstalledList
 onready var _available_list = $HBox/Downloadable/AvailableList
 onready var _btn_delete = $HBox/Installed/BtnDelete
+onready var _btn_activate = $HBox/Installed/BtnActivate
 onready var _btn_install = $HBox/Downloadable/BtnInstall
 onready var _dlg_confirm_del = $ConfirmDelete
 onready var _dlg_manual_dl = $ConfirmManualDownload
@@ -17,15 +18,23 @@ var _installed_packs = []
 func refresh_installed() -> void:
 	
 	_installed_packs = _sound.get_installed(Settings.read("show_stock_sound"))
+	var active_soundpack = _sound.get_active_soundpack()
 		
 	_installed_list.clear()
 	for pack in _installed_packs:
-		_installed_list.add_item(pack["name"])
+		var pack_name = pack["name"]
+		_installed_list.add_item(pack_name)
+		
 		var desc = ""
 		if pack["description"] == "":
 			desc = tr("str_no_sound_desc")
 		else:
 			desc = _break_up_string(pack["description"], 60)
+		
+		# Add active status to tooltip
+		if pack_name == active_soundpack:
+			desc = "[ACTIVE] " + desc
+		
 		_installed_list.set_item_tooltip(_installed_list.get_item_count() - 1, desc)
 
 
@@ -70,6 +79,7 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	_cbox_stock.pressed = Settings.read("show_stock_sound")
 	
 	_btn_delete.disabled = true
+	_btn_activate.disabled = true
 	_btn_install.disabled = true
 	_btn_install.text = tr("btn_install_sound")
 	
@@ -89,9 +99,13 @@ func _on_InstalledList_item_selected(index: int) -> void:
 		return  # https://github.com/godotengine/godot/issues/37277
 	
 	if len(_installed_packs) > 0:
-		_btn_delete.disabled = _installed_packs[index]["is_stock"]
+		var pack = _installed_packs[index]
+		
+		_btn_delete.disabled = pack["is_stock"]
+		_btn_activate.disabled = false
 	else:
 		_btn_delete.disabled = true
+		_btn_activate.disabled = true
 
 
 func _on_BtnDelete_pressed() -> void:
@@ -103,6 +117,17 @@ func _on_BtnDelete_pressed() -> void:
 	_dlg_confirm_del.popup_centered()
 
 
+func _on_BtnActivate_pressed() -> void:
+	
+	var selected_items = _installed_list.get_selected_items()
+	if len(selected_items) == 0:
+		return
+	
+	var pack = _installed_packs[selected_items[0]]
+	if _sound.set_active_soundpack(pack["name"]):
+		refresh_installed()
+
+
 func _on_ConfirmDelete_confirmed() -> void:
 	
 	_sound.delete_pack(_installed_packs[_installed_list.get_selected_items()[0]]["name"])
@@ -111,6 +136,7 @@ func _on_ConfirmDelete_confirmed() -> void:
 	
 	if len(_installed_list.get_selected_items()) == 0:
 		_btn_delete.disabled = true
+		_btn_activate.disabled = true
 
 
 func _on_AvailableList_item_selected(index: int) -> void:

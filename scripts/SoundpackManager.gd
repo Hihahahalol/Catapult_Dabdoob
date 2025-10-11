@@ -140,6 +140,98 @@ func delete_pack(name: String) -> void:
 	Status.post(tr("msg_soundpack_not_found") % name, Enums.MSG_ERROR)
 
 
+func get_active_soundpack() -> String:
+	# Returns the name of the currently active soundpack from game options
+	
+	var options_file = Paths.config.plus_file("options.json")
+	
+	# Check if config directory and options file exist
+	if Paths.config == "" or not Directory.new().file_exists(options_file):
+		return ""
+	
+	var f = File.new()
+	if f.open(options_file, File.READ) != OK:
+		return ""
+	
+	var json = JSON.parse(f.get_as_text())
+	f.close()
+	
+	if json.error != OK or not (json.result is Array):
+		return ""
+	
+	# Find the SOUNDPACKS option (note: plural, not SOUNDPACK_NAME)
+	for option in json.result:
+		if option is Dictionary and "name" in option and option["name"] == "SOUNDPACKS":
+			if "value" in option:
+				return option["value"]
+	
+	return ""
+
+
+func set_active_soundpack(soundpack_name: String) -> bool:
+	# Sets the active soundpack in game options
+	
+	var options_file = Paths.config.plus_file("options.json")
+	
+	# Check if config directory exists
+	if Paths.config == "":
+		Status.post(tr("msg_no_config_dir"), Enums.MSG_ERROR)
+		return false
+	
+	# Ensure config directory exists
+	var d = Directory.new()
+	if not d.dir_exists(Paths.config):
+		var err = d.make_dir_recursive(Paths.config)
+		if err != OK:
+			Status.post(tr("msg_could_not_create_config_dir"), Enums.MSG_ERROR)
+			return false
+	
+	var game_options = []
+	
+	# Load existing options if file exists
+	if d.file_exists(options_file):
+		var f = File.new()
+		if f.open(options_file, File.READ) == OK:
+			var json = JSON.parse(f.get_as_text())
+			f.close()
+			
+			if json.error == OK and json.result is Array:
+				game_options = json.result
+	
+	# Convert "Basic" to "basic" (lowercase) for the stock soundpack
+	var value_to_write = soundpack_name
+	if soundpack_name == "Basic":
+		value_to_write = "basic"
+	
+	# Find and update the SOUNDPACKS option (note: plural, not SOUNDPACK_NAME)
+	var found = false
+	for option in game_options:
+		if option is Dictionary and "name" in option and option["name"] == "SOUNDPACKS":
+			option["value"] = value_to_write
+			found = true
+			break
+	
+	# If option doesn't exist, add it
+	if not found:
+		game_options.append({
+			"name": "SOUNDPACKS",
+			"value": value_to_write,
+			"type": "string"
+		})
+	
+	# Write updated options back to file
+	var f = File.new()
+	if f.open(options_file, File.WRITE) != OK:
+		Status.post(tr("msg_could_not_write_options"), Enums.MSG_ERROR)
+		return false
+	
+	f.store_string(JSON.print(game_options, "    "))
+	f.close()
+	
+	Status.post(tr("msg_soundpack_activated") % soundpack_name)
+	return true
+
+
 func install_pack(soundpack_index: int, from_file = null, reinstall = false, keep_archive = false) -> void:
 	
 	var pack = SOUNDPACKS[soundpack_index]
