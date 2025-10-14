@@ -7,7 +7,7 @@
 "btn_install_tilesets","Install Selected"
 "btn_reinstall_tileset","Reinstall Selected"
 ,
-"tooltip_stock_tilesets","Show tilesets from gfx on the list."
+"tooltip_stock_tilesets","Show tilesets from gfx on the list. (Always checked for now)"
 "tooltip_delete_tilesets","Remove the selected tileset from your game installation."
 "tooltip_install_tilesets","Download the selected tileset and add it to your game installation."
 ,
