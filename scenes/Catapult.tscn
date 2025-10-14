@@ -596,17 +596,8 @@ margin_right = 210.0
 margin_bottom = 160.0
 hint_tooltip = "tooltip_stock_tilesets"
 size_flags_horizontal = 4
-text = "cbtn_stock_tilesets"
-
-[node name="BtnDelete" type="Button" parent="Main/Tabs/Tilesets/HBox/Installed" groups=["disable_during_tileset_operations"]]
-margin_left = 79.0
-margin_top = 164.0
-margin_right = 199.0
-margin_bottom = 188.0
-hint_tooltip = "tooltip_delete_tilesets"
-size_flags_horizontal = 4
 disabled = true
-text = "btn_delete_tilesets"
+text = "cbtn_stock_tilesets"
 
 [node name="VSeparator" type="VSeparator" parent="Main/Tabs/Tilesets/HBox"]
 margin_left = 284.0
@@ -644,15 +635,6 @@ hint_tooltip = "tooltip_install_tilesets"
 size_flags_horizontal = 4
 disabled = true
 text = "btn_install_tilesets"
-
-[node name="ConfirmDelete" type="ConfirmationDialog" parent="Main/Tabs/Tilesets"]
-margin_top = 385.0
-margin_right = 769.0
-margin_bottom = 507.0
-rect_min_size = Vector2( 300, 105 )
-window_title = "dlg_tileset_deletion_title"
-dialog_text = "dlg_tileset_deletion_text"
-dialog_autowrap = true
 
 [node name="ConfirmManualDownload" type="ConfirmationDialog" parent="Main/Tabs/Tilesets"]
 margin_right = 300.0
@@ -1782,11 +1764,8 @@ __meta__ = {
 [connection signal="file_selected" from="Main/Tabs/Soundpacks/InstallFromFileDialog" to="Main/Tabs/Soundpacks" method="_on_InstallFromFileDialog_file_selected"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Tilesets" method="_on_Tabs_tab_changed"]
 [connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Installed/InstalledList" to="Main/Tabs/Tilesets" method="_on_InstalledList_item_selected"]
-[connection signal="toggled" from="Main/Tabs/Tilesets/HBox/Installed/ShowStock" to="Main/Tabs/Tilesets" method="_on_ShowStock_toggled"]
-[connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Installed/BtnDelete" to="Main/Tabs/Tilesets" method="_on_BtnDelete_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Downloadable/AvailableList" to="Main/Tabs/Tilesets" method="_on_AvailableList_item_selected"]
 [connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Downloadable/BtnInstall" to="Main/Tabs/Tilesets" method="_on_BtnInstall_pressed"]
-[connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmDelete" to="Main/Tabs/Tilesets" method="_on_ConfirmDelete_confirmed"]
 [connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmManualDownload" to="Main/Tabs/Tilesets" method="_on_ConfirmManualDownload_confirmed"]
 [connection signal="file_selected" from="Main/Tabs/Tilesets/InstallFromFileDialog" to="Main/Tabs/Tilesets" method="_on_InstallFromFileDialog_file_selected"]
 [connection signal="item_selected" from="Main/Tabs/Fonts/FontSelection/RightPane/FontsList" to="Main/Tabs/Fonts" method="_on_FontsList_item_selected"]
