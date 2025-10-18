@@ -58,7 +58,7 @@ config/windows_native_icon="res://icons/appicon.ico"
 [audio]
 
 default_bus_layout=""
-driver="Dummy"
+driver="ALSA"
 
 [autoload]
 

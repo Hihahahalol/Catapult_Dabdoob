@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggstr"
+
+[deps]
+
+source_file="res://materials/sound_samples/CDDA-Soundpack_combined.ogg"
+dest_files=[ "res://.import/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -282,3 +282,29 @@ func install_pack(soundpack_index: int, from_file = null, reinstall = false, kee
 	
 	Status.post(tr("msg_sound_installed"))
 	emit_signal("soundpack_installation_finished")
+
+
+func play_sample(sample_path: String, audio_player: AudioStreamPlayer) -> void:
+	# Plays a sample audio file for a soundpack - plays once without looping
+	
+	var audio_file = load(sample_path)
+	
+	if audio_file == null:
+		Status.post(tr("No available preview for this soundpack"), Enums.MSG_ERROR)
+		return
+	
+	# Stop any currently playing audio
+	if audio_player.playing:
+		audio_player.stop()
+	
+	# Disable looping on the audio stream
+	if audio_file is AudioStream:
+		# For OGG Vorbis streams, disable looping
+		audio_file.loop = false
+	
+	# Set the audio stream and play it
+	audio_player.stream = audio_file
+	audio_player.bus = "Master"
+	audio_player.play()
+	Status.post("Playing sample...")
+

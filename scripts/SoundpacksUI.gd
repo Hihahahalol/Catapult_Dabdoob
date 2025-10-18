@@ -7,6 +7,8 @@ onready var _available_list = $HBox/Downloadable/AvailableList
 onready var _btn_delete = $HBox/Installed/BtnDelete
 onready var _btn_activate = $HBox/Installed/BtnActivate
 onready var _btn_install = $HBox/Downloadable/BtnInstall
+onready var _btn_play_sample = $HBox/Downloadable/BtnPlaySample
+onready var _audio_player = $"/root/Catapult/SampleAudioPlayer"
 onready var _dlg_confirm_del = $ConfirmDelete
 onready var _dlg_manual_dl = $ConfirmManualDownload
 onready var _dlg_file = $InstallFromFileDialog
@@ -81,6 +83,7 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	_btn_delete.disabled = true
 	_btn_activate.disabled = true
 	_btn_install.disabled = true
+	_btn_play_sample.disabled = true
 	_btn_install.text = tr("btn_install_sound")
 	
 	_populate_available()
@@ -150,6 +153,7 @@ func _on_AvailableList_item_selected(index: int) -> void:
 		_btn_install.text = tr("btn_reinstall_sound")
 	else:
 		_btn_install.text = tr("btn_install_sound")
+	_btn_play_sample.disabled = false
 
 
 func _on_BtnInstall_pressed() -> void:
@@ -192,3 +196,28 @@ func _on_InstallFromFileDialog_file_selected(path: String) -> void:
 	
 	yield(_sound, "soundpack_installation_finished")
 	refresh_installed()
+
+
+
+
+func _on_BtnPlaySample_pressed() -> void:
+	
+	var selected_items = _available_list.get_selected_items()
+	if len(selected_items) == 0:
+		return
+	
+	var pack_index = selected_items[0]
+	var pack = _sound.SOUNDPACKS[pack_index]
+	var pack_name = pack["name"]
+	# Handle special character in soundpack name and variants
+	if pack_name.begins_with("@"):
+		pack_name = "AtsSoundpack"
+	elif pack_name == "CC-Sounds-sfx-only":
+		pack_name = "CC-Sounds"
+	var sample_file = "res://materials/sound_samples/" + pack_name + "_combined.ogg"
+	
+	_sound.play_sample(sample_file, _audio_player)
+
+
+
+

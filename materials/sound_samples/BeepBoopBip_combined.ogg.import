@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/BeepBoopBip_combined.ogg-d4d96edcb07a71b4c281cbdbb5ba40d5.oggstr"
+
+[deps]
+
+source_file="res://materials/sound_samples/BeepBoopBip_combined.ogg"
+dest_files=[ "res://.import/BeepBoopBip_combined.ogg-d4d96edcb07a71b4c281cbdbb5ba40d5.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/ChestHoleCC_combined.ogg-61a86ff9b0c4b0cb8ee07cc917cbd48e.oggstr"
+
+[deps]
+
+source_file="res://materials/sound_samples/ChestHoleCC_combined.ogg"
+dest_files=[ "res://.import/ChestHoleCC_combined.ogg-61a86ff9b0c4b0cb8ee07cc917cbd48e.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0
