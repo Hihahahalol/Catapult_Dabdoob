@@ -713,7 +713,7 @@ margin_right = 278.0
 margin_bottom = 228.0
 rect_min_size = Vector2( 0, 200 )
 size_flags_horizontal = 3
-items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false, "Item 5", null, false, "Item 6", null, false, "Item 7", null, false, "Item 8", null, false, "Item 9", null, false, "Item 10", null, false, "Item 11", null, false, "Item 12", null, false, "Item 13", null, false, "Item 14", null, false, "Item 15", null, false, "Item 16", null, false, "Item 17", null, false, "Item 18", null, false, "Item 19", null, false, "Item 20", null, false, "Item 21", null, false ]
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false ]
 same_column_width = true
 script = ExtResource( 17 )
 
@@ -774,12 +774,21 @@ items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "
 same_column_width = true
 script = ExtResource( 17 )
 
+[node name="BtnPlaySample" type="Button" parent="Main/Tabs/Soundpacks/HBox/Downloadable" groups=["disable_during_soundpack_operations"]]
+margin_left = 10.0
+margin_top = 232.0
+margin_right = 75.0
+margin_bottom = 256.0
+size_flags_horizontal = 4
+disabled = true
+text = "Play Preview"
+icon = ExtResource( 25 )
+
 [node name="BtnInstall" type="Button" parent="Main/Tabs/Soundpacks/HBox/Downloadable" groups=["disable_during_soundpack_operations"]]
 margin_left = 80.0
 margin_top = 232.0
 margin_right = 198.0
 margin_bottom = 256.0
-hint_tooltip = "tooltip_install_sound"
 size_flags_horizontal = 4
 disabled = true
 text = "btn_install_sound"
@@ -1718,6 +1727,8 @@ __meta__ = {
 "_editor_description_": "Provides backup management utilities"
 }
 
+[node name="SampleAudioPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="gui_input" from="Main/GameInfo/Icon" to="." method="_on_InfoIcon_gui_input"]
 [connection signal="meta_clicked" from="Main/GameInfo/Description" to="." method="_on_Description_meta_clicked"]
 [connection signal="tab_changed" from="Main/Tabs" to="." method="_on_Tabs_tab_changed"]
@@ -1758,6 +1769,7 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Installed/BtnDelete" to="Main/Tabs/Soundpacks" method="_on_BtnDelete_pressed"]
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Installed/BtnActivate" to="Main/Tabs/Soundpacks" method="_on_BtnActivate_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Soundpacks/HBox/Downloadable/AvailableList" to="Main/Tabs/Soundpacks" method="_on_AvailableList_item_selected"]
+[connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Downloadable/BtnPlaySample" to="Main/Tabs/Soundpacks" method="_on_BtnPlaySample_pressed"]
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Downloadable/BtnInstall" to="Main/Tabs/Soundpacks" method="_on_BtnInstall_pressed"]
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmDelete" to="Main/Tabs/Soundpacks" method="_on_ConfirmDelete_confirmed"]
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmManualDownload" to="Main/Tabs/Soundpacks" method="_on_ConfirmManualDownload_confirmed"]
@@ -1857,3 +1869,5 @@ __meta__ = {
 [connection signal="item_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_item_selected"]
 [connection signal="multi_selected" from="Main/Tabs/Backups/Available/HBox/BackupsList" to="Main/Tabs/Backups" method="_on_BackupsList_multi_selected"]
 [connection signal="meta_clicked" from="Main/Tabs/Backups/Available/HBox/BackupInfo" to="Main/Tabs/Backups" method="_on_BackupInfo_meta_clicked"]
+
+

@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/ChestOldTimey_combined.ogg-d271b3a91d8ec97bf451606e57ffd426.oggstr"
+
+[deps]
+
+source_file="res://materials/sound_samples/ChestOldTimey_combined.ogg"
+dest_files=[ "res://.import/ChestOldTimey_combined.ogg-d271b3a91d8ec97bf451606e57ffd426.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

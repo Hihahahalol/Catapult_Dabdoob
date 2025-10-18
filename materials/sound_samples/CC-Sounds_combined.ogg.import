@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/CC-Sounds_combined.ogg-a591523bc55ecc745d67a1d24d7b135f.oggstr"
+
+[deps]
+
+source_file="res://materials/sound_samples/CC-Sounds_combined.ogg"
+dest_files=[ "res://.import/CC-Sounds_combined.ogg-a591523bc55ecc745d67a1d24d7b135f.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0
