@@ -226,7 +226,7 @@ func refresh_available():
 					"description": "A mod for Cataclysm: Bright Nights which adds my own custom content to it",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": 1
 				}
 			},
 			"BetterHolsters": {
@@ -239,7 +239,7 @@ func refresh_available():
 					"description": "A mod for Cataclysm: Bright Nights that improves the holster experience",
 					"category": "items",
 					"dependencies": [],
-					"stability": 3
+					"stability": 4
 				}
 			},
 			"FalloutNewEnglandRemastered": {
@@ -252,7 +252,7 @@ func refresh_available():
 					"description": "A remastering of my original Fallout mod for C:DDA. Should work with newest Bright Nights release for as long as I update and maintain it.",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": -1
 				}
 			},
 			"ReallyDarkSkies": {
@@ -265,7 +265,7 @@ func refresh_available():
 					"description": "Really Dark Skies. The community supported mod that enhances the Bright Nights experience by adding an inscrutable alien-humanoid paramilitary expeditionary force to your typical survival scenario.",
 					"category": "content",
 					"dependencies": [],
-					"stability": 3
+					"stability": 2
 				}
 			},
 			"TheArcologyMod": {
@@ -278,7 +278,7 @@ func refresh_available():
 					"description": "The mod that adds Arcology-type buildings, very large, self-contained buildings with a Cyberpunk aesthetic to Bright Nights.",
 					"category": "buildings",
 					"dependencies": [],
-					"stability": 3
+					"stability": 4
 				}
 			},
 			"ZombieHighMod": {
@@ -291,7 +291,7 @@ func refresh_available():
 					"description": "A mod for cataclysm: Bright Nights, which sets on a bunker-like school.",
 					"category": "buildings",
 					"dependencies": [],
-					"stability": 2
+					"stability": 1
 				}
 			},
 			"GrowMoreDrugs": {
@@ -304,7 +304,7 @@ func refresh_available():
 					"description": "Cataclysm - Bright Nights mod, adding different drug crops that would not grow in New England. Plants/seeds: Coca, coffee, tea, poppy, tobacco. Includes recipes for cocaine.",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": 5
 				}
 			},
 			"LonesTechAndWeapons": {
@@ -343,7 +343,7 @@ func refresh_available():
 					"description": "Adds a large amount of content to the Add Bandits mod, and a few NPCs as well",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": 3
 				}
 			},
 			"ArcanaAndMagicItems": {
@@ -356,7 +356,7 @@ func refresh_available():
 					"description": "Arcana and Magic Items mod for Cataclysm: Bright Nights",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": 1
 				}
 			},
 			"SteampunkMod": {
@@ -369,7 +369,7 @@ func refresh_available():
 					"description": "A mod that adds several steampunk inspired items, recipes, locations and a small NPC town. Inspired by the Arcanum: Of Steamworks of Magick Obscure RPG.",
 					"category": "content",
 					"dependencies": [],
-					"stability": 1
+					"stability": 2
 				}
 			},
 			"HackThePlanet": {
@@ -382,7 +382,7 @@ func refresh_available():
 					"description": "CDDA Hacker Gear",
 					"category": "items",
 					"dependencies": [],
-					"stability": 1
+					"stability": 3
 				}
 			}
 		}
@@ -399,7 +399,7 @@ func refresh_available():
 					"description": "Arcana and Magic Items mod for Cataclysm: Dark Days Ahead",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": 1
 				}
 			},
 			"TefnutsExpansion": {
@@ -451,7 +451,7 @@ func refresh_available():
 					"description": "A remastering of my original Fallout mod for C:DDA. Should work with newest Bright Nights release for as long as I update and maintain it.",
 					"category": "content",
 					"dependencies": [],
-					"stability": 2
+					"stability": -1
 				}
 			}
 		}
