@@ -8,3 +8,5 @@
 "msg_backup_not_found","Archive \""%s\"" non trouvée."
 "msg_deleting_backup","Supprime l’archive \""%s\"""
 "msg_backup_deleted","Archive supprimée"
+"msg_deleting_multiple_backups","Suppression de %s archives..."
+"msg_multiple_backups_deleted","%s archives supprimées."

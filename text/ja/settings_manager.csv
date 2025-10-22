@@ -1,4 +1,5 @@
 "keys","ja"
 ,
-"msg_settings_saved","設定が保存されました。"
-"msg_settings_reset","設定がリセットされました。" 
+"msg_nonexistent_attempt","存在しないファイル %s から設定を読み込もうとしました"
+"msg_settings_parse_error","JSON から設定を解析する際にエラーが発生しました。行 %s、メッセージ：%s"
+"msg_nonexisting_setting","存在しない設定 \"%s\" を読み込もうとしました" 

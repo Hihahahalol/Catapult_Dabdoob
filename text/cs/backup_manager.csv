@@ -8,3 +8,5 @@
 "msg_backup_not_found","Záloha \""%s\"" nenalezena."
 "msg_deleting_backup","Mažu zálohu \""%s\""..."
 "msg_backup_deleted","Záloha smazána."
+"msg_deleting_multiple_backups","Mažu %s záloh..."
+"msg_multiple_backups_deleted","%s záloh smazáno."

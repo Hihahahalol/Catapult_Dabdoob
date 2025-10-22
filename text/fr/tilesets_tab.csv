@@ -14,4 +14,6 @@
 "dlg_tileset_deletion_title","Confirmer la suppression du tileset"
 "dlg_tileset_deletion_text","Suppression de %s."
 "dlg_tileset_manual_dl_title","Téléchargement manuel requis"
-"dlg_tileset_manual_dl_text","Ce tileset ne peut pas être téléchargé automatiquement. Cliquez sur OK pour le télécharger dans votre navigateur." 
+"dlg_tileset_manual_dl_text","Ce tileset ne peut pas être téléchargé automatiquement. Cliquez sur OK pour le télécharger dans votre navigateur, puis choisissez où vous l'avez sauvegardé dans la boîte de dialogue de sélection de fichiers."
+,
+"str_no_tileset_desc","Pas de description fournie."

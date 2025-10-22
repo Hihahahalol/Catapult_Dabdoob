@@ -4,11 +4,13 @@
 "lbl_avail_sound","Do pobrania:"
 "cbtn_stock_sound","Pokaż wbudowane"
 "btn_delete_sound","Usuń wybrane"
+"btn_activate_sound","Aktywuj wybrane"
 "btn_install_sound","Zainstaluj wybrane"
 "btn_reinstall_sound","Przeinstaluj wybrane"
 ,
 "tooltip_stock_sound","Pokazuj paczki dźwiękowe z data/sound na liście."
 "tooltip_delete_sound","Usuń wybraną paczkę dźwiękową z twojej instalacji gry."
+"tooltip_activate_sound","Ustaw wybraną paczkę dźwiękową jako aktywną dla gry."
 "tooltip_install_sound","Pobierz wybraną paczkę dźwiękową i dodaj ją do twojej instalacji gry."
 ,
 "dlg_sound_deletion_title","Potwierdź usunięcie Paczki dźwiękowej"

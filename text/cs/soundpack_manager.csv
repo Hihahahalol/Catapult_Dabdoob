@@ -1,9 +1,13 @@
 "keys","cs"
 ,
 "msg_no_sound_dir","Složka se zvuky neexistuje: %s"
+"msg_no_config_dir","Konfigurační adresář neexistuje."
+"msg_could_not_create_config_dir","Nepodařilo se vytvořit konfigurační adresář."
+"msg_could_not_write_options","Nepodařilo se zapsat do souboru s herními nastaveními."
 "msg_deleting_sound","Mažu %s"
 "msg_soundpack_not_found","Nepodařilo se najít balíček se zvuky \""%s\"""
 "msg_installing_sound","Instaluji balíček se zvuky \""%s\""..."
 "msg_reinstalling_sound","Znovu instaluji balíček se zvuky \""%s\""..."
 "msg_sound_download_failed","Nepodařilo se stáhnout archív s balíčkem se zvuky."
 "msg_sound_installed","Balíček se zvuky nainstalován."
+"msg_soundpack_activated","Balíček se zvuky \""%s\"" byl nastaven jako aktivní."

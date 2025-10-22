@@ -30,6 +30,8 @@
 "tooltip_user_dir","Abrir la carpeta de dato de usuario (contiene las partidas guardadas, \nconfiguración del juego, mods de usuario, sonido, etc)."
 "tooltip_play","Iniciar el juego."
 "tooltip_resume","Sáltate el menú principal y carga rápidamente el último mundo jugado.\n(Se cargará el primer personaje si existen varios)."
+"tooltip_wiki","Abrir la wiki para esta ramificación del juego (actualmente disponible para TLG)."
+"tooltip_search_wiki","Buscar en la wiki de TLG el término ingresado (solo disponible para TLG)."
 "tooltip_activate","Establecer la instalación del juego seleccionada como activa.\nLa instalación ""activa"" es la que se iniciará\ncuando haga clic en Reproducir/Reanudar, o se actualizará cuando\nhaga clic en Instalar".
 "tooltip_delete","Eliminar la copia seleccionada del juego.\n(Los datos guardados, la configuración y otros datos del usuario\nse almacenan por separado y no se perderán)."
 "tooltip_installs_item","Ubicación:\n%s\n(doble clic para abrir la carpeta)"

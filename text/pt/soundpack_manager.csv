@@ -1,9 +1,13 @@
 "keys","pt"
 ,
 "msg_no_sound_dir","Pasta Sound não existe: %s"
+"msg_no_config_dir","A pasta de configurações não existe."
+"msg_could_not_create_config_dir","Não foi possível criar a pasta de configurações."
+"msg_could_not_write_options","Não foi possível escrever no arquivo de opções do jogo."
 "msg_deleting_sound","Deletando %s"
 "msg_soundpack_not_found","Não foi possível encontrar pacote de sons chamado \""%s\"""
 "msg_installing_sound","Instalando pacote de sons \""%s\""..."
 "msg_reinstalling_sound","Reinstalando pacote de sons \""%s\""..."
 "msg_sound_download_failed","Não foi possível baixar o arquivo de pacote de sons."
 "msg_sound_installed","Pacote de sons instalado."
+"msg_soundpack_activated","Pacote de sons \""%s\"" foi definido como ativo."

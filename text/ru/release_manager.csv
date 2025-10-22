@@ -6,4 +6,8 @@
 "msg_got_n_releases","Получено %s релизов."
 "msg_fetching_releases_dda","Получение списка экспериментальных релизов DDA..."
 "msg_fetching_releases_bn","Получение списка экспериментальных релизов BN..."
+"msg_fetching_releases_eod","Получение списка экспериментальных релизов EOD..."
+"msg_fetching_releases_tish","Получение списка экспериментальных релизов TISH..."
+"msg_fetching_releases_tlg","Получение списка экспериментальных релизов TLG..."
+"msg_fetching_releases","Получение списка релизов для \""%s\""..."
 "msg_invalid_fetch_func_param","В ReleaseManager.fetch() был передан аргумент %s"

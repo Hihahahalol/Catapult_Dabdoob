@@ -4,11 +4,13 @@
 "lbl_avail_sound","Stáhnutelné:"
 "cbtn_stock_sound","Ukázat původní"
 "btn_delete_sound","Smazat vybrané"
+"btn_activate_sound","Aktivovat vybrané"
 "btn_install_sound","Nainstalovat vybrané"
-"btn_reinstall_sound","Znovu nainstalovat vybrané"
+"btn_reinstall_sound","Přeinstalovat vybrané"
 ,
 "tooltip_stock_sound","Ukázat balíčky se zvuky z data/sound na seznamu."
 "tooltip_delete_sound","Odstranit vybraný balíček se zvuky z vaší herní instalace."
+"tooltip_activate_sound","Nastavit vybraný balíček se zvuky jako aktivní balíček se zvuky pro hru."
 "tooltip_install_sound","Stáhnout vybraný balíček se zvuky a přidat ho do vaší herní instalace."
 ,
 "dlg_sound_deletion_title","Potvrdit smazání balíčku se zvuky"

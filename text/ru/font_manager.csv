@@ -13,6 +13,7 @@
 "msg_game_options_error_details","Код ошибки: %s. Строка с ошибкой: %s. Сообщение: %s"
 "msg_could_not_open_game_options","Не удалось открыть файл настроек игры %s (код ошибки: %s)."
 "msg_game_options_not_found","Не найден файл настроек игры %s!"
+"msg_game_options_invalid_format","Файл настроек игры %s имеет неверный формат (ожидается массив)."
 "msg_font_config_not_writable","Не удалось открыть файл конфигурации шрифтов %s на запись."
 "msg_game_options_saved","Настройки игры были сохранены в [i]options.json[/i]."
 "msg_game_options_not_writable","Не удалось открыть файл настроек игры %s на запись."

@@ -8,3 +8,5 @@
 "msg_backup_not_found","备份\""%s\""未找到。"
 "msg_deleting_backup","正在删除备份\""%s\""..."
 "msg_backup_deleted","备份已删除。"
+"msg_deleting_multiple_backups","正在删除 %s 个备份..."
+"msg_multiple_backups_deleted","%s 个备份已删除。"

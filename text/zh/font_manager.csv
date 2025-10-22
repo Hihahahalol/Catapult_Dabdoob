@@ -13,6 +13,7 @@
 "msg_game_options_error_details","错误代码： %s。错误行：%s。错误信息：%s"
 "msg_could_not_open_game_options","无法打开游戏设置文件%s（错误代码：%s）。"
 "msg_game_options_not_found","游戏设置文件%s无法找到！"
+"msg_game_options_invalid_format","游戏设置文件%s格式无效（期望数组）。"
 "msg_font_config_not_writable","无法打开字体设置文件%s以写入。"
 "msg_game_options_saved","已保存游戏设置至[i]options.json[/i]。"
 "msg_game_options_not_writable","无法打开游戏设置文件%s以写入。"

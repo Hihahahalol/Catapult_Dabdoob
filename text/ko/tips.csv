@@ -9,3 +9,6 @@ tip_debug_mode,도움이 되지 않는 오류 메시지가 표시됩니까? 더 
 tip_bug_reporting,"런처에 문제가 있고 이미 보고된 내용이 표시되지 않는 경우 [color=#3b93f7][url=https://github.com/Hihahahalol/Catapult_Dabdoob/issues]GitHub[/url][/color], 그렇다면 당신은 그것을 가장 먼저 알아차린 사람이 될 것입니다! GitHub 계정이 있는 경우 티켓을 생성해 보세요."
 tip_backup_caveat,게임에 여러 세계가 있는 경우 게임 세이브 백업은 항상 전체 저장 디렉터리에서 작동한다는 점에 유의하세요. 이는 백업이 복원되면 저장 디렉터리의 이전 내용이 모두 손실된다는 의미입니다(이 백업에 없었던 모든 월드 포함).
 tip_multi_install,이제 여러 버전의 게임을 동시에 설치할 수 있으며 버전 간에 쉽게 전환할 수 있습니다. 그러나 저장 및 기타 사용자 데이터는 설치 간에 공유되므로 너무 다른 버전(예: 안정 버전과 실험 버전) 간에 전환할 때 파손이나 손상에 주의하세요.
+tip_discord,개발자와 채팅하고 싶으신가요? TLG의 [color=#3b93f7][url=https://discord.com/invite/zT9sXmZNCK]Discord[/url][/color]에 런처를 논의하기 위한 전용 채널이 있습니다.
+tip_launcher,[color=#ff3300]저장 파일을 잃지 마세요![/color] 런처는 게임을 업데이트할 때 저장 파일을 잃지 않도록 별도로 저장합니다. 런처를 사용하여 게임을 실행해야 합니다.
+tip_mods,이제 런처를 사용하여 게임에 모드를 설치할 수 있습니다! 모드 탭으로 이동하여 선택한 Cataclysm 버전용으로 다운로드할 수 있는 모드를 확인할 수 있습니다.

@@ -13,6 +13,7 @@
 "msg_game_options_error_details","Hata kodu: %s. Hata satırı: %s. Hata mesajı: %s"
 "msg_could_not_open_game_options","Oyun ayar dosyası açılamadı (hata kodu: %s)."
 "msg_game_options_not_found","Oyun ayar dosyası %s bulunamadı!"
+"msg_game_options_invalid_format","Oyun ayar dosyası %s geçersiz formata sahip (dizi bekleniyor)."
 "msg_font_config_not_writable","Font ayar dosyası %s yazmak için açılamadı."
 "msg_game_options_saved","Oyun ayarları [i]options.json[/i] konumuna kaydedildi."
 "msg_game_options_not_writable","Oyun ayar dosyası %s yazmak için açılamadı."

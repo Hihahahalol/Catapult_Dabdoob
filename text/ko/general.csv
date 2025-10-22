@@ -1,36 +1,54 @@
-keys,ko
+"keys","ko"
 ,
-window_title,Dabdoob — Cataclysm: DDA 및 BN 런처
-str_welcome,Dabdoob에 오신 것을 환영합니다!
-str_tip_of_the_day,\n\n[u]오늘의 팁:[/u]\n
-msg_theme_load_error,%s 테마를 로드할 수 없습니다.
-debug_test,번역 검색을 테스트하기 위한 디버그 텍스트입니다.
+"window_title","Dabdoob — Cataclysm: DDA 및 BN 런처"
+"str_welcome","Dabdoob에 오신 것을 환영합니다!"
+"str_tip_of_the_day","\n\n[u]오늘의 팁:[/u]\n"
+"msg_theme_load_error","%s 테마를 로드할 수 없습니다."
+"debug_test","번역 검색을 테스트하기 위한 디버그 텍스트입니다."
 ,
-tag_warning,경고
-tag_error,오류
-tag_debug,디버그
+"tag_warning","경고"
+"tag_error","오류"
+"tag_debug","디버그"
 ,
-lbl_game,게임:
-desc_dda,"[b]Cataclysm: Dark Days Ahead[/b]는 포스트-아포칼립스 세계를 배경으로 한 턴제 생존 게임입니다. 절차적으로 생성된 무한한 세계에서 수색하고, 탐험하고, 제작하고, 건설하고, 농사를 짓고, 차량을 수리하고 개조하고, 바이오닉을 설치하고, 돌연변이를 일으키고, [color=#009900]좀비[/color] 및 수많은 다른 괴물로부터 살아남으세요!"
-desc_bn,"[b]Cataclysm: Bright Nights[/b]. 현학을 거부하고 [color=#ff3300]!!재미!![/color]를 수용합니다. 이 포크는 게임을 SF 로그라이크의 뿌리로 되돌리고 DDA 팀이 논란이 많은 변경 사항(수납공간, 숙련도, 얼음 및 [color=#3b93f7][url=https://docs.cataclysmbn.org/en/game/changelog/]더보기[/url][/color])을 되돌립니다. 전투, 게임 밸런스 및 속도에 특별한 주의를 기울입니다."
+"lbl_game","게임:"
+"desc_dda","[b]Cataclysm: Dark Days Ahead[/b]는 포스트-아포칼립스 세계를 배경으로 한 턴제 생존 게임입니다. 절차적으로 생성된 무한한 세계에서 수색하고, 탐험하고, 제작하고, 건설하고, 농사를 짓고, 차량을 수리하고 개조하고, 바이오닉을 설치하고, 돌연변이를 일으키고, [color=#009900]좀비[/color] 및 수많은 다른 괴물로부터 살아남으세요!"
+"desc_bn","[b]Cataclysm: Bright Nights[/b]. 현학을 거부하고 [color=#ff3300]!!재미!![/color]를 수용합니다. 이 포크는 게임을 SF 로그라이크의 뿌리로 되돌리고 DDA 팀이 논란이 많은 변경 사항(수납공간, 숙련도, 얼음 및 [color=#3b93f7][url=https://docs.cataclysmbn.org/en/game/changelog/]더보기[/url][/color])을 되돌립니다. 전투, 게임 밸런스 및 속도에 특별한 주의를 기울입니다."
+"desc_eod","[b]Cataclysm: Era of Decay[/b]는 플레이어가 실질적으로 가능한 한 많은 구성 가능성을 가질 수 있도록 하는 것을 목표로 하는 DDA의 포크입니다. 원래 게임의 기능이나 콘텐츠를 완전히 제거하지 않고 기본 설정으로 게임을 현실적으로 유지합니다. [color=#ff3300]당신[/color]이 원하는 방식으로 즐기세요."
+"desc_tish","[b]Cataclysm: There Is Still Hope[/b]는 ''현실성 또는 재미''와 ''사실성 또는 재미''라는 이분법을 거부하고 무엇보다 게임이 흥미롭다는 데 중점을 둔 DDA의 포크입니다."
+"desc_tlg","[b]Cataclysm: The Last Generation[/b]의 주요 목표는 Cataclysm의 깊이와 타당성에 대한 존중을 유지하면서 게임으로서 항상 가장 잘 해왔던 것을 다듬어 캐릭터 진행과 몰입형 생활 시뮬레이션 요소를 생존 기술을 시험할 세계에서 부각하는 것입니다."
 ,
-tab_game,게임
-tab_mods,모드
-tab_soundpacks,사운드팩
-tab_fonts,글꼴
-tab_backups,백업
-tab_settings,설정
-tab_about,정보
-about_app_title,Dabdoob - Cataclysm 런처
-about_app_desc,Dabdoob은 이제 버려진 Catapult 런처의 개발을 이어가는 런처입니다. 한 사람에 의해 개발되고 유지됩니다. 아래 링크에서 Discord와 Github에서 저를 찾을 수 있습니다.
+"tab_game","게임"
+"tab_mods","모드"
+"tab_soundpacks","사운드팩"
+"tab_fonts","글꼴"
+"tab_backups","백업"
+"tab_settings","설정"
+"tab_about","정보"
+"about_app_title","Dabdoob - Cataclysm 런처"
+"about_app_desc","Dabdoob은 이제 버려진 Catapult 런처의 개발을 이어가는 런처입니다. 한 사람에 의해 개발되고 유지됩니다. 아래 링크에서 Discord와 Github에서 저를 찾을 수 있습니다.
 
-Cataclysm과 그 모드/타일셋/사운드팩 제작자들의 작업을 높이 평가하신다면 그들을 확인하는 것을 잊지 마시고 제 작업을 높이 평가하신다면 아래 링크를 통해 기부를 고려해주세요!
-about_links,링크
-thank_you_title,Dabdoob을 다운로드해 주셔서 감사합니다!
-thank_you_message,Dabdoob을 설치해 주셔서 감사합니다! 즐겨 사용하시길 바랍니다.
+Cataclysm과 그 모드/타일셋/사운드팩 제작자들의 작업을 높이 평가하신다면 그들을 확인하는 것을 잊지 마시고 제 작업을 높이 평가하신다면 아래 링크를 통해 기부를 고려해주세요!"
+"about_links","링크"
+"thank_you_title","Dabdoob을 다운로드해 주셔서 감사합니다!"
+"thank_you_message","Dabdoob을 설치해 주셔서 감사합니다! 즐겨 사용하시길 바랍니다.
 
 지금 당장은 관련이 없을 수도 있지만, 우울하거나 불안하거나 자신감이 없으시다면 사랑하는 사람, 친구 또는 신뢰하는 누군가에게 도움을 요청하세요.
 이것이 당신을 짐으로 만드는 것은 아닙니다.
 당신이 느끼는 방식은 최종적이지 않으며 상황은 나아질 것입니다.
 
-즐거운 하루 보내시길 바라며 제 런처를 즐겨 사용하시길 바랍니다.
+즐거운 하루 보내시길 바라며 제 런처를 즐겨 사용하시길 바랍니다."
+,
+"msg_extract_create_dir_failed","압축 해제 디렉토리 %s 생성 실패 (오류: %s)"
+"msg_extract_tool_not_found","압축 해제 도구를 찾을 수 없습니다: %s"
+"msg_dmg_only_macos","DMG 파일은 macOS에서만 추출할 수 있습니다."
+"msg_mounting_dmg","DMG 파일 마운트 중: %s"
+"msg_dmg_mount_failed","DMG 파일 마운트 실패 (오류: %s)"
+"msg_dmg_mount_point_failed","DMG 마운트 지점 구문 분석 실패"
+"msg_copying_dmg_contents","%s에서 콘텐츠 복사 중"
+"msg_unmounting_dmg","DMG 파일 마운트 해제 중"
+"msg_dmg_unmount_warning","경고: DMG 마운트 해제 실패 (오류: %s)"
+"msg_no_executable_found_macos","게임 디렉토리에서 실행 파일을 찾을 수 없습니다."
+"msg_fixing_executable_permissions","%s에 대한 실행 파일 권한 수정 중"
+"msg_chmod_failed","%s에 대한 실행 권한 설정 실패 (오류: %s)"
+"msg_setting_working_dir","작업 디렉토리를 다음으로 설정 중: %s"
+"msg_starting_macos_bundle","macOS 앱 번들 시작 중: %s"

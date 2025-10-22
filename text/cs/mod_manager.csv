@@ -7,4 +7,7 @@
 "msg_obsolete_mod_collision","Už existuje zastaralý mod s ID %s. [i]%s[/i] bude nainstalován s upraveným ID a jménem kvůli konfliktu."
 "msg_mod_installed","Nainstalován %s"
 "msg_installing_n_mods","Instaluji %s modů..."
+"msg_mod_download_failed","Nepodařilo se stáhnout mod %s"
+"msg_mod_extraction_failed","Nepodařilo se rozbalit mod %s"
+"msg_mod_extraction_error","Chyba při rozbalování modu %s: %s"
 "msg_wiping_mod_repo","Mažu repozitář..."

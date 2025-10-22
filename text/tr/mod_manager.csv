@@ -7,4 +7,7 @@
 "msg_obsolete_mod_collision","%s ID sine sahip geçersiz bir mod var.Karışıklıklara sebep olmaması için [i]%s[/i] değiştirilmiş bir ad ve ID ile yüklenecek."
 "msg_mod_installed","%s modu yüklendi"
 "msg_installing_n_mods","%s mod yükleniyor..."
+"msg_mod_download_failed","%s modu indirilemedi"
+"msg_mod_extraction_failed","%s modu çıkarılamadı"
+"msg_mod_extraction_error","%s modu çıkarma hatası: %s"
 "msg_wiping_mod_repo","Dizin temizleniyor..."

@@ -8,6 +8,12 @@
 "lbl_backup_name","Nazwa:"
 "btn_create_backup","Utwórz"
 "lbl_backup_info_placeholder","Wybierz istniejącą kopię, aby zobaczyć jej szczegóły."
+"cbtn_backup_before_launch","Automatycznie twórz kopię zapasową zapisów przed uruchomieniem gry"
+"cbtn_backup_after_closing","Automatycznie twórz kopię zapasową zapisów po zamknięciu gry"
 ,
 "backup_info_location","Lokalizacja:"
 "backup_info_worlds","Światy:"
+"backup_info_multiple_selected","Wybrano wiele kopii zapasowych"
+"backup_info_selected_count","Wybrano: %s kopii zapasowych"
+"and","i"
+"more","więcej"

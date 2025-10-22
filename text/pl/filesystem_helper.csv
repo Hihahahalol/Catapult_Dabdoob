@@ -16,3 +16,5 @@
 "msg_extract_error","Komenda rozpakowywania archiwum zakończyła się błędem (kod wyjścia: %s)"
 "msg_extract_failed_cmd","Nieudana komenda: %s"
 "msg_extract_fail_output","Wyjście: %s"
+"msg_zipping_file","Zipowanie %s..."
+"msg_zip_error","Komenda zipowania archiwum zakończyła się błędem (kod wyjścia: %s)"

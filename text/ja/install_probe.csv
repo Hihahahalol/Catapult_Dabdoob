@@ -1,3 +1,4 @@
 "keys","ja"
 ,
-"msg_probe_failed","インストールの検出に失敗しました。" 
+"msg_cannot_create_install_info","インストール情報ファイル %s を作成できませんでした"
+"msg_cannot_parse_install_info","インストール情報ファイル %s を解析できませんでした" 

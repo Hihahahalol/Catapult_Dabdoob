@@ -8,3 +8,5 @@
 "msg_backup_not_found","\""%s\"" yedeği bulunamadı."
 "msg_deleting_backup","\""%s\" yedeği siliniyor..."
 "msg_backup_deleted","Yedek silindi."
+"msg_deleting_multiple_backups","%s yedek siliniyor..."
+"msg_multiple_backups_deleted","%s yedek silindi."

@@ -7,4 +7,7 @@
 "msg_obsolete_mod_collision","Istnieje już przestarzały mod z ID %s. [i]%s[/i] zostanie zainstalowany ze zmodyfikowanym ID oraz nazwą, aby uniknąć kolizji."
 "msg_mod_installed","Zainstalowano %s"
 "msg_installing_n_mods","Instalowanie %s modów..."
+"msg_mod_download_failed","Nie udało się pobrać moda %s"
+"msg_mod_extraction_failed","Nie udało się rozpakować moda %s"
+"msg_mod_extraction_error","Błąd rozpakowywania dla moda %s: %s"
 "msg_wiping_mod_repo","Wymazywanie repozytorium..."

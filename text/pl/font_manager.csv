@@ -13,6 +13,7 @@
 "msg_game_options_error_details","Kod błędu: %s. Linia błędu: %s. Wiadomość błędu: %s"
 "msg_could_not_open_game_options","Nie udało się otworzyć pliku opcji gry %s (kod błędu: %s)."
 "msg_game_options_not_found","Plik opcji gry %s nie został znaleziony!"
+"msg_game_options_invalid_format","Plik opcji gry %s ma nieprawidłowy format (oczekiwano tablicy)."
 "msg_font_config_not_writable","Nie udało się otworzyć pliku konfiguracyjnego czcionki %s do zapisu."
 "msg_game_options_saved","Zapisano opcje gry do [i]options.json[/i]."
 "msg_game_options_not_writable","Nie udało się otworzyć pliku opcji gry %s do zapisu."

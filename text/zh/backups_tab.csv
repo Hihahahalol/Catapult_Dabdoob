@@ -8,6 +8,12 @@
 "lbl_backup_name","名称："
 "btn_create_backup","创建"
 "lbl_backup_info_placeholder","选择一项备份以查看详情。"
+"cbtn_backup_before_launch","游戏启动前自动备份存档"
+"cbtn_backup_after_closing","游戏关闭后自动备份存档"
 ,
 "backup_info_location","位置："
 "backup_info_worlds","世界："
+"backup_info_multiple_selected","选择了多个备份"
+"backup_info_selected_count","已选择：%s 个备份"
+"and","和"
+"more","更多"

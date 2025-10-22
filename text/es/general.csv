@@ -15,6 +15,7 @@
 "desc_bn","[b]Cataclysm: Bright Nights[/b]. Rechaza la pedantería, abraza la [color=#ff3300]!!diversión!![/color]. Esta ramificación vuelve el juego a sus raíces sci-fi y revierte muchos cambios controversiales hechos por el equipo de  DDA (bolsillos, habilidades, congelamiento, y [color=#3b93f7][url=https://docs.cataclysmbn.org/en/game/changelog/]más[/url][/color]). Se le prestó mas atención al combate, balance y ritmo del juego."
 "desc_eod","[b]Cataclysm: Era of Decay[/b] es una bifurcación de DDA, cuyo objetivo principal es tener tanta capacidad de configuración accesible para el jugador como sea posible, sin eliminar por completo ninguna de las características o el contenido del juego original y dejar el juego realista con la configuración predeterminada. Diviértete de la manera que [color=#ff3300]quieras[/color]."
 "desc_tish","[b]Cataclysm: There Is Still Hope[/b] es una bifurcación de DDA con un enfoque en que el juego sea interesante por encima de todo, rechazando las dicotomías de ''realismo o diversión'' y ''verosimilitud o diversión''."
+"desc_tlg","[b]Cataclysm: The Last Generation[/b] primary aim is to preserve Cataclysm's depth and respect for plausibility while refining what it has always done best as a game, foregrounding character progression and immersive life sim elements in a world that will put your survival skills to the test."
 ,
 "tab_game","Juego"
 "tab_mods","Mods"
@@ -36,3 +37,17 @@ Esto no te convierte en una carga.
 La forma en que te sientes no es definitiva y las cosas mejorarán.
 
 Te deseo un día agradable y espero que te diviertas con mi lanzador."
+"msg_extract_create_dir_failed","Error al crear directorio de extracción %s (error: %s)"
+"msg_extract_tool_not_found","Herramienta de extracción no encontrada: %s"
+"msg_dmg_only_macos","Los archivos DMG solo se pueden extraer en macOS"
+"msg_mounting_dmg","Montando archivo DMG: %s"
+"msg_dmg_mount_failed","Error al montar archivo DMG (error: %s)"
+"msg_dmg_mount_point_failed","Error al analizar punto de montaje DMG"
+"msg_copying_dmg_contents","Copiando contenidos desde: %s"
+"msg_unmounting_dmg","Desmontando archivo DMG"
+"msg_dmg_unmount_warning","Advertencia: Error al desmontar DMG (error: %s)"
+"msg_no_executable_found_macos","No se encontró ejecutable en directorio de juego"
+"msg_fixing_executable_permissions","Arreglando permisos ejecutables para: %s"
+"msg_chmod_failed","Error al establecer permisos ejecutables para %s (error: %s)"
+"msg_setting_working_dir","Estableciendo directorio de trabajo a: %s"
+"Starting macOS app bundle: %s","Iniciando paquete de aplicación macOS: %s"

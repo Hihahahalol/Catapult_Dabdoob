@@ -8,3 +8,5 @@
 "msg_backup_not_found","Бэкап \""%s\"" не найден."
 "msg_deleting_backup","Удаление бэкапа \""%s\""..."
 "msg_backup_deleted","Бэкап удалён."
+"msg_deleting_multiple_backups","Удаление %s бэкапов..."
+"msg_multiple_backups_deleted","%s бэкапов удалено."

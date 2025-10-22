@@ -30,6 +30,8 @@
 "tooltip_user_dir","Otevřít složku s daty uživatele (obsahuje uložené hry, \nherní nastavení, mody, zvuk, atd.)"
 "tooltip_play","Spustit hru."
 "tooltip_resume","Přeskočit hlavní menu a rychle načte poslední hraný svět.\n(První postava bude vždy načtena pokud je jich tam více.)"
+"tooltip_wiki","Otevřít wiki pro tuto odnož hry (aktuálně dostupné pro TLG)."
+"tooltip_search_wiki","Prohledat TLG wiki pro zadaný termín (pouze dostupné pro TLG)."
 "tooltip_activate","Nastavit vybranou instalaci hry jako aktivní (tj. používanou).\n""Aktivní"" instalace je ta, která se spustí\nkdyž kliknete na Hrát/Pokračovat, nebo se aktualizuje, když\nkliknete na Instalovat."
 "tooltip_delete","Smazat vybranou kopii hry.\n(Uložení, nastavení a další uživatelská data\njsou uložena samostatně a nebudou ztracena.)"
 "tooltip_installs_item","Umístění:\n%s\n(složku otevřete dvojitým kliknutím)"

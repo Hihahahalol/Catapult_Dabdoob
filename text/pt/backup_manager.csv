@@ -8,3 +8,5 @@
 "msg_backup_not_found","Backup \""%s\"" não foi encontrado."
 "msg_deleting_backup","Deletando o backup \""%s\""..."
 "msg_backup_deleted","Backup deletado."
+"msg_deleting_multiple_backups","Deletando %s backups..."
+"msg_multiple_backups_deleted","%s backups deletados."

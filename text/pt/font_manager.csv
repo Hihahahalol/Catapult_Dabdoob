@@ -13,6 +13,7 @@
 "msg_game_options_error_details","Código do erro: %s. Linha do erro: %s. Mensagem do erro: %s"
 "msg_could_not_open_game_options","Não foi possível abrir o arquivo de opções do jogo %s (código de erro: %s)."
 "msg_game_options_not_found","Arquivo de opções do jogo %s não foi encontrado!"
+"msg_game_options_invalid_format","O arquivo de opções do jogo %s tem formato inválido (esperado array)."
 "msg_font_config_not_writable","Não foi possível abrir o arquivo de configuração de fonte %s para salvar."
 "msg_game_options_saved","Opções de jogo salvas para [i]options.json[/i]."
 "msg_game_options_not_writable","Não foi possível abrir o arquivo de opções do jogo %s para salvar."

@@ -7,3 +7,12 @@ msg_game_installed,설치가 완료되었습니다.
 msg_deleting_game,%s 제거 중...
 msg_game_deleted,제거가 완료되었습니다.
 msg_delete_not_found,"릴리스 \"%s\"을(를) 제거하려고 시도했지만, 디스크에서 찾을 수 없었습니다."
+msg_install_no_game_dir_found,추출된 아카이브에서 유효한 게임 디렉토리를 찾을 수 없습니다.
+msg_install_extract_failed,아카이브 추출 실패 (오류 코드: %s)
+msg_install_archive_not_found,설치 아카이브를 찾을 수 없습니다: %s
+msg_install_no_valid_dirs_found,추출된 아카이브에서 유효한 디렉토리를 찾을 수 없습니다.
+msg_install_using_first_dir,여러 디렉토리가 발견되었습니다. 첫 번째 디렉토리를 사용합니다: %s
+msg_install_set_executable,%s에 대한 실행 권한 설정:
+msg_install_chmod_failed,%s에 대한 실행 권한 설정 실패 (오류: %s)
+msg_install_set_app_executable,%s 실행 파일에 대한 실행 권한 설정: %s
+msg_install_app_chmod_failed,%s:%s에 대한 앱 번들 실행 권한 설정 실패 (오류: %s)
