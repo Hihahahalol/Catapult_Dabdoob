@@ -7,3 +7,12 @@
 "msg_deleting_game","Eliminando %s..."
 "msg_game_deleted","Eliminación finalizada".
 "msg_delete_not_found","Intenté eliminar la versión \"%s\", pero no pude encontrarla en el disco".
+"msg_install_no_game_dir_found","No se encontró un directorio de juego válido en el archivo extraído."
+"msg_install_extract_failed","La extracción del archivo falló con código de error: %s"
+"msg_install_archive_not_found","Archivo de instalación no encontrado: %s"
+"msg_install_no_valid_dirs_found","No se encontraron directorios válidos en el archivo extraído."
+"msg_install_using_first_dir","Se encontraron múltiples directorios, usando el primero: %s"
+"msg_install_set_executable","Establecer permisos ejecutables para: %s"
+"msg_install_chmod_failed","Error al establecer permisos ejecutables para %s (error: %s)"
+"msg_install_set_app_executable","Establecer permisos ejecutables para ejecutable %s: %s"
+"msg_install_app_chmod_failed","Error al establecer permisos ejecutables del paquete de aplicación para %s:%s (error: %s)"

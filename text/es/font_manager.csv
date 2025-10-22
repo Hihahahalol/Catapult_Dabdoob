@@ -1,7 +1,6 @@
 "keys","es"
 ,
-"msg_game_option_not_found_get","Tried to get game option \""%s\"", but it wasn't found."
-"msg_game_option_not_found_set","Se intentó cambiar la opción de juego \""%s\"", pero no se encontró."
+"msg_game_option_not_found_get","Se intentó obtener la opción de juego \""%s\"", pero no se encontró."
 "msg_failed_to_open_font_info","No se pudo abrir la información de la fuente."
 "msg_could_not_parse_font_info","No se ha podido analizar la información de la fuente incluida."
 "msg_font_info_error_details","Código de error: %s. Línea de error: %s. Mensaje de error: %s"
@@ -13,6 +12,7 @@
 "msg_game_options_error_details","Código de error: %s. Línea de error: %s. Mensaje de error: %s"
 "msg_could_not_open_game_options","No se pudo abrir el archivo de opciones de juego %s (código de error: %s)."
 "msg_game_options_not_found","No se encontró el archivo de opciones de juego %s!"
+"msg_game_options_invalid_format","El archivo de opciones de juego %s tiene formato inválido (se esperaba un array)."
 "msg_font_config_not_writable","No se pudo abrir el archivo de configuración de fuentes %s para escribir."
 "msg_game_options_saved","Se guardaron las opciones de juego a [i]options.json[/i]."
 "msg_game_options_not_writable","No se pudo abrir el archivo de opciones de juego %s para escribir."

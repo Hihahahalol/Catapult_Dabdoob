@@ -1,9 +1,13 @@
 "keys","fr"
 ,
 "msg_no_sound_dir","Le répertoire des sons n’existe pas: %s"
+"msg_no_config_dir","Le répertoire de configuration n'existe pas."
+"msg_could_not_create_config_dir","Impossible de créer le répertoire de configuration."
+"msg_could_not_write_options","Impossible d'écrire dans le fichier d'options du jeu."
 "msg_deleting_sound","Supprime %s"
 "msg_soundpack_not_found","Impossible de trouver le pack de sons nommé \""%s\"""
 "msg_installing_sound","Installe le pack de sons  \""%s\""..."
 "msg_reinstalling_sound","Réinstalle le pack de sons \""%s\""..."
 "msg_sound_download_failed","Impossible de télécharger l’archive du pack de sons"
 "msg_sound_installed","Pack de sons installé"
+"msg_soundpack_activated","Le pack de sons \""%s\"" a été défini comme actif."

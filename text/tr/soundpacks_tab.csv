@@ -4,11 +4,13 @@
 "lbl_avail_sound","İndirilebilir:"
 "cbtn_stock_sound","Stoktakini göster"
 "btn_delete_sound","Seçili olanı sil"
+"btn_activate_sound","Seçili olanı etkinleştir"
 "btn_install_sound","Seçili olanı yükle"
 "btn_reinstall_sound","Seçili olanı yeniden yükle"
 ,
 "tooltip_stock_sound","Listede data/sound klasöründeki ses paketlerini göster."
 "tooltip_delete_sound","Seçili ses paketini oyundan kaldır."
+"tooltip_activate_sound","Seçili ses paketini oyunda aktif ses paketi olarak ayarla."
 "tooltip_install_sound","Seçili ses paketini indir ve oyuna yükle."
 ,
 "dlg_sound_deletion_title","Ses paketi silmeyi onayla"

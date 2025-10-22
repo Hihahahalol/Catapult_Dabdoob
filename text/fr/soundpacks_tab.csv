@@ -4,11 +4,13 @@
 "lbl_avail_sound","Téléchargable:"
 "cbtn_stock_sound","Voir les sons de base"
 "btn_delete_sound","Supprimer la sélection"
+"btn_activate_sound","Activer la sélection"
 "btn_install_sound","Installer la sélection"
 "btn_reinstall_sound","Réinstaller la sélection"
 ,
 "tooltip_stock_sound","Voir les packs de sons depuis data/sound dans la liste."
 "tooltip_delete_sound","Supprimer les packs de sons sélectionnés de votre répertoire d’installation"
+"tooltip_activate_sound","Définir le pack de sons sélectionné comme pack de sons actif pour le jeu."
 "tooltip_install_sound","Télécharger le pack de sons sélectionné et l’ajouter à votre répertoire d’installation"
 ,
 "dlg_sound_deletion_title","Confirmer la suppression du pack sonore"

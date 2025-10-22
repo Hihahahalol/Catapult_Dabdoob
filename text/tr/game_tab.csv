@@ -30,6 +30,8 @@
 "tooltip_user_dir","Kullanıcı kayıt dizinini aç (kayıt dosyaları, \noyun ayarları, kullanıcı modları, ses, vs. içerir)"
 "tooltip_play","Oyunu çalıştır"
 "tooltip_resume","Ana menüyü atla ve hızlıca son açılmış dünyayı yükle.\n(Eğer birden fazla karakter varsa ilki yüklenir.)"
+"tooltip_wiki","Bu oyun forkunun wiki sini aç (şu anda sadece TLG için kullanılabilir)."
+"tooltip_search_wiki","TLG wikisinde yazılan terimi ara (sadece TLG için kullanılabilir)."
 "tooltip_activate","Seçili oyun yüklemesini (ör. Kullanılan) aktif yap.\n""Aktif"" yükleme Oyna/Devam et tuşuna tıklandığında çalışır, Yükle tuşuna bastığın zaman da güncellenir."
 "tooltip_delete","Seçili oyun kopyasını sil.\n(Kayıtlar, ayarlar ve diğer kullanıcı verileri\nayrı olarak saklanır ve silinmezler.)"
 "tooltip_installs_item","Konum:\n%s\n(klasörü açmak için çift tıkla)"

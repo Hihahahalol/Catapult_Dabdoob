@@ -8,3 +8,5 @@ msg_backup_restored,백업이 복원되었습니다.
 msg_backup_not_found,"백업 \""%s\""을(를) 찾을 수 없습니다."
 msg_deleting_backup,"백업 \""%s\"" 삭제 중..."
 msg_backup_deleted,백업이 삭제되었습니다.
+msg_deleting_multiple_backups,"백업 %s개 삭제 중..."
+msg_multiple_backups_deleted,"백업 %s개가 삭제되었습니다."

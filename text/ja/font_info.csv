@@ -1,7 +1,7 @@
 "keys","ja"
 ,
-"font_name","フォント名："
-"font_style","スタイル："
-"font_size","サイズ："
-"font_type","種類："
-"font_path","パス：" 
+"font_desc_fantasque","Jany Belluzによる、多少風変わりな等幅フォント。"
+"font_desc_hack","主にソースコード向けに設計された、\n可読性に焦点を当てた作業用フォント。Source Foundry Authors作。"
+"font_desc_inconsolata","Inconsolataフォントの変種（元々はRaph Levien作）\nギリシャ語とキリル文字を追加。"
+"font_desc_pt","ParaTypeによるタイプライターフォント\n優れたキリルタイポグラフィ。"
+"font_desc_ubuntu","Canonicalによる非常に独特なスタイルのフォント、\n同名のLinuxディストリビューション向けに設計。" 

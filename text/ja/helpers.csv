@@ -1,8 +1,7 @@
 "keys","ja"
 ,
-"str_unknown","不明"
-"str_downloading","ダウンロード中"
-"str_installing","インストール中"
-"str_done","完了"
-"str_error","エラー"
-"str_cancelled","キャンセル済み" 
+"msg_file_read_fail","ファイル %s を開けませんでした（エラー %s）。"
+"msg_file_write_fail","ファイル %s を書き込み用に開けませんでした（エラー %s）。"
+"msg_debug_file_path","フルパス：%s"
+"msg_json_parse_fail","%s の内容を解析できませんでした。"
+"msg_debug_json_result","JSON解析結果：\nエラーコード：%s\nエラーメッセージ：%s\nエラー行：%s" 

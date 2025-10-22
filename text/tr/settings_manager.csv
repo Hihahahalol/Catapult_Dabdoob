@@ -3,4 +3,3 @@
 "msg_nonexistent_attempt","Var olmayan %s dosyasından ayar yükleme girişimi"
 "msg_settings_parse_error","JSON'dan ayarları ayrıştırırken hata, satır %s, mesaj: %s"
 "msg_nonexisting_setting","Var olmayan \"%s\" ayarını okuma girişimi"
-"msg_no_game_options_file","Oyun ayarları şu an yönetilemiyor: oyun ayar dosyası yok. Oluşturmak için oyunu en az bir kere başlattığından emin ol."

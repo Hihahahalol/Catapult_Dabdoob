@@ -1,6 +1,14 @@
 "keys","ja"
 ,
-"msg_download_started","ダウンロードを開始しました：%s"
-"msg_download_completed","ダウンロードが完了しました：%s"
-"msg_download_failed","ダウンロードに失敗しました：%s"
-"msg_download_cancelled","ダウンロードがキャンセルされました：%s" 
+"unit_kb","KB"
+"unit_mb","MB"
+"unit_kbps","KB/s"
+"unit_mbps","MB/s"
+,
+"msg_downloading_file","%s をダウンロード中..."
+"msg_download_progress","ダウンロード中："
+"str_dl_speed_at","速度："
+"msg_download_finished","%s のダウンロードが完了しました。"
+"msg_download_failed","%s のダウンロードに失敗しました。"
+"msg_http_request_info","[b]HTTPRequest情報：[/b]\n[u]結果：[/u] %s\n[u]応答コード：[/u] %s\n[u]ヘッダー：[/u] %s"
+"msg_using_proxy","プロキシを使用中：%s:%s" 

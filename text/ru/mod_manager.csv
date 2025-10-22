@@ -7,4 +7,7 @@
 "msg_obsolete_mod_collision","Уже есть мод с ID %s, помеченный как устаревший. [i]%s[/i] будет установлен с изменённым ID и именем, чтобы избежать конфликтов."
 "msg_mod_installed","Мод %s установлен."
 "msg_installing_n_mods","Устанавливаем %s модов..."
+"msg_mod_download_failed","Не удалось скачать мод %s"
+"msg_mod_extraction_failed","Не удалось извлечь мод %s"
+"msg_mod_extraction_error","Ошибка извлечения для мода %s: %s"
 "msg_wiping_mod_repo","Очистка репозитория..."

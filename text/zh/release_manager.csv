@@ -6,4 +6,8 @@
 "msg_got_n_releases","获取了%s个发布。"
 "msg_fetching_releases_dda","正在为DDA测试版获取发布... "
 "msg_fetching_releases_bn","正在为BN测试版获取发布..."
+"msg_fetching_releases_eod","正在为EOD测试版获取发布..."
+"msg_fetching_releases_tish","正在为TISH测试版获取发布..."
+"msg_fetching_releases_tlg","正在为TLG测试版获取发布..."
+"msg_fetching_releases","正在为\""%s\""获取发布..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch()已传至%s"

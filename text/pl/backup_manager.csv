@@ -8,3 +8,5 @@
 "msg_backup_not_found","Kopia \""%s\"" nie istnieje."
 "msg_deleting_backup","Usuwanie kopii \""%s\""..."
 "msg_backup_deleted","Kopia usunięta."
+"msg_deleting_multiple_backups","Usuwanie %s kopii zapasowych..."
+"msg_multiple_backups_deleted","Usunięto %s kopii zapasowych."

@@ -6,4 +6,8 @@
 "msg_got_n_releases","%s sürüm alındı."
 "msg_fetching_releases_dda","Deneysel DDA için sürümler alınıyor..."
 "msg_fetching_releases_bn","Deneysel BN için sürümler alınıyor..."
+"msg_fetching_releases_eod","Deneysel EOD için sürümler alınıyor..."
+"msg_fetching_releases_tish","Deneysel TISH için sürümler alınıyor..."
+"msg_fetching_releases_tlg","Deneysel TLG için sürümler alınıyor..."
+"msg_fetching_releases","\""%s\"" için sürümler alınıyor..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() fonksiyonu %s çıktısını verdi."

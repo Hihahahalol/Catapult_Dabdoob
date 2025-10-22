@@ -4,11 +4,13 @@
 "lbl_avail_sound","Доступные для загрузки:"
 "cbtn_stock_sound","Показать встроенные"
 "btn_delete_sound","Удалить выбранный"
+"btn_activate_sound","Активировать выбранный"
 "btn_install_sound","Установить выбранный"
 "btn_reinstall_sound","Переустановить выбранный"
 ,
 "tooltip_stock_sound","Показать в этом списке саундпаки из data/sound."
 "tooltip_delete_sound","Удалить выбранный саундпак из текущей установки игры."
+"tooltip_activate_sound","Установить выбранный саундпак как активный в игре."
 "tooltip_install_sound","Загрузить выбранный саундпак и добавить его в текущую установку игры."
 ,
 "dlg_sound_deletion_title","Подтвердите удаление саундпака"

@@ -30,6 +30,8 @@
 "tooltip_user_dir","Abrir a pasta de dados do usuário (contém jogos salvos), \nconfiguração do jogo, mods do usuário, sons, etc.)"
 "tooltip_play","Iniciar o jogo."
 "tooltip_resume","Pular o menu inicial e carregar o último mundo jogado.\n(O primeiro personagem será carregado se houver vários)."
+"tooltip_wiki","Abrir o wiki para este fork do jogo (disponível atualmente para TLG)."
+"tooltip_search_wiki","Pesquisar no wiki do TLG pelo termo inserido (disponível apenas para TLG)."
 "tooltip_activate","Definir a instalação do jogo selecionado como ativa.\na instalação ativa é a que será iniciada\nquando você clicar em Jogar/Continuar, ou atualizada quando você clicar em Instalar."
 "tooltip_delete","Exclui a cópia selecionada do jogo.\n(jogos salvos, configurações e outros dados\nsão armazenados separadamente e não serão perdidos.)"
 "tooltip_installs_item","Local:\n%s\n(duplo-clique para abrir pasta)"

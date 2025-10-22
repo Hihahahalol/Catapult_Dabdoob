@@ -1,9 +1,13 @@
 "keys","pl"
 ,
 "msg_no_sound_dir","Folder dźwięków nie istnieje: %s"
+"msg_no_config_dir","Katalog konfiguracji nie istnieje."
+"msg_could_not_create_config_dir","Nie można utworzyć katalogu konfiguracji."
+"msg_could_not_write_options","Nie można zapisać do pliku opcji gry."
 "msg_deleting_sound","Usuwanie %s"
 "msg_soundpack_not_found","Nie udało się znaleźć paczki dźwiękowej o nazwie \""%s\"""
 "msg_installing_sound","Instalowanie paczki dźwiękowej \""%s\""..."
 "msg_reinstalling_sound","Reinstalacja paczki dźwiękowej \""%s\""..."
 "msg_sound_download_failed","Nie udało się pobrać archiwum paczki dźwiękowej."
 "msg_sound_installed","Paczka dźwiękowa zainstalowana."
+"msg_soundpack_activated","Paczka dźwiękowa \""%s\"" została ustawiona jako aktywna."

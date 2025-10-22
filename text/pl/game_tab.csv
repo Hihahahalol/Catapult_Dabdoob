@@ -30,6 +30,8 @@
 "tooltip_user_dir","Otwórz folder danych użytkownika (zawierający zapisy,\nkonfigurację gry, mody użytkownika, dźwięki, etc.)"
 "tooltip_play","Uruchom grę."
 "tooltip_resume","Pomiń główne menu i wykonaj szybkie wczytywanie ostatnio uruchomionego świata.\n(Wybrana zostanie zawsze pierwsza postać, jeżeli dostępnych jest wiele.)"
+"tooltip_wiki","Otwórz wiki dla tego forka gry (obecnie dostępne dla TLG)."
+"tooltip_search_wiki","Przeszukaj wiki TLG dla wprowadzonego terminu (dostępne tylko dla TLG)."
 "tooltip_activate","Ustaw wybraną instalację gry jako aktywną (tj. w użyciu).\n""Aktywna"" instalacja to ta, która zostanie uruchomiona\npo kliknięciu przycisku Uruchom/Wznów lub zaktualizowana po\nkliknięciu Zainstaluj."
 "tooltip_delete","Usuń wybraną kopię gry.\n(Zapisane gry, ustawienia i inne dane użytkownika\nsą przechowywane oddzielnie i nie zostaną utracone.)"
 "tooltip_installs_item","Lokalizacja:\n%s\n(kliknij dwukrotnie, aby otworzyć folder)"

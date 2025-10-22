@@ -8,6 +8,12 @@ lbl_manual_backup,수동 백업
 lbl_backup_name,이름:
 btn_create_backup,생성
 lbl_backup_info_placeholder,여기에서 세부정보를 보려면 존재하는 백업을 선택하세요.
+cbtn_backup_before_launch,"게임 시작 전에 자동으로 저장 백업"
+cbtn_backup_after_closing,"게임 종료 후에 자동으로 저장 백업"
 ,
 backup_info_location,위치:
 backup_info_worlds,세계:
+backup_info_multiple_selected,"여러 백업 선택됨"
+backup_info_selected_count,"선택됨: %s 백업"
+and,"그리고"
+more,"더"

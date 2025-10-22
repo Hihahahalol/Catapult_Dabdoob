@@ -2,9 +2,12 @@ keys,ko
 ,
 msg_mod_json_parsing_failed,%s을(를) 읽을 수 없습니다.
 msg_mod_deleted,%s을(를) 삭제했습니다.
-msg_mod_not_found,"ID가 \""%s\""인 모드를 찾을 수 없습니다."
+msg_mod_not_found,"ID가 \"%s\"인 모드를 찾을 수 없습니다."
 msg_deleting_n_mods,%s 모드 삭제 중...
 msg_obsolete_mod_collision,ID가 %s인 오래된 모드가 이미 있습니다. [i]%s[/i]는 충돌을 피하기 위해 수정된 ID와 이름으로 설치됩니다.
 msg_mod_installed,%s 설치됨
 msg_installing_n_mods,%s 모드 설치 중...
+msg_mod_download_failed,모드 %s 다운로드 실패
+msg_mod_extraction_failed,모드 %s 추출 실패
+msg_mod_extraction_error,모드 %s에 대한 추출 오류: %s
 msg_wiping_mod_repo,저장소를 지우는 중...

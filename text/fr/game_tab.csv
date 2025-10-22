@@ -30,6 +30,8 @@
 "tooltip_user_dir","Ouvrir le répertoire des données utilisateur\n(contient les sauvegardes, la configuration du jeu,\nles mods utilisateur, le son, etc.)"
 "tooltip_play","Lancer le jeu."
 "tooltip_resume","Ignorer le menu principal et charger rapidement le dernier monde joué.\n(Le premier personnage sera toujours chargé s'il y en a plusieurs.)"
+"tooltip_wiki","Ouvrir le wiki pour cette branche du jeu (actuellement disponible pour TLG)."
+"tooltip_search_wiki","Rechercher dans le wiki TLG le terme saisi (uniquement disponible pour TLG)."
 "tooltip_activate","Définir l'installation du jeu sélectionné comme active.\nL'installation ""active"" est celle qui sera lancée\nlorsque vous cliquez sur Lecture/Reprendre, ou mise à jour lorsque\nvous cliquez sur Installer."
 "tooltip_delete","Supprimez la copie sélectionnée du jeu.\n(Les sauvegardes, les paramètres et les autres données\nutilisateur sont stockés séparément et ne seront pas perdus.)"
 "tooltip_installs_item","Emplacement :\n%s\n(double-cliquez pour ouvrir le répertoire)"

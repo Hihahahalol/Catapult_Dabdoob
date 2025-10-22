@@ -8,6 +8,12 @@
 "lbl_backup_name","Название:"
 "btn_create_backup","Создать"
 "lbl_backup_info_placeholder","Выберите существующий бэкап, чтобы увидеть здесь информацию по нему."
+"cbtn_backup_before_launch","Автоматически бэкапить сохранения перед запуском игры"
+"cbtn_backup_after_closing","Автоматически бэкапить сохранения после закрытия игры"
 ,
 "backup_info_location","Расположение:"
 "backup_info_worlds","Миры:"
+"backup_info_multiple_selected","Выбрано несколько бэкапов"
+"backup_info_selected_count","Выбрано: %s бэкапов"
+"and","и"
+"more","больше"

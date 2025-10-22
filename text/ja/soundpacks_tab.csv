@@ -4,11 +4,13 @@
 "lbl_avail_sound","ダウンロード可能："
 "cbtn_stock_sound","標準を表示"
 "btn_delete_sound","選択したものを削除"
+"btn_activate_sound","Activate Selected"
 "btn_install_sound","選択したものをインストール"
 "btn_reinstall_sound","選択したものを再インストール"
 ,
 "tooltip_stock_sound","data/soundからのサウンドパックをリストに表示します。"
 "tooltip_delete_sound","選択したサウンドパックをゲームインストールから削除します。"
+"tooltip_activate_sound","選択したサウンドパックをゲームのアクティブなサウンドパックとして設定します。"
 "tooltip_install_sound","選択したサウンドパックをダウンロードしてゲームインストールに追加します。"
 ,
 "dlg_sound_deletion_title","サウンドパック削除の確認"

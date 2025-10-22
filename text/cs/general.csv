@@ -3,7 +3,8 @@
 "window_title","Dabdoob — spouštěč pro Cataclysm: DDA a BN"
 "str_welcome","Vítejte v Dabdoobu!"
 "str_tip_of_the_day","\n\n[u]Tip dne:[/u]\n"
-"debug_test","Toto je debug text pro testování získání překladu."
+"msg_theme_load_error","Nelze načíst téma %s."
+"debug_test","Toto je debugovací text pro testování získávání překladů."
 ,
 "tag_warning","varování"
 "tag_error","chyba"
@@ -12,8 +13,9 @@
 "lbl_game","Hra:"
 "desc_dda","[b]Cataclysm: Dark Days Ahead[/b] je tahově založená hra o přežití zasazená v postapokalyptickém světě. Scavenge, prozkoumávejte, vyrábějte, stavte, farmařte, opravujte a upravujte vozidla, instalujte bionika, mutujte, braňte se proti [color=#009900]zombíkům[/color] a spoustě dalších monstrozit — vše v neomezeném, procedurálně generovaném světě!"
 "desc_bn","[b]Cataclysm: Bright Nights[/b]. Odmítněte puntičkářství, přijměte [color=#ff3300]!!zábavu!![/color]. Tato odnož bere hru zpět do jejích sci-fi roguelike kořenů a vrací zpět spoustu kontroverzních změn od týmu DDA (kapsy, dovednosti, mražení, a [color=#3b93f7][url=https://docs.cataclysmbn.org/en/game/changelog/]více[/url][/color]). Zvláštní pozornost je dávána boji, balancování a tempu hry."
-"desc_eod","[b]Cataclysm: Dark Days Ahead[/b] je vidlice DDA, jejímž cílem je především mít co nejvíce konfigurovatelnosti přístupné pro hráče, jak je to prakticky možné, aniž by došlo k úplnému odstranění jakýchkoli funkcí nebo obsahu původní hry a ponechání hry Realistické s výchozím nastavením. Bavte se způsobem, který [color=#ff3300]vy[/color] chcete."
-"desc_tish","[b]Cataclysm: There Is Still Hope[/b] je vidlička DDA se zaměřením na hru, která je zajímavá především, odmítá dichotomie ''realismu nebo zábavy'' a ''věrohodnosti nebo zábavy''."
+"desc_eod","[b]Cataclysm: Era of Decay[/b] je fork DDA, zaměřený především na co největší konfigurovatelnost přístupnou pro hráče, bez úplného odstranění jakýchkoli funkcí nebo obsahu původní hry a ponechání hry realistické s výchozími nastaveními. Bavte se tak, jak [color=#ff3300]vy[/color] chcete."
+"desc_tish","[b]Cataclysm: There Is Still Hope[/b] je fork DDA se zaměřením na to, aby byla hra zajímavá především, odmítající dichotomie ''realismus nebo zábava'' a ''věrohodnost nebo zábava''."
+"desc_tlg","[b]Cataclysm: The Last Generation[/b] má za hlavní cíl zachovat hloubku Cataclysm a respekt k věrohodnosti, zatímco zdokonaluje to, co vždy dělala nejlépe jako hra, zdůrazňující postup postavy a pohlcující prvky životní simulace ve světě, který prověří vaše přežití."
 ,
 "tab_game","Hra"
 "tab_mods","Mody"
@@ -32,6 +34,20 @@ Pokud oceňujete práci tvůrců Cataclysm a jeho módů/tilesetů/zvukových ba
 
 Možná to pro vás právě teď není relevantní, ale pokud se cítíte depresivní, úzkostní nebo si nejste jisti sami sebou, prosím, obraťte se na milovanou osobu, přítele nebo někoho, komu důvěřujete.
 To z vás nedělá zátěž.
-Způsob, jakým se cítíte, není definitivní a věci se zlepší.
+Způsob, jakým se možná cítíte, není konečný a věci se zlepší."
 
 Přeji vám příjemný den a doufám, že se budete bavit s mým spouštěčem."
+"msg_extract_create_dir_failed","Nepodařilo se vytvořit adresář pro rozbalení %s (chyba: %s)"
+"msg_extract_tool_not_found","Nástroj pro rozbalení nenalezen: %s"
+"msg_dmg_only_macos","Soubory DMG lze rozbalit pouze na macOS"
+"msg_mounting_dmg","Připojuji DMG soubor: %s"
+"msg_dmg_mount_failed","Nepodařilo se připojit DMG soubor (chyba: %s)"
+"msg_dmg_mount_point_failed","Nepodařilo se analyzovat přípojný bod DMG"
+"msg_copying_dmg_contents","Kopíruji obsah z: %s"
+"msg_unmounting_dmg","Odpojuji DMG soubor"
+"msg_dmg_unmount_warning","Varování: Nepodařilo se odpojit DMG (chyba: %s)"
+"msg_no_executable_found_macos","V adresáři hry nebyl nalezen žádný spustitelný soubor"
+"msg_fixing_executable_permissions","Opravuji spustitelná oprávnění pro: %s"
+"msg_chmod_failed","Nepodařilo se nastavit spustitelná oprávnění pro %s (chyba: %s)"
+"msg_setting_working_dir","Nastavuji pracovní adresář na: %s"
+"Starting macOS app bundle: %s","Spouštím balíček aplikace macOS: %s"

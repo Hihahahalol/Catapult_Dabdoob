@@ -30,6 +30,8 @@
 "tooltip_user_dir","打开用户数据目录（包含存档、游戏配置、用户模组、声音等）"
 "tooltip_play","启动游戏。"
 "tooltip_resume","跳过主菜单并快速加载上次游玩的世界。\n（如果有多个角色，将始终加载第一个。）"
+"tooltip_wiki","打开此游戏分支的维基（目前仅TLG可用）。"
+"tooltip_search_wiki","搜索TLG维基中的输入词条（仅TLG可用）。"
 "tooltip_activate","将选定的实例设置为当前实例（即正在使用）。\n这就是在您单击开始/加载上次游玩的世界时启动的、\n或在覆盖安装时更新的实例。"
 "tooltip_delete","删除选中的游戏实例。\n(游戏存档、设置等用户数据是单独存储的，不会丢失。)"
 "tooltip_installs_item","位置：\n%s\n(双击打开文件夹)"

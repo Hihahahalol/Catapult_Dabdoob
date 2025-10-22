@@ -8,6 +8,12 @@
 "lbl_backup_name","Nom:"
 "btn_create_backup","Créer"
 "lbl_backup_info_placeholder","Sélectionner une archive existante pour voir ses détails ici."
+"cbtn_backup_before_launch","Archiver automatiquement les sauvegardes avant le lancement du jeu"
+"cbtn_backup_after_closing","Archiver automatiquement les sauvegardes après la fermeture du jeu"
 ,
 "backup_info_location","Endroit:"
 "backup_info_worlds","Mondes:"
+"backup_info_multiple_selected","Archives multiples sélectionnées"
+"backup_info_selected_count","Sélectionnées: %s archives"
+"and","et"
+"more","plus"

@@ -2,7 +2,7 @@
 ,
 "dlg_changelog_title","最近改动"
 "str_fetching_changes","正在从Github获取最近改动。请稍等..."
-"str_error_retrieving_data","从GitHub API检索数据时出错。 "
+"str_error_retrieving_data","从GitHub API检索数据时出错。"
 "str_hhtp_response_code","\n\nHTTP响应代码： %s"
 "str_github_says","\nGitHub说： [i]%s[/i]"
 "str_try_later","\n\n请稍后重试。"
