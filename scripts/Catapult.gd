@@ -1363,13 +1363,13 @@ func _cleanup_automatic_backups() -> void:
 	_backups.refresh_available()
 	var auto_backups = []
 	
-	# Filter to only automatic backups and sort by name (which includes timestamp)
+	# Filter to only automatic backups
 	for backup in _backups.available:
 		if backup["name"].begins_with("Auto_") or backup["name"].begins_with("AutoExit_"):
 			auto_backups.append(backup)
 	
-	# Sort by name to get chronological order (oldest first)
-	auto_backups.sort_custom(self, "_compare_backup_names")
+	# Sort by timestamp to get chronological order (oldest first)
+	auto_backups.sort_custom(self, "_compare_backup_timestamps")
 	
 	# Remove excess automatic backups
 	if auto_backups.size() > max_backups:
@@ -1381,8 +1381,25 @@ func _cleanup_automatic_backups() -> void:
 			yield(_backups, "backup_deletion_finished")
 
 
-func _compare_backup_names(a, b) -> bool:
-	return a["name"] < b["name"]
+func _compare_backup_timestamps(a, b) -> bool:
+	# Extract timestamp portion from backup names (format: Auto_YY-MM-DD_HH-MM or AutoExit_YY-MM-DD_HH-MM)
+	# The timestamp starts after "Auto_" or "AutoExit_" prefix
+	var timestamp_a = _extract_backup_timestamp(a["name"])
+	var timestamp_b = _extract_backup_timestamp(b["name"])
+	return timestamp_a < timestamp_b
+
+
+func _extract_backup_timestamp(backup_name: String) -> String:
+	# Extract the timestamp portion from the backup name
+	# Backup names follow format: Auto_YY-MM-DD_HH-MM or AutoExit_YY-MM-DD_HH-MM
+	# The timestamp is the part after the underscore following the type prefix
+	
+	if backup_name.begins_with("Auto_"):
+		return backup_name.substr(5)  # Remove "Auto_" prefix
+	elif backup_name.begins_with("AutoExit_"):
+		return backup_name.substr(9)  # Remove "AutoExit_" prefix
+	else:
+		return ""  # Shouldn't happen for auto backups
 
 func _find_macos_executable(game_dir: String) -> Dictionary:
 	# Find the correct executable on macOS, handling both direct executables and .app bundles
