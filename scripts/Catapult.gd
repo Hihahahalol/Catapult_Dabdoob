@@ -310,7 +310,7 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 
 
 func _on_GamesList_item_selected(index: int) -> void:
-	
+
 	match index:
 		0:
 			Settings.store("game", "dda")
@@ -327,7 +327,12 @@ func _on_GamesList_item_selected(index: int) -> void:
 		4:
 			Settings.store("game", "tish")
 			_game_desc.bbcode_text = tr("desc_tish")
-	
+
+	# Reset mod fetch session tracking when game type changes
+	var mods_ui = $Main/Tabs/Mods
+	if mods_ui and mods_ui.has_method("reset_mod_fetch_session_tracking"):
+		mods_ui.reset_mod_fetch_session_tracking()
+
 	_tabs.current_tab = 0
 	apply_game_choice()
 	_refresh_currently_installed()

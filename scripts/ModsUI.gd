@@ -24,6 +24,14 @@ var _ids_to_delete := []
 var _ids_to_install := []
 var _ids_to_reinstall := []
 
+# Track which game types have had their mod release dates fetched this session
+var _fetched_game_types := []
+
+
+# Reset the session tracking for mod fetching (called when game type changes)
+func reset_mod_fetch_session_tracking() -> void:
+	_fetched_game_types.clear()
+
 
 func _ready() -> void:
 	
@@ -365,24 +373,27 @@ func _on_ShowStock_toggled(button_pressed: bool) -> void:
 
 
 func _on_Tabs_tab_changed(tab: int) -> void:
-	
+
 	if tab != 1:
 		return
-	
+
 	_cbox_show_stock.pressed = Settings.read("show_stock_mods")
 	_lbl_mod_info.bbcode_text = tr("lbl_mod_info")
 	_btn_delete.disabled = true
 	_btn_add.disabled = true
-	
+
 	reload_installed()
 	reload_available()
-	
+
 	# Fetch mod release dates for all channels to show "Last Updated" information
 	# This will also trigger compatibility checking for both stable and experimental channels
 	# This also fetches for installed mods to enable update checking
-	if len(_mods.available) > 0:
+	# Only fetch once per game type per session to avoid hitting GitHub API rate limits
+	var current_game = Settings.read("game")
+	if len(_mods.available) > 0 and not current_game in _fetched_game_types:
 		Status.post("Fetching mod release dates for compatibility and update checking...")
 		_mods.fetch_all_mod_release_dates()
+		_fetched_game_types.append(current_game)
 
 
 func _on_mod_compatibility_checked(compatible_count: int, incompatible_count: int) -> void:
