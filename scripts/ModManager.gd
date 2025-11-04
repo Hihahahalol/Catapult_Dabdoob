@@ -997,6 +997,17 @@ func fetch_all_mod_release_dates() -> void:
 	
 	_pending_api_calls.clear()
 	
+	# Check if user is authenticated
+	var is_authenticated = _check_github_authentication()
+	
+	# For unauthenticated users, use the fallback REST API method
+	if not is_authenticated:
+		_fetch_all_mod_release_dates_rest_api()
+		return
+	
+	# For authenticated users, use the batch GraphQL API
+	Status.post("GitHub authentication found, using GraphQL batch API", Enums.MSG_DEBUG)
+	
 	# Check if we have a GitHubBatchAPI node, if not create one
 	var batch_api = get_node_or_null("GitHubBatchAPI")
 	if batch_api == null:
@@ -1031,6 +1042,46 @@ func fetch_all_mod_release_dates() -> void:
 	else:
 		Status.post("Fetching release dates for %d mod(s) using batch API..." % mods_to_fetch, Enums.MSG_DEBUG)
 		batch_api.execute_batches()
+
+
+# Check if GitHub authentication is available
+func _check_github_authentication() -> bool:
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		var auth_headers = catapult._get_github_auth_headers()
+		# Check if there's an actual authorization header (not just default headers)
+		for header in auth_headers:
+			if header.begins_with("Authorization:") or header.begins_with("authorization:"):
+				return true
+	return false
+
+
+# Fetch release dates for all mods using REST API (fallback for unauthenticated users)
+func _fetch_all_mod_release_dates_rest_api() -> void:
+	
+	_pending_api_calls.clear()
+	
+	# Queue all mods that need fetching
+	var mods_to_fetch = 0
+	for mod_id in available:
+		var mod = available[mod_id]
+		var location = mod["location"]
+		
+		# Only fetch for GitHub mods that aren't already cached
+		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache:
+			_pending_api_calls.append(mod_id)
+			mods_to_fetch += 1
+	
+	# If no API calls are needed (everything is cached), immediately check compatibility
+	if mods_to_fetch == 0:
+		_check_all_mod_compatibility()
+		return
+	
+	Status.post("Fetching release dates for %d mod(s)..." % mods_to_fetch, Enums.MSG_DEBUG)
+	
+	# Fetch each mod's release date individually
+	for mod_id in _pending_api_calls.duplicate():
+		_fetch_mod_release_date_async(mod_id)
 
 
 # Fetch the latest release date for a specific mod from GitHub API (async)
