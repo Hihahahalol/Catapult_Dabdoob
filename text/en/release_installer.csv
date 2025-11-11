@@ -16,3 +16,4 @@
 "msg_install_chmod_failed","Failed to set executable permissions for %s (error: %s)"
 "msg_install_set_app_executable","Set executable permissions for %s executable: %s"
 "msg_install_app_chmod_failed","Failed to set app bundle executable permissions for %s:%s (error: %s)"
+"msg_install_no_download_url","Cannot install %s: no download URL available for this platform."

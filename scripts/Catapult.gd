@@ -923,9 +923,14 @@ func _refresh_currently_installed() -> void:
 		_btn_game_dir.visible = true
 		_btn_user_dir.visible = true
 		if (_lst_builds.selected != -1) and (_lst_builds.selected < len(releases)):
+				var selected_release = releases[_lst_builds.selected]
+				var is_already_installed = selected_release["name"] in _installs[game]
+				var has_download_url = selected_release.get("url", "") != ""
 				if not Settings.read("update_to_same_build_allowed"):
-					_btn_install.disabled = (releases[_lst_builds.selected]["name"] in _installs[game])
+					_btn_install.disabled = is_already_installed or not has_download_url
 					_cb_update.disabled = _btn_install.disabled
+				else:
+					_btn_install.disabled = not has_download_url
 		else:
 			_btn_install.disabled = true
 
