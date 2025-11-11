@@ -524,14 +524,14 @@ func _on_request_completed_tlg(result: int, response_code: int,
 
 
 func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> void:
-	
+
 	var json = JSON.parse(data.get_string_from_utf8()).result
-	
+
 	# Check if API rate limit is exceeded
 	if "message" in json:
 		print(tr("msg_releases_api_failure") % json["message"])
 		return
-		
+
 	var tmp_arr = []
 
 	for rec in json:
@@ -540,16 +540,17 @@ func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> 
 		if Settings.read("shorten_release_names"):
 			build["name"] = build["name"].split(" ")[-1]
 		build["url"] = ""
+		build["filename"] = ""
 		build["published_at"] = rec.get("published_at", "")
-		
+
 		for asset in rec["assets"]:
 			if filter["substring"] in asset[filter["field"]]:
 				build["url"] = asset["browser_download_url"]
 				build["filename"] = asset["name"]
-		
-		if build["url"] != "":
-			tmp_arr.append(build)
-	
+
+		# Include all releases, even those without matching assets
+		tmp_arr.append(build)
+
 	if len(tmp_arr) > 0:
 		write_to.clear()
 		write_to.append_array(tmp_arr)

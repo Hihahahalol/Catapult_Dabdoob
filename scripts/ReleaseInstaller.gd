@@ -6,9 +6,15 @@ signal operation_finished
 
 
 func install_release(release_info: Dictionary, game: String, update_in: String = "") -> void:
-	
+
 	emit_signal("operation_started")
-	
+
+	# Check if release has a valid download URL
+	if not release_info.get("url", ""):
+		Status.post(tr("msg_install_no_download_url") % release_info["name"], Enums.MSG_ERROR)
+		emit_signal("operation_finished")
+		return
+
 	if update_in:
 		Status.post(tr("msg_updating_game") % release_info["name"])
 	else:
