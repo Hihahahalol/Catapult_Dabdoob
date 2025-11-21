@@ -75,7 +75,7 @@ const _ASSET_FILTERS = {
 	},
 	"tlg-experimental-win": {
 		"field": "name",
-		"substring": "ctlg-windows-tiles-x64",
+		"substring": "ctlg-windows-tiles-sounds-x64-msvc",
 	},
 	"tlg-experimental-mac": {
 		"field": "name",
