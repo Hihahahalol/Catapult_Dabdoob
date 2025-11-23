@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://cxg81500nnkx5"
 
 [deps]
 
-files=[ "res://text/es/install_probe.es.translation" ]
+files=["res://text/es/install_probe.es.translation"]
 
 source_file="res://text/es/install_probe.csv"
-dest_files=[ "res://text/es/install_probe.es.translation" ]
+dest_files=["res://text/es/install_probe.es.translation"]
 
 [params]
 

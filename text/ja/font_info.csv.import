@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://b5x7s7oud24ab"
 
 [deps]
 
-files=[ "res://text/ja/font_info.ja.translation" ]
+files=["res://text/ja/font_info.ja.translation"]
 
 source_file="res://text/ja/font_info.csv"
-dest_files=[ "res://text/ja/font_info.ja.translation" ]
+dest_files=["res://text/ja/font_info.ja.translation"]
 
 [params]
 

@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://c7mbbykrdc4ss"
 
 [deps]
 
-files=[ "res://text/cs/backup_manager.cs.translation" ]
+files=["res://text/cs/backup_manager.cs.translation"]
 
 source_file="res://text/cs/backup_manager.csv"
-dest_files=[ "res://text/cs/backup_manager.cs.translation" ]
+dest_files=["res://text/cs/backup_manager.cs.translation"]
 
 [params]
 

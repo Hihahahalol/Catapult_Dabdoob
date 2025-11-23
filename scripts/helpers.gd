@@ -7,20 +7,17 @@ const INFO_FILENAME := "catapult_install_info.json"
 func create_info_file(location: String, name: String) -> void:
 	
 	var info = {"name": name}
-	var path = location + "/" + INFO_FILENAME
-	var f = File.new()
+	var path = location.path_join(INFO_FILENAME)
 	
 	# Ensure the directory exists
-	var d = Directory.new()
-	if not d.dir_exists(location):
-		var err = d.make_dir_recursive(location)
-		if err != OK:
-			Status.post(tr("msg_cannot_create_install_info") % path + " (mkdir failed: " + str(err) + ")", Enums.MSG_ERROR)
-			return
+	var err = DirAccess.make_dir_absolute(location)
+	if err != OK and err != ERR_ALREADY_EXISTS:
+		Status.post(tr("msg_cannot_create_install_info") % path + " (mkdir failed: " + str(err) + ")", Enums.MSG_ERROR)
+		return
 	
-	if (f.open(path, File.WRITE) == 0):
-		f.store_string(JSON.print(info, "    "))
-		f.close()
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify(info, "    "))
 	else:
 		Status.post(tr("msg_cannot_create_install_info") % path, Enums.MSG_ERROR)
 
@@ -37,37 +34,36 @@ func get_all_nodes_within(n: Node) -> Array:
 
 func load_json_file(file: String):
 	
-	var f := File.new()
-	var err := f.open(file, File.READ)
+	var f := FileAccess.open(file, FileAccess.READ)
 	
-	if err:
+	if f == null:
+		var err = FileAccess.get_open_error()
 		Status.post(tr("msg_file_read_fail") % [file.get_file(), err], Enums.MSG_ERROR)
 		Status.post(tr("msg_debug_file_path") % file, Enums.MSG_DEBUG)
 		return null
 	
-	var r := JSON.parse(f.get_as_text())
-	f.close()
+	var test_json_conv = JSON.new()
+	var error = test_json_conv.parse(f.get_as_text())
 	
-	if r.error:
+	if error != OK:
 		Status.post(tr("msg_json_parse_fail") % file.get_file(), Enums.MSG_ERROR)
-		Status.post(tr("msg_debug_json_result") % [r.error, r.error_string, r.error_line], Enums.MSG_DEBUG)
+		Status.post(tr("msg_debug_json_result") % [error, 0, "Parse error"], Enums.MSG_DEBUG)
 		return null
 	
-	return r.result
+	return test_json_conv.data
 
 
 func save_to_json_file(data, file: String) -> bool:
 	
-	var f := File.new()
-	var err := f.open(file, File.WRITE)
+	var f := FileAccess.open(file, FileAccess.WRITE)
 	
-	if err:
+	if f == null:
+		var err = FileAccess.get_open_error()
 		Status.post(tr("msg_file_write_fail") % [file.get_file(), err], Enums.MSG_ERROR)
 		Status.post(tr("msg_debug_file_path") % file, Enums.MSG_DEBUG)
 		return false
 	
-	var text := JSON.print(data, "    ")
+	var text := JSON.stringify(data, "    ")
 	f.store_string(text)
-	f.close()
 	
 	return true

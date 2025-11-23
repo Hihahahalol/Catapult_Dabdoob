@@ -1,8 +1,8 @@
 extends PanelContainer
 
 
-export(Texture) var maximize_icon
-export(Texture) var restore_icon
+@export var maximize_icon: Texture2D
+@export var restore_icon: Texture2D
 
 var dragging := false
 var drag_start_position := Vector2.ZERO
@@ -11,11 +11,11 @@ var is_maximized := false
 var unmaximized_position := Vector2.ZERO
 var unmaximized_size := Vector2.ZERO
 
-onready var title_label = $MarginContainer/HBoxContainer/Title
-onready var icon = $MarginContainer/HBoxContainer/Icon
-onready var maximize_button = $MarginContainer/HBoxContainer/MaximizeButton
-onready var close_button = $MarginContainer/HBoxContainer/CloseButton
-onready var minimize_button = $MarginContainer/HBoxContainer/MinimizeButton
+@onready var title_label = $MarginContainer/HBoxContainer/Title
+@onready var icon = $MarginContainer/HBoxContainer/Icon
+@onready var maximize_button = $MarginContainer/HBoxContainer/MaximizeButton
+@onready var close_button = $MarginContainer/HBoxContainer/CloseButton
+@onready var minimize_button = $MarginContainer/HBoxContainer/MinimizeButton
 
 
 func _ready() -> void:
@@ -24,24 +24,24 @@ func _ready() -> void:
 	if app_icon:
 		icon.texture = app_icon
 	
-	# Set title from window
-	title_label.text = OS.get_window_title()
+	# Set title from project settings
+	title_label.text = ProjectSettings.get_setting("application/config/name")
 	
 	# Apply dark theme styling
 	_apply_dark_theme()
 	
 	# Connect hover effects for close button
-	close_button.connect("mouse_entered", self, "_on_close_button_mouse_entered")
-	close_button.connect("mouse_exited", self, "_on_close_button_mouse_exited")
+	close_button.connect("mouse_entered", Callable(self, "_on_close_button_mouse_entered"))
+	close_button.connect("mouse_exited", Callable(self, "_on_close_button_mouse_exited"))
 	
 	# Connect hover effects for other buttons
-	minimize_button.connect("mouse_entered", self, "_on_button_mouse_entered", [minimize_button])
-	minimize_button.connect("mouse_exited", self, "_on_button_mouse_exited", [minimize_button])
-	maximize_button.connect("mouse_entered", self, "_on_button_mouse_entered", [maximize_button])
-	maximize_button.connect("mouse_exited", self, "_on_button_mouse_exited", [maximize_button])
+	minimize_button.connect("mouse_entered", Callable(self, "_on_button_mouse_entered").bind(minimize_button))
+	minimize_button.connect("mouse_exited", Callable(self, "_on_button_mouse_exited").bind(minimize_button))
+	maximize_button.connect("mouse_entered", Callable(self, "_on_button_mouse_entered").bind(maximize_button))
+	maximize_button.connect("mouse_exited", Callable(self, "_on_button_mouse_exited").bind(maximize_button))
 	
 	# Connect to scale changes
-	Geom.connect("scale_changed", self, "_on_scale_changed")
+	Geom.connect("scale_changed", Callable(self, "_on_scale_changed"))
 
 
 func _apply_dark_theme() -> void:
@@ -65,7 +65,7 @@ func _apply_dark_theme() -> void:
 	
 	style_box.border_color = Color(0.1, 0.1, 0.1)
 	style_box.set_border_width_all(1)
-	add_stylebox_override("panel", style_box)
+	add_theme_stylebox_override("panel", style_box)
 
 
 func _on_scale_changed(_new_scale: float) -> void:
@@ -75,7 +75,7 @@ func _on_scale_changed(_new_scale: float) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				# Start dragging - store where in the window the user clicked
 				dragging = true
@@ -85,18 +85,18 @@ func _gui_input(event: InputEvent) -> void:
 				dragging = false
 		
 		# Double-click to maximize/restore
-		if event.button_index == BUTTON_LEFT and event.doubleclick:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
 			_toggle_maximize()
 	
 	elif event is InputEventMouseMotion:
 		if dragging and not is_maximized:
 			# Calculate screen mouse position and move window
-			var mouse_screen_pos = get_viewport().get_mouse_position() + OS.window_position
-			OS.window_position = mouse_screen_pos - drag_start_position
+			var mouse_screen_pos = get_viewport().get_mouse_position() + Vector2(get_window().position)
+			get_window().position = Vector2i(mouse_screen_pos - drag_start_position)
 
 
 func _on_MinimizeButton_pressed() -> void:
-	OS.window_minimized = true
+	get_window().mode = Window.MODE_MINIMIZED if (true) else Window.MODE_WINDOWED
 
 
 func _on_MaximizeButton_pressed() -> void:
@@ -106,22 +106,22 @@ func _on_MaximizeButton_pressed() -> void:
 func _toggle_maximize() -> void:
 	if is_maximized:
 		# Restore
-		OS.window_maximized = false
-		OS.window_position = unmaximized_position
-		OS.window_size = unmaximized_size
+		get_window().mode = Window.MODE_MAXIMIZED if (false) else Window.MODE_WINDOWED
+		get_window().position = unmaximized_position
+		get_window().size = unmaximized_size
 		is_maximized = false
 		maximize_button.texture_normal = maximize_icon
 	else:
 		# Maximize
-		unmaximized_position = OS.window_position
-		unmaximized_size = OS.window_size
-		OS.window_maximized = true
+		unmaximized_position = get_window().position
+		unmaximized_size = get_window().size
+		get_window().mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
 		is_maximized = true
 		maximize_button.texture_normal = restore_icon
 
 
 func _on_CloseButton_pressed() -> void:
-	get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
+	get_tree().root.propagate_notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _on_close_button_mouse_entered() -> void:
@@ -129,7 +129,7 @@ func _on_close_button_mouse_entered() -> void:
 
 
 func _on_close_button_mouse_exited() -> void:
-	close_button.modulate = Color.white
+	close_button.modulate = Color.WHITE
 
 
 func _on_button_mouse_entered(button: TextureButton) -> void:
@@ -137,7 +137,7 @@ func _on_button_mouse_entered(button: TextureButton) -> void:
 
 
 func _on_button_mouse_exited(button: TextureButton) -> void:
-	button.modulate = Color.white
+	button.modulate = Color.WHITE
 
 
 func set_title(new_title: String) -> void:

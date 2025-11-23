@@ -1,15 +1,19 @@
 [remap]
 
-importer="ogg_vorbis"
-type="AudioStreamOGGVorbis"
-path="res://.import/ChestHole_combined.ogg-bcd979aaf6a13d71ac374c318751994b.oggstr"
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://yxq4lcx2c1mi"
+path="res://.godot/imported/ChestHole_combined.ogg-bcd979aaf6a13d71ac374c318751994b.oggvorbisstr"
 
 [deps]
 
 source_file="res://materials/sound_samples/ChestHole_combined.ogg"
-dest_files=[ "res://.import/ChestHole_combined.ogg-bcd979aaf6a13d71ac374c318751994b.oggstr" ]
+dest_files=["res://.godot/imported/ChestHole_combined.ogg-bcd979aaf6a13d71ac374c318751994b.oggvorbisstr"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://cjxmfg6t86t2a"
 
 [deps]
 
-files=[ "res://text/ko/tileset_manager.ko.translation" ]
+files=["res://text/ko/tileset_manager.ko.translation"]
 
 source_file="res://text/ko/tileset_manager.csv"
-dest_files=[ "res://text/ko/tileset_manager.ko.translation" ]
+dest_files=["res://text/ko/tileset_manager.ko.translation"]
 
 [params]
 

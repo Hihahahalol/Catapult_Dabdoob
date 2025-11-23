@@ -31,7 +31,7 @@ func _ready() -> void:
 					print(msg["text"])
 				_buffer.clear()
 				break
-			yield(get_tree().create_timer(0.2), "timeout")
+			await get_tree().create_timer(0.2).timeout
 
 
 func post(msg: String, type: int = Enums.MSG_INFO) -> void:
@@ -42,7 +42,7 @@ func post(msg: String, type: int = Enums.MSG_INFO) -> void:
 	var msg_data := _form_message(msg, type)
 	
 	if _status_view:
-		_status_view.append_bbcode(msg_data["bb_text"])
+		_status_view.append_text(msg_data["bb_text"])
 	else:
 		print("saving message to buffer")
 		_buffer.push_back(msg_data)
@@ -55,8 +55,8 @@ func post(msg: String, type: int = Enums.MSG_INFO) -> void:
 
 func _datetime_with_msecs(utc = false) -> Dictionary:
 	
-	var datetime = OS.get_datetime(utc)
-	datetime["millisecond"] = OS.get_system_time_msecs() % 1000
+	var datetime = Time.get_datetime_dict_from_system(utc)
+	datetime["millisecond"] = Time.get_ticks_msec() % 1000
 	return datetime
 
 
@@ -100,4 +100,4 @@ func _flush_buffer() -> void:
 	if _status_view:
 		while _buffer.size() > 0:
 			var msg = _buffer.pop_front()
-			_status_view.append_bbcode(msg["bb_text"])
+			_status_view.append_text(msg["bb_text"])

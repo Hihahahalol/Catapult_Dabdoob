@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://d1svfyefhncts"
 
 [deps]
 
-files=[ "res://text/pt/mod_manager.pt.translation" ]
+files=["res://text/pt/mod_manager.pt.translation"]
 
 source_file="res://text/pt/mod_manager.csv"
-dest_files=[ "res://text/pt/mod_manager.pt.translation" ]
+dest_files=["res://text/pt/mod_manager.pt.translation"]
 
 [params]
 

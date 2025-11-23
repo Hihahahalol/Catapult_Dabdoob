@@ -1,15 +1,19 @@
 [remap]
 
-importer="ogg_vorbis"
-type="AudioStreamOGGVorbis"
-path="res://.import/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggstr"
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cstjjm2s635hu"
+path="res://.godot/imported/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggvorbisstr"
 
 [deps]
 
 source_file="res://materials/sound_samples/CDDA-Soundpack_combined.ogg"
-dest_files=[ "res://.import/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggstr" ]
+dest_files=["res://.godot/imported/CDDA-Soundpack_combined.ogg-8bdd624b0734328f9b81b8706b960b0e.oggvorbisstr"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

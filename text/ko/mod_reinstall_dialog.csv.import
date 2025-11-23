@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://bjmwp7u0ppu7h"
 
 [deps]
 
-files=[ "res://text/ko/mod_reinstall_dialog.ko.translation" ]
+files=["res://text/ko/mod_reinstall_dialog.ko.translation"]
 
 source_file="res://text/ko/mod_reinstall_dialog.csv"
-dest_files=[ "res://text/ko/mod_reinstall_dialog.ko.translation" ]
+dest_files=["res://text/ko/mod_reinstall_dialog.ko.translation"]
 
 [params]
 

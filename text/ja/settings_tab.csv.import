@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://bq6341qhly5vv"
 
 [deps]
 
-files=[ "res://text/ja/settings_tab.ja.translation" ]
+files=["res://text/ja/settings_tab.ja.translation"]
 
 source_file="res://text/ja/settings_tab.csv"
-dest_files=[ "res://text/ja/settings_tab.ja.translation" ]
+dest_files=["res://text/ja/settings_tab.ja.translation"]
 
 [params]
 

@@ -83,12 +83,12 @@ func _fetch_batch_graphql(batch: Array) -> void:
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal
-	http_request.connect("request_completed", self, "_on_batch_request_completed", [http_request, batch])
+	http_request.connect("request_completed", Callable(self, "_on_batch_request_completed").bind(http_request, batch))
 	
 	# Get authentication headers
 	var headers = _get_github_headers()
 	
-	var query_body = JSON.print({"query": query})
+	var query_body = JSON.stringify({"query": query})
 	Status.post("Making GraphQL request to GitHub API...", Enums.MSG_DEBUG)
 	
 	# Make GraphQL request
@@ -141,8 +141,8 @@ func _build_graphql_query(batch: Array) -> String:
 
 
 # Get GitHub API headers with authentication
-func _get_github_headers() -> PoolStringArray:
-	var headers = PoolStringArray([
+func _get_github_headers() -> PackedStringArray:
+	var headers = PackedStringArray([
 		"Content-Type: application/json",
 		"Accept: application/json"
 	])
@@ -171,7 +171,7 @@ func _find_catapult_node():
 
 
 # Handle batch request completion
-func _on_batch_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, batch: Array) -> void:
+func _on_batch_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, batch: Array) -> void:
 	
 	Status.post("Batch request completed: result=%d, code=%d" % [result, response_code], Enums.MSG_DEBUG)
 	
@@ -186,7 +186,7 @@ func _on_batch_request_completed(result: int, response_code: int, headers: PoolS
 		if _retry_count < MAX_RETRIES:
 			_retry_count += 1
 			Status.post("Retrying batch request (attempt %d/%d)..." % [_retry_count, MAX_RETRIES], Enums.MSG_DEBUG)
-			yield(get_tree().create_timer(1.0), "timeout")
+			await get_tree().create_timer(1.0).timeout
 			_fetch_batch_graphql(batch)
 			return
 		else:
@@ -230,16 +230,17 @@ func _on_batch_request_completed(result: int, response_code: int, headers: PoolS
 	var body_str = body.get_string_from_utf8()
 	Status.post("Parsing JSON response (%d bytes)..." % len(body_str), Enums.MSG_DEBUG)
 	
-	var json = JSON.parse(body_str)
-	if json.error != OK:
-		Status.post("Failed to parse batch API response: %s" % json.error_string, Enums.MSG_ERROR)
+	var test_json_conv = JSON.new()
+	var parse_error = test_json_conv.parse(body_str)
+	if parse_error != OK:
+		Status.post("Failed to parse batch API response: Parse error %d" % parse_error, Enums.MSG_ERROR)
 		# Mark all as failed
 		for item in batch:
 			_results[item["mod_id"]] = ""
 		_process_next_batch()
 		return
 	
-	var response_data = json.result
+	var response_data = test_json_conv.data
 	
 	# Check for GraphQL errors
 	if "errors" in response_data:

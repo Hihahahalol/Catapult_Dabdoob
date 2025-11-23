@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://cbub2rljy05or"
 
 [deps]
 
-files=[ "res://text/zh/easter_egg.zh_Hans_CN.translation" ]
+files=["res://text/zh/easter_egg.zh.translation"]
 
 source_file="res://text/zh/easter_egg.csv"
-dest_files=[ "res://text/zh/easter_egg.zh_Hans_CN.translation" ]
+dest_files=["res://text/zh/easter_egg.zh.translation"]
 
 [params]
 

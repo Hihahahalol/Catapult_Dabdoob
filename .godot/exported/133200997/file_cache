@@ -1,0 +1,11 @@
+res://fonts/default_ui_font.tres::e862ce0d94cf69d7440281617da170ff::1763723873::res://.godot/exported/133200997/export-b9d6f85fde77d50a28b49c57c09ca8ed-default_ui_font.res
+res://fonts/OpenSans-Italic.tres::186457e22ae5809a9898a8206e5f08b3::1763723873::res://.godot/exported/133200997/export-cf306b4e046bfc42b3307903dc6734bc-OpenSans-Italic.res
+res://fonts/OpenSans-Regular.tres::d5c9c1caf7bd4887860a015f704b5408::1763723873::res://.godot/exported/133200997/export-e5a79ae2f65a2622351b56078624f3c9-OpenSans-Regular.res
+res://fonts/OpenSans-Semibold.tres::18ab9fd1a95726d0ec9b90505a86ac54::1763723873::res://.godot/exported/133200997/export-0ada54b0da0ebfbd9e10fc51e6d1bcb7-OpenSans-Semibold.res
+res://fonts/OpenSans-SemiboldItalic.tres::a763ffbd00ebce14faf6fec3f5723bc7::1763723873::res://.godot/exported/133200997/export-876ab09391fab0811c5ac8652c882965-OpenSans-SemiboldItalic.res
+res://scenes/Catapult.tscn::057712a8b2959b28e9681c84dd630a24::1763723873::res://.godot/exported/133200997/export-8670adae755445758b99df9fb41edfc2-Catapult.scn
+res://scenes/ChangelogDialog.tscn::a94e8971c782af90292abfaa809f17c4::1763723873::res://.godot/exported/133200997/export-4a3ee5c4494bbe3abf357d5146a26b90-ChangelogDialog.scn
+res://scenes/CustomTitleBar.tscn::4118ce30f864f5b59127b08b70d27d06::1763723873::res://.godot/exported/133200997/export-c3581148be34a084ac8767ee28955894-CustomTitleBar.scn
+res://scenes/FontSizeHelpDialog.tscn::0ac518424fa9cd535a8170e351e80de1::1763723873::res://.godot/exported/133200997/export-188a7cb6af540fce7383ae6e7831a81a-FontSizeHelpDialog.scn
+res://scenes/InlineIconButton.tscn::1451c92da22d508165e1d364af56a382::1763723873::res://.godot/exported/133200997/export-a878b8bf14fc5924c8c7b37eb1d9cfce-InlineIconButton.scn
+res://scenes/ModReinstallDialog.tscn::e8615336f8aeb9d4edbd5dc232866156::1763723873::res://.godot/exported/133200997/export-8aaf27f905a1f7e35dd9807111e0152c-ModReinstallDialog.scn

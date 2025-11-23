@@ -446,7 +446,7 @@ func _request_releases(http: HTTPRequest, release: String) -> void:
 	_update_proxy(http)
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -456,7 +456,7 @@ func _request_releases(http: HTTPRequest, release: String) -> void:
 
 
 func _on_request_completed_dda(result: int, response_code: int,
-		headers: PoolStringArray, body: PoolByteArray) -> void:
+		headers: PackedStringArray, body: PackedByteArray) -> void:
 	
 	Status.post(tr("msg_http_request_info") %
 			[result, response_code, headers], Enums.MSG_DEBUG)
@@ -470,7 +470,7 @@ func _on_request_completed_dda(result: int, response_code: int,
 
 
 func _on_request_completed_bn(result: int, response_code: int,
-		headers: PoolStringArray, body: PoolByteArray) -> void:
+		headers: PackedStringArray, body: PackedByteArray) -> void:
 	
 	Status.post(tr("msg_http_request_info") %
 			[result, response_code, headers], Enums.MSG_DEBUG)
@@ -483,7 +483,7 @@ func _on_request_completed_bn(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 func _on_request_completed_eod(result: int, response_code: int,
-		headers: PoolStringArray, body: PoolByteArray) -> void:
+		headers: PackedStringArray, body: PackedByteArray) -> void:
 	
 	Status.post(tr("msg_http_request_info") %
 			[result, response_code, headers], Enums.MSG_DEBUG)
@@ -496,7 +496,7 @@ func _on_request_completed_eod(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 func _on_request_completed_tish(result: int, response_code: int,
-		headers: PoolStringArray, body: PoolByteArray) -> void:
+		headers: PackedStringArray, body: PackedByteArray) -> void:
 	
 	Status.post(tr("msg_http_request_info") %
 			[result, response_code, headers], Enums.MSG_DEBUG)
@@ -510,7 +510,7 @@ func _on_request_completed_tish(result: int, response_code: int,
 
 
 func _on_request_completed_tlg(result: int, response_code: int,
-		headers: PoolStringArray, body: PoolByteArray) -> void:
+		headers: PackedStringArray, body: PackedByteArray) -> void:
 	
 	Status.post(tr("msg_http_request_info") %
 			[result, response_code, headers], Enums.MSG_DEBUG)
@@ -523,9 +523,11 @@ func _on_request_completed_tlg(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 
-func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> void:
+func _parse_builds(data: PackedByteArray, write_to: Array, filter: Dictionary) -> void:
 
-	var json = JSON.parse(data.get_string_from_utf8()).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(data.get_string_from_utf8())
+	var json = test_json_conv.get_data()
 
 	# Check if API rate limit is exceeded
 	if "message" in json:

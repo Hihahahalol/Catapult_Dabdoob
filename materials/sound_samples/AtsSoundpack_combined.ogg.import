@@ -1,15 +1,19 @@
 [remap]
 
-importer="ogg_vorbis"
-type="AudioStreamOGGVorbis"
-path="res://.import/AtsSoundpack_combined.ogg-5266504acb0abc38f53d60187dc690f4.oggstr"
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dixxp5yhx61uc"
+path="res://.godot/imported/AtsSoundpack_combined.ogg-5266504acb0abc38f53d60187dc690f4.oggvorbisstr"
 
 [deps]
 
 source_file="res://materials/sound_samples/AtsSoundpack_combined.ogg"
-dest_files=[ "res://.import/AtsSoundpack_combined.ogg-5266504acb0abc38f53d60187dc690f4.oggstr" ]
+dest_files=["res://.godot/imported/AtsSoundpack_combined.ogg-5266504acb0abc38f53d60187dc690f4.oggvorbisstr"]
 
 [params]
 
 loop=true
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

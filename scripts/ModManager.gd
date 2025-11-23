@@ -21,8 +21,8 @@ const STABILITY_RATINGS = {
 	100: -1     # supported forever (negative means no expiry)
 }
 
-var installed: Dictionary = {} setget , _get_installed
-var available: Dictionary = {} setget , _get_available
+var installed: Dictionary = {}: get = _get_installed
+var available: Dictionary = {}: get = _get_available
 
 # Cache for mod release dates to avoid repeated API calls
 var _mod_release_date_cache: Dictionary = {}
@@ -49,24 +49,26 @@ func _get_available() -> Dictionary:
 
 func parse_mods_dir(mods_dir: String) -> Dictionary:
 	
-	if not Directory.new().dir_exists(mods_dir):
+	if not DirAccess.dir_exists_absolute(mods_dir):
 		return {}
 		
 	var result = {}
 	
 	for subdir in FS.list_dir(mods_dir):
-		var f = File.new()
-		var modinfo = mods_dir.plus_file(subdir).plus_file("modinfo.json")
+		var modinfo = mods_dir / subdir / "modinfo.json"
 		
-		if f.file_exists(modinfo):
+		if FileAccess.file_exists(modinfo):
 			
-			f.open(modinfo, File.READ)
-			var json = JSON.parse(f.get_as_text())
-			if json.error != OK:
+			var file = FileAccess.open(modinfo, FileAccess.READ)
+			if file == null:
+				continue
+			var test_json_conv = JSON.new()
+			var parse_error = test_json_conv.parse(file.get_as_text())
+			if parse_error != OK:
 				Status.post(tr("msg_mod_json_parsing_failed") % modinfo, Enums.MSG_ERROR)
 				continue
 			
-			var json_result = json.result
+			var json_result = test_json_conv.data
 			if typeof(json_result) == TYPE_DICTIONARY:
 				json_result = [json_result]
 			
@@ -84,12 +86,10 @@ func parse_mods_dir(mods_dir: String) -> Dictionary:
 							info["id"] = info["name"]
 					
 					result[info["id"]] = {
-						"location": mods_dir.plus_file(subdir),
+						"location": mods_dir / subdir,
 						"modinfo": info
 					}
 					break
-					
-			f.close()
 	
 	return result
 
@@ -136,7 +136,7 @@ func refresh_installed():
 	installed = {}
 	
 	var non_stock := {}
-	if Directory.new().dir_exists(Paths.mods_user):
+	if DirAccess.dir_exists_absolute(Paths.mods_user):
 		non_stock = parse_mods_dir(Paths.mods_user)
 		for id in non_stock:
 			non_stock[id]["is_stock"] = false
@@ -461,14 +461,14 @@ func refresh_available():
 
 func _delete_mod(mod_id: String) -> void:
 	
-	yield(get_tree().create_timer(0.05), "timeout")
+	await get_tree().create_timer(0.05).timeout
 	# Have to introduce an artificial delay, otherwise the engine becomes very
 	# crash-happy when processing large numbers of mods.
 	
 	if mod_id in installed:
 		var mod = installed[mod_id]
 		FS.rm_dir(mod["location"])
-		yield(FS, "rm_dir_done")
+		await FS.rm_dir_done
 		Status.post(tr("msg_mod_deleted") % mod["modinfo"]["name"])
 	else:
 		Status.post(tr("msg_mod_not_found") % mod_id, Enums.MSG_ERROR)
@@ -491,7 +491,7 @@ func delete_mods(mod_ids: Array) -> void:
 			_delete_mod(id + "__")
 		else:
 			_delete_mod(id)
-		yield(self, "_done_deleting_mod")
+		await self._done_deleting_mod
 	
 	refresh_installed()
 	emit_signal("mod_deletion_finished")
@@ -519,10 +519,10 @@ func _get_latest_release_url(github_url: String, mod_name: String) -> void:
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal and make request
-	http_request.connect("request_completed", self, "_on_release_info_received", [http_request, mod_name])
+	http_request.connect("request_completed", Callable(self, "_on_release_info_received").bind(http_request, mod_name))
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -537,7 +537,7 @@ func _get_latest_release_url(github_url: String, mod_name: String) -> void:
 		emit_signal("_done_installing_mod")
 
 
-func _on_release_info_received(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String) -> void:
+func _on_release_info_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, mod_name: String) -> void:
 	
 	# Clean up HTTP request
 	remove_child(http_request)
@@ -555,13 +555,14 @@ func _on_release_info_received(result: int, response_code: int, headers: PoolStr
 		return
 	
 	# Parse JSON response
-	var json = JSON.parse(body.get_string_from_utf8())
-	if json.error != OK:
+	var test_json_conv = JSON.new()
+	var parse_error = test_json_conv.parse(body.get_string_from_utf8())
+	if parse_error != OK:
 		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
 		emit_signal("_done_installing_mod")
 		return
 	
-	var release_data = json.result
+	var release_data = test_json_conv.data
 	var download_url = ""
 	
 	# Look for ZIP asset in the release
@@ -635,10 +636,10 @@ func _download_and_install_mod_with_fallback(download_url: String, mod_name: Str
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal with additional parameters for fallback
-	http_request.connect("request_completed", self, "_on_repository_download_completed", [http_request, mod_name, owner, repo, branch])
+	http_request.connect("request_completed", Callable(self, "_on_repository_download_completed").bind(http_request, mod_name, owner, repo, branch))
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -654,7 +655,7 @@ func _download_and_install_mod_with_fallback(download_url: String, mod_name: Str
 
 
 # Handle repository download response with branch fallback
-func _on_repository_download_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String, owner: String, repo: String, branch: String) -> void:
+func _on_repository_download_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, mod_name: String, owner: String, repo: String, branch: String) -> void:
 	
 	# Clean up HTTP request
 	remove_child(http_request)
@@ -679,7 +680,7 @@ func _on_repository_download_completed(result: int, response_code: int, headers:
 
 
 # Process downloaded mod data (common for both releases and repository downloads)
-func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
+func _process_downloaded_mod(body: PackedByteArray, mod_name: String) -> void:
 	
 	var mod_id = ""
 	var mod = {}
@@ -698,27 +699,27 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	
 	var mods_dir = Paths.mods_user
 	var filename = mod_id + ".zip"
-	var archive = Paths.cache_dir.plus_file(filename)
-	var tmp_dir = Paths.tmp_dir.plus_file(mod_id)
+	var archive = Paths.cache_dir.path_join(filename)
+	var tmp_dir = Paths.tmp_dir.path_join(mod_id)
 	
 	# Ensure the mods directory exists with proper permissions on macOS
-	var d = Directory.new()
-	if not d.dir_exists(mods_dir):
-		var err = d.make_dir_recursive(mods_dir)
-		if err:
+	if not DirAccess.dir_exists_absolute(mods_dir):
+		var err = DirAccess.make_dir_recursive_absolute(mods_dir)
+		if err != OK:
 			Status.post("Failed to create mods directory: %s (error: %d)" % [mods_dir, err], Enums.MSG_ERROR)
 			emit_signal("_done_installing_mod")
 			return
 		
 		# On macOS, ensure the directory has proper permissions
 		if OS.get_name() == "OSX":
-			var chmod_result = OS.execute("chmod", ["755", mods_dir], true)
+			var chmod_output: Array = []
+			var chmod_result = OS.execute("chmod", ["755", mods_dir], chmod_output, true)
 			if chmod_result != 0:
-				Status.post("Warning: Could not set mods directory permissions", Enums.MSG_WARNING)
+				Status.post("Warning: Could not set mods directory permissions", Enums.MSG_WARN)
 	
 	# Save the downloaded data to cache
-	var file = File.new()
-	if file.open(archive, File.WRITE) != OK:
+	var file = FileAccess.open(archive, FileAccess.WRITE)
+	if file == null:
 		Status.post(tr("msg_mod_download_failed") % mod["modinfo"]["name"], Enums.MSG_ERROR)
 		emit_signal("_done_installing_mod")
 		return
@@ -728,30 +729,31 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 	
 	# On macOS, ensure the downloaded file has proper permissions
 	if OS.get_name() == "OSX":
-		var chmod_result = OS.execute("chmod", ["644", archive], true)
+		var chmod_output: Array = []
+		var chmod_result = OS.execute("chmod", ["644", archive], chmod_output, true)
 		if chmod_result != 0:
-			Status.post("Warning: Could not set archive file permissions", Enums.MSG_WARNING)
+			Status.post("Warning: Could not set archive file permissions", Enums.MSG_WARN)
 	
 	# Extract the mod
 	FS.extract(archive, tmp_dir)
-	yield(FS, "extract_done")
+	await FS.extract_done
 	if not Settings.read("keep_cache"):
-		Directory.new().remove(archive)
+		DirAccess.remove_absolute(archive)
 	
 	if FS.last_extract_result == 0:
 		# Find the extracted directory (GitHub releases can have various structures)
 		var contents = FS.list_dir(tmp_dir)
 		if contents.size() > 0:
-			var extracted_dir = tmp_dir.plus_file(contents[0])
+			var extracted_dir = tmp_dir.path_join(contents[0])
 			
 			# Special handling for Arcana mod - contains multiple mods for different game forks
 			if mod_name == "Arcana and Magic Items":
 				var arcana_mod_dir = _find_arcana_mod_directory(extracted_dir)
 				if arcana_mod_dir != "":
 					Status.post("Installing Arcana mod from: %s" % arcana_mod_dir)
-					FS.move_dir(arcana_mod_dir, mods_dir.plus_file(mod_id))
-					yield(FS, "move_dir_done")
-					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					FS.move_dir(arcana_mod_dir, mods_dir.path_join(mod_id))
+					await FS.move_dir_done
+					_fix_mod_permissions_macos(mods_dir.path_join(mod_id))
 					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
@@ -760,16 +762,16 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 				# Find the actual mod directory with modinfo.json
 				var mod_dir = _find_mod_directory(extracted_dir)
 				if mod_dir != "":
-					FS.move_dir(mod_dir, mods_dir.plus_file(mod_id))
-					yield(FS, "move_dir_done")
-					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					FS.move_dir(mod_dir, mods_dir.path_join(mod_id))
+					await FS.move_dir_done
+					_fix_mod_permissions_macos(mods_dir.path_join(mod_id))
 					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 				else:
 					# Fallback to installing the entire directory if no modinfo.json found
-					FS.move_dir(extracted_dir, mods_dir.plus_file(mod_id))
-					yield(FS, "move_dir_done")
-					_fix_mod_permissions_macos(mods_dir.plus_file(mod_id))
+					FS.move_dir(extracted_dir, mods_dir.path_join(mod_id))
+					await FS.move_dir_done
+					_fix_mod_permissions_macos(mods_dir.path_join(mod_id))
 					_store_mod_download_date(mod_id)
 					Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
 		else:
@@ -783,7 +785,7 @@ func _process_downloaded_mod(body: PoolByteArray, mod_name: String) -> void:
 		
 	# Clean up temporary directory
 	FS.rm_dir(tmp_dir)
-	yield(FS, "rm_dir_done")
+	await FS.rm_dir_done
 	
 	emit_signal("_done_installing_mod")
 
@@ -794,14 +796,16 @@ func _fix_mod_permissions_macos(mod_path: String) -> void:
 		return
 		
 	# Set directory permissions recursively
-	var chmod_result = OS.execute("chmod", ["-R", "755", mod_path], true)
+	var chmod_output: Array = []
+	var chmod_result = OS.execute("chmod", ["-R", "755", mod_path], chmod_output, true)
 	if chmod_result != 0:
-		Status.post("Warning: Could not set mod directory permissions for %s" % mod_path, Enums.MSG_WARNING)
+		Status.post("Warning: Could not set mod directory permissions for %s" % mod_path, Enums.MSG_WARN)
 	
-	# Set file permissions recursively  
-	var find_result = OS.execute("find", [mod_path, "-type", "f", "-exec", "chmod", "644", "{}", "+"], true)
+	# Set file permissions recursively
+	var find_output: Array = []
+	var find_result = OS.execute("find", [mod_path, "-type", "f", "-exec", "chmod", "644", "{}", "+"], find_output, true)
 	if find_result != 0:
-		Status.post("Warning: Could not set mod file permissions for %s" % mod_path, Enums.MSG_WARNING)
+		Status.post("Warning: Could not set mod file permissions for %s" % mod_path, Enums.MSG_WARN)
 
 
 func _download_and_install_mod(download_url: String, mod_name: String) -> void:
@@ -819,14 +823,14 @@ func _download_and_install_mod(download_url: String, mod_name: String) -> void:
 		return
 	
 	var filename = mod_id + ".zip"
-	var archive = Paths.cache_dir.plus_file(filename)
+	var archive = Paths.cache_dir.path_join(filename)
 	
 	# Use cached version if available and caching is enabled
-	if not Settings.read("ignore_cache") and Directory.new().file_exists(archive):
+	if not Settings.read("ignore_cache") and FileAccess.file_exists(archive):
 		Status.post("Using cached version of %s" % mod_name, Enums.MSG_INFO)
-		var file = File.new()
-		if file.open(archive, File.READ) == OK:
-			var body = file.get_buffer(file.get_len())
+		var file = FileAccess.open(archive, FileAccess.READ)
+		if file != null:
+			var body = file.get_buffer(file.get_length())
 			file.close()
 			_process_downloaded_mod(body, mod_name)
 			return
@@ -843,10 +847,10 @@ func _download_and_install_mod(download_url: String, mod_name: String) -> void:
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal
-	http_request.connect("request_completed", self, "_on_mod_download_completed", [http_request, mod_name])
+	http_request.connect("request_completed", Callable(self, "_on_mod_download_completed").bind(http_request, mod_name))
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -863,7 +867,7 @@ func _download_and_install_mod(download_url: String, mod_name: String) -> void:
 
 
 # Handle mod download completion
-func _on_mod_download_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_name: String) -> void:
+func _on_mod_download_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, mod_name: String) -> void:
 	
 	# Clean up HTTP request
 	remove_child(http_request)
@@ -880,7 +884,7 @@ func _on_mod_download_completed(result: int, response_code: int, headers: PoolSt
 
 func _install_mod(mod_id: String) -> void:
 	
-	yield(get_tree().create_timer(0.05), "timeout")
+	await get_tree().create_timer(0.05).timeout
 	# For stability; see above.
 
 	var mods_dir = Paths.mods_user
@@ -896,16 +900,16 @@ func _install_mod(mod_id: String) -> void:
 		else:
 			# Handle local mod installation (existing code)
 			FS.copy_dir(mod["location"], mods_dir)
-			yield(FS, "copy_dir_done")
-			
-			if (mod_id in installed) and (installed[mod_id]["is_obsolete"] == true):
-				Status.post(tr("msg_obsolete_mod_collision") % [mod_id, mod["modinfo"]["name"]])
-				var modinfo = mod["modinfo"].duplicate()
-				modinfo["id"] += "__"
-				modinfo["name"] += "*"
-				var f = File.new()
-				f.open(mods_dir.plus_file(mod["location"].get_file()).plus_file("modinfo.json"), File.WRITE)
-				f.store_string(JSON.print(modinfo, "    "))
+			await FS.copy_dir_done
+		
+		if (mod_id in installed) and (installed[mod_id]["is_obsolete"] == true):
+			Status.post(tr("msg_obsolete_mod_collision") % [mod_id, mod["modinfo"]["name"]])
+			var modinfo = mod["modinfo"].duplicate()
+			modinfo["id"] += "__"
+			modinfo["name"] += "*"
+			var f = FileAccess.open(mods_dir.path_join(mod["location"].get_file()).path_join("modinfo.json"), FileAccess.WRITE)
+			if f != null:
+				f.store_string(JSON.stringify(modinfo, "    "))
 			
 			_store_mod_download_date(mod_id)
 			Status.post(tr("msg_mod_installed") % mod["modinfo"]["name"])
@@ -927,7 +931,7 @@ func install_mods(mod_ids: Array) -> void:
 	
 	for id in mod_ids:
 		_install_mod(id)
-		yield(self, "_done_installing_mod")
+		await self._done_installing_mod
 	
 	refresh_installed()
 	emit_signal("mod_installation_finished")
@@ -1014,7 +1018,7 @@ func fetch_all_mod_release_dates() -> void:
 		batch_api = load("res://scripts/GitHubBatchAPI.gd").new()
 		batch_api.name = "GitHubBatchAPI"
 		add_child(batch_api)
-		batch_api.connect("batch_request_completed", self, "_on_batch_api_completed")
+		batch_api.connect("batch_request_completed", Callable(self, "_on_batch_api_completed"))
 	
 	# Clear any previous queue
 	batch_api.clear_queue()
@@ -1123,10 +1127,10 @@ func _fetch_mod_release_date_async(mod_id: String) -> void:
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal and make request
-	http_request.connect("request_completed", self, "_on_mod_release_date_received", [http_request, mod_id])
+	http_request.connect("request_completed", Callable(self, "_on_mod_release_date_received").bind(http_request, mod_id))
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -1141,7 +1145,7 @@ func _fetch_mod_release_date_async(mod_id: String) -> void:
 
 
 # Handle response from GitHub API for mod release date
-func _on_mod_release_date_received(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_id: String) -> void:
+func _on_mod_release_date_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, mod_id: String) -> void:
 	
 	# Clean up HTTP request
 	remove_child(http_request)
@@ -1151,9 +1155,10 @@ func _on_mod_release_date_received(result: int, response_code: int, headers: Poo
 	
 	if result == HTTPRequest.RESULT_SUCCESS and response_code == 200:
 		# Parse JSON response
-		var json = JSON.parse(body.get_string_from_utf8())
-		if json.error == OK:
-			var release_data = json.result
+		var test_json_conv = JSON.new()
+		var parse_error = test_json_conv.parse(body.get_string_from_utf8())
+		if parse_error == OK:
+			var release_data = test_json_conv.data
 			if "published_at" in release_data:
 				# Parse the ISO 8601 date format from GitHub API (e.g., "2024-01-15T10:30:00Z")
 				var date_str = release_data["published_at"]
@@ -1211,10 +1216,10 @@ func _fetch_mod_last_commit_date(mod_id: String) -> void:
 		http_request.set_https_proxy(host, port)
 	
 	# Connect signal and make request
-	http_request.connect("request_completed", self, "_on_mod_commit_date_received", [http_request, mod_id])
+	http_request.connect("request_completed", Callable(self, "_on_mod_commit_date_received").bind(http_request, mod_id))
 	
 	# Get authentication headers from the parent Catapult instance if available
-	var headers = PoolStringArray()
+	var headers = PackedStringArray()
 	var catapult = get_parent()
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		headers = catapult._get_github_auth_headers()
@@ -1229,7 +1234,7 @@ func _fetch_mod_last_commit_date(mod_id: String) -> void:
 
 
 # Handle response from GitHub API for mod commit date (fallback)
-func _on_mod_commit_date_received(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, http_request: HTTPRequest, mod_id: String) -> void:
+func _on_mod_commit_date_received(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, http_request: HTTPRequest, mod_id: String) -> void:
 	
 	# Clean up HTTP request
 	remove_child(http_request)
@@ -1239,9 +1244,10 @@ func _on_mod_commit_date_received(result: int, response_code: int, headers: Pool
 	
 	if result == HTTPRequest.RESULT_SUCCESS and response_code == 200:
 		# Parse JSON response (array of commits)
-		var json = JSON.parse(body.get_string_from_utf8())
-		if json.error == OK:
-			var commits_data = json.result
+		var test_json_conv = JSON.new()
+		var parse_error = test_json_conv.parse(body.get_string_from_utf8())
+		if parse_error == OK:
+			var commits_data = test_json_conv.data
 			if commits_data is Array and len(commits_data) > 0:
 				var latest_commit = commits_data[0]
 				if "commit" in latest_commit and "committer" in latest_commit["commit"] and "date" in latest_commit["commit"]["committer"]:
@@ -1337,7 +1343,7 @@ func _calculate_days_since_release(release_date: String) -> int:
 	var release_day = int(parts[2])
 	
 	# Get current date
-	var current_date = OS.get_datetime()
+	var current_date = Time.get_datetime_dict_from_system()
 	
 	# Simple day calculation (approximate)
 	var release_days = release_year * 365 + release_month * 30 + release_day
@@ -1351,9 +1357,8 @@ func _find_mod_directory(extracted_dir: String) -> String:
 	Status.post("Searching for mod directory in: %s" % extracted_dir)
 	
 	# Check if the root directory contains modinfo.json
-	var modinfo_path = extracted_dir.plus_file("modinfo.json")
-	var file = File.new()
-	if file.file_exists(modinfo_path):
+	var modinfo_path = extracted_dir.path_join("modinfo.json")
+	if FileAccess.file_exists(modinfo_path):
 		Status.post("Found modinfo.json in root directory")
 		return extracted_dir
 	
@@ -1364,26 +1369,29 @@ func _find_mod_directory(extracted_dir: String) -> String:
 	Status.post("Found %d subdirectories to check: %s" % [len(contents), str(contents)])
 	
 	for subdir in contents:
-		var subdir_path = extracted_dir.plus_file(subdir)
+		var subdir_path = extracted_dir.path_join(subdir)
 		
 		# Skip non-directories
-		if not Directory.new().dir_exists(subdir_path):
+		if not DirAccess.dir_exists_absolute(subdir_path):
 			continue
-			
-		var subdir_modinfo = subdir_path.plus_file("modinfo.json")
+		
+		var subdir_modinfo = subdir_path.path_join("modinfo.json")
 		Status.post("Checking for modinfo.json at: %s" % subdir_modinfo)
 		
-		if file.file_exists(subdir_modinfo):
+		if FileAccess.file_exists(subdir_modinfo):
 			Status.post("Found modinfo.json in subdirectory: %s" % subdir)
 			
 			# Verify it's a valid mod by checking the modinfo content
-			file.open(subdir_modinfo, File.READ)
+			var file = FileAccess.open(subdir_modinfo, FileAccess.READ)
+			if file == null:
+				continue
 			var json_text = file.get_as_text()
 			file.close()
 			
-			var json = JSON.parse(json_text)
-			if json.error == OK:
-				var json_result = json.result
+			var test_json_conv = JSON.new()
+			var parse_error = test_json_conv.parse(json_text)
+			if parse_error == OK:
+				var json_result = test_json_conv.data
 				if typeof(json_result) == TYPE_DICTIONARY:
 					json_result = [json_result]
 				
@@ -1398,23 +1406,26 @@ func _find_mod_directory(extracted_dir: String) -> String:
 			# Also check for deeper nested modinfo.json files (up to 2 levels deep)
 			var nested_contents = FS.list_dir(subdir_path)
 			for nested_subdir in nested_contents:
-				var nested_path = subdir_path.plus_file(nested_subdir)
-				if Directory.new().dir_exists(nested_path):
-					var nested_modinfo = nested_path.plus_file("modinfo.json")
-					if file.file_exists(nested_modinfo):
+				var nested_path = subdir_path.path_join(nested_subdir)
+				if DirAccess.dir_exists_absolute(nested_path):
+					var nested_modinfo = nested_path.path_join("modinfo.json")
+					if FileAccess.file_exists(nested_modinfo):
 						Status.post("Found nested modinfo.json at: %s" % nested_modinfo)
 						
-						file.open(nested_modinfo, File.READ)
-						var json_text = file.get_as_text()
-						file.close()
+						var nested_file = FileAccess.open(nested_modinfo, FileAccess.READ)
+						if nested_file == null:
+							continue
+						var nested_json_text = nested_file.get_as_text()
+						nested_file.close()
 						
-						var json = JSON.parse(json_text)
-						if json.error == OK:
-							var json_result = json.result
-							if typeof(json_result) == TYPE_DICTIONARY:
-								json_result = [json_result]
+						var nested_json_conv = JSON.new()
+						var nested_parse_error = nested_json_conv.parse(nested_json_text)
+						if nested_parse_error == OK:
+							var nested_json_result = nested_json_conv.data
+							if typeof(nested_json_result) == TYPE_DICTIONARY:
+								nested_json_result = [nested_json_result]
 							
-							for item in json_result:
+							for item in nested_json_result:
 								if ("type" in item) and (item["type"] == "MOD_INFO"):
 									mod_candidates.append(nested_path)
 									Status.post("Valid nested mod directory found: %s/%s with mod ID: %s" % [subdir, nested_subdir, item.get("id", "unknown")])
@@ -1441,18 +1452,20 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 	
 	# Find the appropriate mod directory
 	for subdir in mod_contents:
-		var subdir_path = extracted_dir.plus_file(subdir)
-		var modinfo_path = subdir_path.plus_file("modinfo.json")
+		var subdir_path = extracted_dir.path_join(subdir)
+		var modinfo_path = subdir_path.path_join("modinfo.json")
 		
 		# Check if this subdirectory contains a modinfo.json
-		var file = File.new()
-		if file.file_exists(modinfo_path):
-			file.open(modinfo_path, File.READ)
-			var json = JSON.parse(file.get_as_text())
+		if FileAccess.file_exists(modinfo_path):
+			var file = FileAccess.open(modinfo_path, FileAccess.READ)
+			if file == null:
+				continue
+			var test_json_conv = JSON.new()
+			var parse_error = test_json_conv.parse(file.get_as_text())
 			file.close()
 			
-			if json.error == OK:
-				var json_result = json.result
+			if parse_error == OK:
+				var json_result = test_json_conv.data
 				if typeof(json_result) == TYPE_DICTIONARY:
 					json_result = [json_result]
 				
@@ -1484,10 +1497,9 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 		# Fallback: look for any directory containing "Arcana" 
 		for subdir in mod_contents:
 			if subdir.to_lower().find("arcana") != -1:
-				var subdir_path = extracted_dir.plus_file(subdir)
-				var modinfo_path = subdir_path.plus_file("modinfo.json")
-				var file = File.new()
-				if file.file_exists(modinfo_path):
+				var subdir_path = extracted_dir.path_join(subdir)
+				var modinfo_path = subdir_path.path_join("modinfo.json")
+				if FileAccess.file_exists(modinfo_path):
 					target_mod_dir = subdir_path
 					Status.post("Using fallback Arcana directory: %s" % subdir)
 					break
@@ -1500,7 +1512,7 @@ func _find_arcana_mod_directory(extracted_dir: String) -> String:
 func _store_mod_download_date(mod_id: String) -> void:
 	
 	# Get current date
-	var current_date = OS.get_datetime()
+	var current_date = Time.get_datetime_dict_from_system()
 	var date_string = "%04d-%02d-%02d" % [current_date.year, current_date.month, current_date.day]
 	
 	# Read existing download dates

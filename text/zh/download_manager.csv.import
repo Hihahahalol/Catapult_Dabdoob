@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://dscox73l6b8mi"
 
 [deps]
 
-files=[ "res://text/zh/download_manager.zh_Hans_CN.translation" ]
+files=["res://text/zh/download_manager.zh.translation"]
 
 source_file="res://text/zh/download_manager.csv"
-dest_files=[ "res://text/zh/download_manager.zh_Hans_CN.translation" ]
+dest_files=["res://text/zh/download_manager.zh.translation"]
 
 [params]
 

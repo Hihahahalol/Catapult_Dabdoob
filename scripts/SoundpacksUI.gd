@@ -1,18 +1,18 @@
 extends VBoxContainer
 
 
-onready var _sound = $"/root/Catapult/Sound"
-onready var _installed_list = $HBox/Installed/InstalledList
-onready var _available_list = $HBox/Downloadable/AvailableList
-onready var _btn_delete = $HBox/Installed/BtnDelete
-onready var _btn_activate = $HBox/Installed/BtnActivate
-onready var _btn_install = $HBox/Downloadable/BtnInstall
-onready var _btn_play_sample = $HBox/Downloadable/BtnPlaySample
-onready var _audio_player = $"/root/Catapult/SampleAudioPlayer"
-onready var _dlg_confirm_del = $ConfirmDelete
-onready var _dlg_manual_dl = $ConfirmManualDownload
-onready var _dlg_file = $InstallFromFileDialog
-onready var _cbox_stock = $HBox/Installed/ShowStock
+@onready var _sound = $"/root/Catapult/Sound"
+@onready var _installed_list = $HBox/Installed/InstalledList
+@onready var _available_list = $HBox/Downloadable/AvailableList
+@onready var _btn_delete = $HBox/Installed/BtnDelete
+@onready var _btn_activate = $HBox/Installed/BtnActivate
+@onready var _btn_install = $HBox/Downloadable/BtnInstall
+@onready var _btn_play_sample = $HBox/Downloadable/BtnPlaySample
+@onready var _audio_player = $"/root/Catapult/SampleAudioPlayer"
+@onready var _dlg_confirm_del = $ConfirmDelete
+@onready var _dlg_manual_dl = $ConfirmManualDownload
+@onready var _dlg_file = $InstallFromFileDialog
+@onready var _cbox_stock = $HBox/Installed/ShowStock
 
 var _installed_packs = []
 
@@ -78,7 +78,7 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	if tab != 3:
 		return
 		
-	_cbox_stock.pressed = Settings.read("show_stock_sound")
+	_cbox_stock.button_pressed = Settings.read("show_stock_sound")
 	
 	_btn_delete.disabled = true
 	_btn_activate.disabled = true
@@ -115,8 +115,8 @@ func _on_BtnDelete_pressed() -> void:
 	
 	var name = _installed_packs[_installed_list.get_selected_items()[0]]["name"]
 	_dlg_confirm_del.dialog_text = tr("dlg_sound_deletion_text") % name
-	_dlg_confirm_del.get_cancel().text = tr("btn_cancel")
-	_dlg_confirm_del.rect_size = Vector2(200, 100)
+	_dlg_confirm_del.get_cancel_button().text = tr("btn_cancel")
+	_dlg_confirm_del.size = Vector2(200, 100)
 	_dlg_confirm_del.popup_centered()
 
 
@@ -134,7 +134,7 @@ func _on_BtnActivate_pressed() -> void:
 func _on_ConfirmDelete_confirmed() -> void:
 	
 	_sound.delete_pack(_installed_packs[_installed_list.get_selected_items()[0]]["name"])
-	yield(_sound, "soundpack_deletion_finished")
+	await _sound.soundpack_deletion_finished
 	refresh_installed()
 	
 	if len(_installed_list.get_selected_items()) == 0:
@@ -162,15 +162,15 @@ func _on_BtnInstall_pressed() -> void:
 	var pack = _sound.SOUNDPACKS[pack_index]
 	
 	if ("manual_download" in pack) and (pack["manual_download"] == true):
-		_dlg_manual_dl.rect_size = Vector2(300, 150)
-		_dlg_manual_dl.get_cancel().text = tr("btn_cancel")
+		_dlg_manual_dl.size = Vector2(300, 150)
+		_dlg_manual_dl.get_cancel_button().text = tr("btn_cancel")
 		_dlg_manual_dl.popup_centered()
 	else:
 		if _is_pack_installed(pack["name"]):
 			_sound.install_pack(pack_index, null, true)
 		else:
 			_sound.install_pack(pack_index)
-		yield(_sound, "soundpack_installation_finished")
+		await _sound.soundpack_installation_finished
 		refresh_installed()
 
 
@@ -194,7 +194,7 @@ func _on_InstallFromFileDialog_file_selected(path: String) -> void:
 	else:
 		_sound.install_pack(index, path, false, true)
 	
-	yield(_sound, "soundpack_installation_finished")
+	await _sound.soundpack_installation_finished
 	refresh_installed()
 
 

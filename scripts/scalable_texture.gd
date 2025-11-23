@@ -8,9 +8,12 @@ var _base_size: Vector2
 func _init() -> void:
 	
 	_base_size = self.get_size()
-	Geom.connect("scale_changed", self, "_on_ui_scale_changed")
+	Geom.connect("scale_changed", Callable(self, "_on_ui_scale_changed"))
 
 
 func _on_ui_scale_changed(new_scale: float) -> void:
-	
-	self.size = _base_size * new_scale
+	# Note: In Godot 4, ImageTexture.size is read-only
+	# Texture scaling needs to be handled differently or disabled
+	# For now, we skip the scaling to prevent errors
+	pass
+	# TODO: Implement proper texture scaling for Godot 4 if needed

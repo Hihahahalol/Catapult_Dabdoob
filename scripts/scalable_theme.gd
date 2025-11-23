@@ -10,15 +10,15 @@ const _SCALABLE_CONSTANTS := {
 		"separation"
 	],
 	"Button": [
-		"hseparation"
+		"h_separation"
 	],
 	"CheckBox": [
-		"check_vadjust",
-		"hseparation",
+		"check_v_offset",
+		"h_separation",
 	],
 	"CheckButton": [
-		"check_vadjust",
-		"hseparation",
+		"check_v_offset",
+		"h_separation",
 	],
 	"ColorPicker": [
 		"h_width",
@@ -28,11 +28,11 @@ const _SCALABLE_CONSTANTS := {
 		"sv_width",
 	],
 	"ColorPickerButton": [
-		"hseparation",
+		"h_separation",
 	],
 	"GridContainer": [
-		"hseparation",
-		"vseparation",
+		"h_separation",
+		"v_separation",
 	],
 	"HBoxContainer": [
 		"separation",
@@ -44,10 +44,10 @@ const _SCALABLE_CONSTANTS := {
 		"separation",
 	],
 	"ItemList": [
-		"hseparation",
+		"h_separation",
 		"icon_margin",
 		"line_separation",
-		"vseparation",
+		"v_separation",
 	],
 	"Label": [
 		"line_spacing",
@@ -58,38 +58,38 @@ const _SCALABLE_CONSTANTS := {
 		"underline_spacing",
 	],
 	"MarginContainer": [
-		"margin_bottom",
-		"margin_left",
-		"margin_right",
-		"margin_top",
+		"offset_bottom",
+		"offset_left",
+		"offset_right",
+		"offset_top",
 	],
 	"MenuButton": [
-		"hseparation",
+		"h_separation",
 	],
 	"OptionButton": [
 		"arrow_margin",
-		"hseparation",
+		"h_separation",
 	],
 	"PopupMenu": [
-		"hseparation",
-		"vseparation",
+		"h_separation",
+		"v_separation",
 	],
 	"RichTextLabel": [
 		"line_separation",
 		"shadow_offset_x",
 		"shadow_offset_y",
-		"table_hseparation",
-		"table_vseparation",
+		"table_h_separation",
+		"table_v_separation",
 	],
 	"TabContainer": [
-		"hseparation",
+		"h_separation",
 		"label_valign_bg",
 		"label_valign_fg",
 		"side_margin",
 		"top_margin",
 	],
-	"Tabs": [
-		"hseparation",
+	"TabBar": [
+		"h_separation",
 		"label_valign_bg",
 		"label_valign_fg",
 		"top_margin",
@@ -97,20 +97,17 @@ const _SCALABLE_CONSTANTS := {
 	"TextEdit": [
 		"line_spacing",
 	],
-	"ToolButton": [
-		"hseparation",
-	],
 	"TooltipLabel": [
 		"shadow_offset_x",
 		"shadow_offset_y",
 	],
 	"Tree": [
 		"button_margin",
-		"hseparation",
+		"h_separation",
 		"item_margin",
 		"scroll_border",
 		"scroll_speed",
-		"vseparation",
+		"v_separation",
 	],
 	"VBoxContainer": [
 		"separation",
@@ -121,9 +118,9 @@ const _SCALABLE_CONSTANTS := {
 	"VSplitContainer": [
 		"separation",
 	],
-	"WindowDialog": [
-		"close_h_ofs",
-		"close_v_ofs",
+	"Window": [
+		"close_h_offset",
+		"close_v_offset",
 		"scaleborder_size",
 		"title_height",
 	],
@@ -134,8 +131,8 @@ const _SCALABLE_FONT_PROPS := [
 	
 	"size",
 	"outline_size",
-	"extra_spacing_top",
-	"extra_spacing_bottom",
+	"spacing_top",
+	"spacing_bottom",
 	"extra_spacing_char",
 	"extra_spacing_space",
 ]
@@ -167,10 +164,10 @@ const _SCALABLE_SBOX_PROPS := {
 		"expand_margin_right",
 		"expand_margin_top",
 		"expand_margin_bottom",
-		"margin_left",
-		"margin_right",
-		"margin_top",
-		"margin_bottom",
+		"offset_left",
+		"offset_right",
+		"offset_top",
+		"offset_bottom",
 		"region_rect",
 	],
 	"StyleBoxFlat": [
@@ -222,7 +219,7 @@ func _save_constants() -> Dictionary:
 
 	var constants := {}
 
-	for item_type in get_constant_types():
+	for item_type in get_constant_type_list():
 		if item_type in _SCALABLE_CONSTANTS:
 			constants[item_type] = {}
 			for const_name in get_constant_list(item_type):
@@ -238,19 +235,19 @@ func _save_texture_sizes() -> Dictionary:
 
 	var tex_sizes := {}
 
-	for item_type in get_icon_types():
+	for item_type in get_icon_type_list():
 		for icon_name in get_icon_list(item_type):
 			var icon := get_icon(icon_name, item_type)
-			if (icon is ImageTexture) and (not icon in tex_sizes) and (icon.size != Vector2.ZERO):
-				tex_sizes[icon] = icon.size
+			if (icon is ImageTexture) and (not icon in tex_sizes) and (icon.get_size() != Vector2.ZERO):
+				tex_sizes[icon] = icon.get_size()
 
-	for item_type in get_stylebox_types():
+	for item_type in get_stylebox_type_list():
 		for sbox_name in get_stylebox_list(item_type):
 			var sbox = get_stylebox(sbox_name, item_type)
 			if sbox is StyleBoxTexture:
 				var texture = sbox.texture
-				if (texture is ImageTexture) and (not texture in tex_sizes) and (texture.size != Vector2.ZERO):
-					tex_sizes[texture] = texture.size
+				if (texture is ImageTexture) and (not texture in tex_sizes) and (texture.get_size() != Vector2.ZERO):
+					tex_sizes[texture] = texture.get_size()
 
 	return tex_sizes
 
@@ -261,10 +258,10 @@ func _save_font_properties() -> Dictionary:
 		default_font: {}
 	}
 
-	for item_type in get_font_types():
+	for item_type in get_font_type_list():
 		for font_name in get_font_list(item_type):
 			var font := get_font(font_name, item_type)
-			if (font is DynamicFont) and (not font in font_props):
+			if (font is FontFile) and (not font in font_props):
 				font_props[font] = {}
 
 	for font in font_props:
@@ -272,7 +269,7 @@ func _save_font_properties() -> Dictionary:
 			continue
 		for prop in _SCALABLE_FONT_PROPS:
 			var value = font.get(prop)
-			if value > 0:
+			if value != null and value > 0:
 				font_props[font][prop] = value
 
 	return font_props
@@ -282,7 +279,7 @@ func _save_stylebox_properties() -> Dictionary:
 
 	var sbox_props := {}
 
-	for item_type in get_stylebox_types():
+	for item_type in get_stylebox_type_list():
 		for sbox_name in get_stylebox_list(item_type):
 			var sbox = get_stylebox(sbox_name, item_type)
 
@@ -304,7 +301,7 @@ func _save_stylebox_properties() -> Dictionary:
 							discard = true
 					TYPE_RECT2:
 						# Special case for region_rect
-						if value.has_no_area():
+						if value.get_area() == 0:
 							discard = true
 					_:
 						if value <= 0:
@@ -329,7 +326,10 @@ func _scale_constants(factor: float) -> void:
 func _scale_textures(factor: float) -> void:
 
 	for texture in _saved_tex_sizes:
-		texture.size = _saved_tex_sizes[texture] * factor
+		# In Godot 4, ImageTexture size is read-only and cannot be scaled directly
+		# Textures need to be recreated at the desired size if scaling is needed
+		# For now, we skip texture scaling to avoid errors
+		pass
 
 
 func _scale_fonts(factor: float) -> void:

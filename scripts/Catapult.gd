@@ -1,42 +1,42 @@
 extends Node
 
 
-onready var _title_bar = $TitleBar
-onready var _debug_ui = $Main/Tabs/Debug
-onready var _log = $Main/Log
-onready var _game_info = $Main/GameInfo
-onready var _game_desc = $Main/GameInfo/Description
-onready var _mod_info = $Main/Tabs/Mods/ModInfo
-onready var _tabs = $Main/Tabs
-onready var _mods = $Mods  
-onready var _releases = $Releases
-onready var _installer = $ReleaseInstaller
-onready var _btn_install = $Main/Tabs/Game/BtnInstall
-onready var _btn_refresh = $Main/Tabs/Game/Builds/BtnRefresh
-onready var _changelog = $Main/Tabs/Game/ChangelogDialog
-onready var _lbl_changelog = $Main/Tabs/Game/Channel/HBox/ChangelogLink
-onready var _btn_game_dir = $Main/Tabs/Game/ActiveInstall/Build/GameDir
-onready var _btn_user_dir = $Main/Tabs/Game/ActiveInstall/Build/UserDir
-onready var _btn_play = $Main/Tabs/Game/ActiveInstall/Launch/BtnPlay
-onready var _btn_resume = $Main/Tabs/Game/ActiveInstall/Launch/BtnResume
-onready var _wiki_search_input = $Main/Tabs/Game/ActiveInstall/Launch/WikiSearchInput
-onready var _btn_search_wiki = $Main/Tabs/Game/ActiveInstall/Launch/BtnSearchWiki
+@onready var _title_bar = $TitleBar
+@onready var _debug_ui = $Main/TabBar/Debug
+@onready var _log = $Main/Log
+@onready var _game_info = $Main/GameInfo
+@onready var _game_desc = $Main/GameInfo/Description
+@onready var _mod_info = $Main/TabBar/Mods/ModInfo
+@onready var _tabs = $Main/TabBar
+@onready var _mods = $Mods  
+@onready var _releases = $Releases
+@onready var _installer = $ReleaseInstaller
+@onready var _btn_install = $Main/TabBar/Game/BtnInstall
+@onready var _btn_refresh = $Main/TabBar/Game/Builds/BtnRefresh
+@onready var _changelog = $Main/TabBar/Game/ChangelogDialog
+@onready var _lbl_changelog = $Main/TabBar/Game/Channel/HBox/ChangelogLink
+@onready var _btn_game_dir = $Main/TabBar/Game/ActiveInstall/Build/GameDir
+@onready var _btn_user_dir = $Main/TabBar/Game/ActiveInstall/Build/UserDir
+@onready var _btn_play = $Main/TabBar/Game/ActiveInstall/Launch/BtnPlay
+@onready var _btn_resume = $Main/TabBar/Game/ActiveInstall/Launch/BtnResume
+@onready var _wiki_search_input = $Main/TabBar/Game/ActiveInstall/Launch/WikiSearchInput
+@onready var _btn_search_wiki = $Main/TabBar/Game/ActiveInstall/Launch/BtnSearchWiki
 # Button removed - update check now happens automatically
-onready var _btn_update = $Main/Tabs/Game/ActiveInstall/Update/BtnUpdate
-onready var _lst_builds = $Main/Tabs/Game/Builds/BuildsList
-onready var _lst_games = $Main/GameChoice/GamesList
-onready var _rbtn_stable = $Main/Tabs/Game/Channel/Group/RBtnStable
-onready var _rbtn_exper = $Main/Tabs/Game/Channel/Group/RBtnExperimental
-onready var _lbl_build = $Main/Tabs/Game/ActiveInstall/Build/Name
-onready var _cb_update = $Main/Tabs/Game/UpdateCurrent
-onready var _lst_installs = $Main/Tabs/Game/GameInstalls/HBox/InstallsList
-onready var _btn_make_active = $Main/Tabs/Game/GameInstalls/HBox/VBox/btnMakeActive
-onready var _btn_delete = $Main/Tabs/Game/GameInstalls/HBox/VBox/btnDelete
-onready var _panel_installs = $Main/Tabs/Game/GameInstalls
-onready var _version_check_request = HTTPRequest.new()
-onready var _cb_backup_before_launch = $Main/Tabs/Backups/BackupBeforeLaunch
-onready var _backups = $Backups
-onready var _sound = $Sound
+@onready var _btn_update = $Main/TabBar/Game/ActiveInstall/Update/BtnUpdate
+@onready var _lst_builds = $Main/TabBar/Game/Builds/BuildsList
+@onready var _lst_games = $Main/GameChoice/GamesList
+@onready var _rbtn_stable = $Main/TabBar/Game/Channel/Group/RBtnStable
+@onready var _rbtn_exper = $Main/TabBar/Game/Channel/Group/RBtnExperimental
+@onready var _lbl_build = $Main/TabBar/Game/ActiveInstall/Build/Name
+@onready var _cb_update = $Main/TabBar/Game/UpdateCurrent
+@onready var _lst_installs = $Main/TabBar/Game/GameInstalls/HBox/InstallsList
+@onready var _btn_make_active = $Main/TabBar/Game/GameInstalls/HBox/VBox/btnMakeActive
+@onready var _btn_delete = $Main/TabBar/Game/GameInstalls/HBox/VBox/btnDelete
+@onready var _panel_installs = $Main/TabBar/Game/GameInstalls
+@onready var _version_check_request = HTTPRequest.new()
+@onready var _cb_backup_before_launch = $Main/TabBar/Backups/BackupBeforeLaunch
+@onready var _backups = $Backups
+@onready var _sound = $Sound
 
 var _disable_savestate := {}
 var _installs := {}
@@ -58,14 +58,14 @@ var _release_page_url = ""
 var _download_urls = []
 
 
-func _get_github_auth_headers() -> PoolStringArray:
+func _get_github_auth_headers() -> PackedStringArray:
 	# Check for Auth_Token.txt file in the same directory as the executable
-	var token_file_path = OS.get_executable_path().get_base_dir().plus_file("Auth_Token.txt")
-	var file = File.new()
+	var token_file_path = OS.get_executable_path().get_base_dir().path_join("Auth_Token.txt")
+	var file = FileAccess.open(token_file_path, FileAccess.READ)
 	
-	if file.open(token_file_path, File.READ) != OK:
+	if file == null:
 		# File doesn't exist, return empty headers for unauthenticated requests
-		return PoolStringArray()
+		return PackedStringArray()
 	
 	var token = file.get_as_text().strip_edges()
 	file.close()
@@ -75,7 +75,7 @@ func _get_github_auth_headers() -> PoolStringArray:
 	if token.length() < 20:
 		# Token too short, use unauthenticated requests
 		Status.post("Auth_Token.txt found but token appears too short, using unauthenticated requests")
-		return PoolStringArray()
+		return PackedStringArray()
 	
 	# GitHub tokens typically contain only alphanumeric characters, underscores, and sometimes dashes
 	# We'll do a simple validation to check for obvious invalid tokens
@@ -84,18 +84,18 @@ func _get_github_auth_headers() -> PoolStringArray:
 	if not regex.search(token):
 		# Invalid characters in token, use unauthenticated requests
 		Status.post("Auth_Token.txt found but token contains invalid characters, using unauthenticated requests")
-		return PoolStringArray()
+		return PackedStringArray()
 	
 	# Return headers with authentication
 	Status.post("Using GitHub authentication token for API requests")
-	return PoolStringArray(["Authorization: token " + token])
+	return PackedStringArray(["Authorization: token " + token])
 
 
 func _ready() -> void:
 	
 	# Add the HTTPRequest node for version checking
 	add_child(_version_check_request)
-	_version_check_request.connect("request_completed", self, "_on_version_check_completed")
+	_version_check_request.connect("request_completed", Callable(self, "_on_version_check_completed"))
 	
 	# Apply UI theme
 	var theme_file = Settings.read("launcher_theme")
@@ -103,7 +103,7 @@ func _ready() -> void:
 	
 	_save_control_min_sizes()
 	_scale_control_min_sizes(Geom.scale)
-	Geom.connect("scale_changed", self, "_on_ui_scale_changed")
+	Geom.connect("scale_changed", Callable(self, "_on_ui_scale_changed"))
 	
 	assign_localized_text()
 	
@@ -118,7 +118,7 @@ func _ready() -> void:
 	_setup_ui()
 	
 	# Connect the BtnUpdate button signal
-	_btn_update.connect("pressed", self, "_on_BtnUpdate_pressed")
+	_btn_update.connect("pressed", Callable(self, "_on_BtnUpdate_pressed"))
 	
 	# Automatically check for updates on startup
 	_on_BtnCheck_pressed()
@@ -127,14 +127,14 @@ func _ready() -> void:
 func _save_control_min_sizes() -> void:
 	
 	for node in Helpers.get_all_nodes_within(self):
-		if ("rect_min_size" in node) and (node.rect_min_size != Vector2.ZERO):
-			_base_min_sizes[node] = node.rect_min_size
+		if ("custom_minimum_size" in node) and (node.custom_minimum_size != Vector2.ZERO):
+			_base_min_sizes[node] = node.custom_minimum_size
 
 
 func _scale_control_min_sizes(factor: float) -> void:
 	
 	for node in _base_min_sizes:
-		node.rect_min_size = _base_min_sizes[node] * factor
+		node.custom_minimum_size = _base_min_sizes[node] * factor
 
 
 func _save_icon_sizes() -> void:
@@ -146,7 +146,7 @@ func assign_localized_text() -> void:
 	
 	var version = Settings.read("version")
 	var window_title_text = tr("window_title")
-	OS.set_window_title(window_title_text)
+	get_window().set_title(window_title_text)
 	_title_bar.set_title(window_title_text)
 	
 	_tabs.set_tab_title(0, tr("tab_game"))
@@ -158,19 +158,19 @@ func assign_localized_text() -> void:
 	_tabs.set_tab_title(6, tr("tab_settings"))
 	_tabs.set_tab_title(7, tr("tab_about"))
 	
-	_lbl_changelog.bbcode_text = tr("lbl_changelog")
+	_lbl_changelog.text = tr("lbl_changelog")
 	
 	var game = Settings.read("game")
 	if game == "dda":
-		_game_desc.bbcode_text = tr("desc_dda")
+		_game_desc.text = tr("desc_dda")
 	elif game == "bn":
-		_game_desc.bbcode_text = tr("desc_bn")
+		_game_desc.text = tr("desc_bn")
 	elif game == "eod":
-		_game_desc.bbcode_text = tr("desc_eod")
+		_game_desc.text = tr("desc_eod")
 	elif game == "tish":
-		_game_desc.bbcode_text = tr("desc_tish")
+		_game_desc.text = tr("desc_tish")
 	elif game == "tlg":
-		_game_desc.bbcode_text = tr("desc_tlg")
+		_game_desc.text = tr("desc_tlg")
 
 
 func load_ui_theme(theme_file: String) -> void:
@@ -182,7 +182,7 @@ func load_ui_theme(theme_file: String) -> void:
 	# the new theme.
 	
 	self.theme.apply_scale(1.0)
-	var new_theme := load("res://themes".plus_file(theme_file)) as ScalableTheme
+	var new_theme := load("res://themes".path_join(theme_file)) as ScalableTheme
 	
 	if new_theme:
 		new_theme.apply_scale(Geom.scale)
@@ -197,18 +197,17 @@ func load_ui_theme(theme_file: String) -> void:
 
 func _unpack_utils() -> void:
 	
-	var d = Directory.new()
 	var sevenzip_exe
 	
 	# Platform-specific binary names
 	if OS.get_name() == "Windows":
-		sevenzip_exe = Paths.utils_dir.plus_file("7za.exe")
+		sevenzip_exe = Paths.utils_dir.path_join("7za.exe")
 	else:  # Linux (X11) or macOS (OSX)
-		sevenzip_exe = Paths.utils_dir.plus_file("7za")
+		sevenzip_exe = Paths.utils_dir.path_join("7za")
 	
-	if not d.file_exists(sevenzip_exe):
-		if not d.dir_exists(Paths.utils_dir):
-			d.make_dir(Paths.utils_dir)
+	if not FileAccess.file_exists(sevenzip_exe):
+		if not DirAccess.dir_exists_absolute(Paths.utils_dir):
+			DirAccess.make_dir_absolute(Paths.utils_dir)
 		
 		var source_found = false
 		var source_path = ""
@@ -217,24 +216,24 @@ func _unpack_utils() -> void:
 		# Try multiple locations for the 7-Zip binary
 		var possible_locations = [
 			"res://utils/" + binary_name,  # Godot resource path
-			OS.get_executable_path().get_base_dir().plus_file("utils").plus_file(binary_name),  # Next to executable
-			OS.get_executable_path().get_base_dir().plus_file(binary_name),  # Same directory as executable
+			OS.get_executable_path().get_base_dir().path_join("utils").path_join(binary_name),  # Next to executable
+			OS.get_executable_path().get_base_dir().path_join(binary_name),  # Same directory as executable
 			"./utils/" + binary_name,  # Relative path
 			"utils/" + binary_name     # Current directory utils
 		]
 		
 		for location in possible_locations:
 			if location.begins_with("res://"):
-				# For resource paths, we need to use File.open to check existence
-				var file = File.new()
-				if file.open(location, File.READ) == OK:
+				# For resource paths, we need to use FileAccess.open to check existence
+				var file = FileAccess.open(location, FileAccess.READ)
+				if file != null:
 					file.close()
 					source_path = location
 					source_found = true
 					break
 			else:
-				# For regular file paths, use Directory.file_exists
-				if d.file_exists(location):
+				# For regular file paths, use FileAccess.file_exists
+				if FileAccess.file_exists(location):
 					source_path = location
 					source_found = true
 					break
@@ -243,12 +242,11 @@ func _unpack_utils() -> void:
 			var copy_error = OK
 			if source_path.begins_with("res://"):
 				# Copy from resource
-				var source_file = File.new()
-				var dest_file = File.new()
-				
-				if source_file.open(source_path, File.READ) == OK:
-					if dest_file.open(sevenzip_exe, File.WRITE) == OK:
-						dest_file.store_buffer(source_file.get_buffer(source_file.get_len()))
+				var source_file = FileAccess.open(source_path, FileAccess.READ)
+				if source_file != null:
+					var dest_file = FileAccess.open(sevenzip_exe, FileAccess.WRITE)
+					if dest_file != null:
+						dest_file.store_buffer(source_file.get_buffer(source_file.get_length()))
 						dest_file.close()
 					else:
 						copy_error = ERR_CANT_CREATE
@@ -257,7 +255,11 @@ func _unpack_utils() -> void:
 				source_file.close()
 			else:
 				# Copy from regular file path
-				copy_error = d.copy(source_path, sevenzip_exe)
+				var d_temp = DirAccess.open(source_path.get_base_dir())
+				if d_temp:
+					copy_error = d_temp.copy(source_path, sevenzip_exe)
+				else:
+					copy_error = ERR_FILE_NOT_FOUND
 			
 			if copy_error != OK:
 				Status.post("[error] Failed to copy 7-Zip binary: " + str(copy_error), Enums.MSG_ERROR)
@@ -265,7 +267,8 @@ func _unpack_utils() -> void:
 			
 			# Make executable on Linux and macOS
 			if OS.get_name() == "X11" or OS.get_name() == "OSX":
-				OS.execute("chmod", ["+x", sevenzip_exe], true)
+				var chmod_output: Array = []
+				OS.execute("chmod", ["+x", sevenzip_exe], chmod_output, true)
 		else:
 			Status.post("[error] 7-Zip binary not found in any of the following locations:", Enums.MSG_ERROR)
 			for location in possible_locations:
@@ -314,22 +317,22 @@ func _on_GamesList_item_selected(index: int) -> void:
 	match index:
 		0:
 			Settings.store("game", "dda")
-			_game_desc.bbcode_text = tr("desc_dda")
+			_game_desc.text = tr("desc_dda")
 		1:
 			Settings.store("game", "tlg")
-			_game_desc.bbcode_text = tr("desc_tlg")
+			_game_desc.text = tr("desc_tlg")
 		2:
 			Settings.store("game", "bn")
-			_game_desc.bbcode_text = tr("desc_bn")
+			_game_desc.text = tr("desc_bn")
 		3:
 			Settings.store("game", "eod")
-			_game_desc.bbcode_text = tr("desc_eod")
+			_game_desc.text = tr("desc_eod")
 		4:
 			Settings.store("game", "tish")
-			_game_desc.bbcode_text = tr("desc_tish")
+			_game_desc.text = tr("desc_tish")
 
 	# Reset mod fetch session tracking when game type changes
-	var mods_ui = $Main/Tabs/Mods
+	var mods_ui = $Main/TabBar/Mods
 	if mods_ui and mods_ui.has_method("reset_mod_fetch_session_tracking"):
 		mods_ui.reset_mod_fetch_session_tracking()
 
@@ -493,7 +496,8 @@ func _open_directory(path: String) -> void:
 	
 	if OS.get_name() == "OSX":
 		# On macOS, use the 'open' command which handles spaces properly
-		OS.execute("open", [path], false)
+		var exec_output: Array = []
+		OS.execute("open", [path], exec_output, false)
 	else:
 		# On Windows and Linux, use the standard shell_open
 		OS.shell_open(path)
@@ -502,14 +506,14 @@ func _open_directory(path: String) -> void:
 func _on_GameDir_pressed() -> void:
 	
 	var gamedir = Paths.game_dir
-	if Directory.new().dir_exists(gamedir):
+	if DirAccess.dir_exists_absolute(gamedir):
 		_open_directory(gamedir)
 
 
 func _on_UserDir_pressed() -> void:
 	
 	var userdir = Paths.userdata
-	if Directory.new().dir_exists(userdir):
+	if DirAccess.dir_exists_absolute(userdir):
 		_open_directory(userdir)
 
 
@@ -519,12 +523,12 @@ func _setup_ui() -> void:
 	if not Settings.read("debug_mode"):
 		_tabs.remove_child(_debug_ui)
 	
-	_cb_update.pressed = Settings.read("update_current_when_installing")
+	_cb_update.button_pressed = Settings.read("update_current_when_installing")
 	
 	apply_game_choice()
 	
-	_lst_games.connect("item_selected", self, "_on_GamesList_item_selected")
-	_rbtn_stable.connect("toggled", self, "_on_RBtnStable_toggled")
+	_lst_games.connect("item_selected", Callable(self, "_on_GamesList_item_selected"))
+	_rbtn_stable.connect("toggled", Callable(self, "_on_RBtnStable_toggled"))
 	# Had to leave these signals unconnected in the editor and only connect
 	# them now from code to avoid cyclic calls of apply_game_choice.
 	
@@ -550,13 +554,13 @@ func apply_game_choice() -> void:
 		_rbtn_exper.disabled = false
 		_rbtn_stable.disabled = false
 		if channel == "stable":
-			_rbtn_stable.pressed = true
+			_rbtn_stable.button_pressed = true
 			_btn_refresh.disabled = true
 		else:
 			_btn_refresh.disabled = false
 	elif game in ["eod", "tish", "tlg"]:
 		# These Forks do not have a stable channel
-		_rbtn_exper.pressed = true
+		_rbtn_exper.button_pressed = true
 		_rbtn_exper.disabled = true
 		_rbtn_stable.disabled = true
 		_btn_refresh.disabled = false
@@ -564,23 +568,23 @@ func apply_game_choice() -> void:
 	match game:
 		"dda":
 			_lst_games.select(0)
-			_game_desc.bbcode_text = tr("desc_dda")
+			_game_desc.text = tr("desc_dda")
 				
 		"tlg":
 			_lst_games.select(1)
-			_game_desc.bbcode_text = tr("desc_tlg")
+			_game_desc.text = tr("desc_tlg")
 
 		"bn":
 			_lst_games.select(2)
-			_game_desc.bbcode_text = tr("desc_bn")
+			_game_desc.text = tr("desc_bn")
 
 		"eod":
 			_lst_games.select(3)
-			_game_desc.bbcode_text = tr("desc_eod")
+			_game_desc.text = tr("desc_eod")
 
 		"tish":
 			_lst_games.select(4)
-			_game_desc.bbcode_text = tr("desc_tish")
+			_game_desc.text = tr("desc_tish")
 	
 	if len(_releases.releases[_get_release_key()]) == 0:
 		_releases.fetch(_get_release_key())
@@ -672,7 +676,7 @@ func _on_BtnPlay_pressed() -> void:
 
 
 func _on_BtnResume_pressed() -> void:
-	var lastworld: String = Paths.config.plus_file("lastworld.json")
+	var lastworld: String = Paths.config.path_join("lastworld.json")
 	var info = Helpers.load_json_file(lastworld)
 	if info:
 		_start_game(info["world_name"])
@@ -692,7 +696,7 @@ func _perform_wiki_search() -> void:
 		var search_term = _wiki_search_input.text.strip_edges()
 		if search_term != "":
 			# URL encode the search term
-			var encoded_term = search_term.http_escape()
+			var encoded_term = search_term.uri_encode()
 			var search_url = "https://cataclysmtlg.miraheze.org/w/index.php?title=Special%3ASearch&fulltext=1&search=" + encoded_term
 			OS.shell_open(search_url)
 		else:
@@ -703,7 +707,7 @@ func _perform_wiki_search() -> void:
 func _start_game(world := "") -> void:
 	# Create automatic backup if enabled
 	if Settings.read("backup_before_launch"):
-		var datetime = OS.get_datetime()
+		var datetime = Time.get_datetime_dict_from_system()
 		var backup_name = "Auto_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
 			datetime["month"],
@@ -715,7 +719,7 @@ func _start_game(world := "") -> void:
 		Status.post(tr("Creating automatic backup before game launch..."))
 		_backups.backup_current(backup_name)
 		# Wait for backup to complete before launching game
-		yield(_backups, "backup_creation_finished")
+		await _backups.backup_creation_finished
 		Status.post(tr("Automatic backup created: %s") % backup_name)
 		
 		# Clean up old automatic backups if we exceed the maximum count
@@ -726,14 +730,14 @@ func _start_game(world := "") -> void:
 	
 	# Create game process wrapper for monitoring
 	_game_process = OSExecWrapper.new()
-	_game_process.connect("process_exited", self, "_on_game_process_exited")
+	_game_process.connect("process_exited", Callable(self, "_on_game_process_exited"))
 	
 	var command_path: String
-	var command_args: PoolStringArray
+	var command_args: PackedStringArray
 	
 	match OS.get_name():
 		"X11":
-			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
+			command_path = Paths.game_dir.path_join("cataclysm-launcher")
 			command_args = ["--userdir", _escape_path(Paths.userdata)]
 			if world != "":
 				command_args.append_array(["--world", _escape_path(world)])
@@ -744,25 +748,24 @@ func _start_game(world := "") -> void:
 				world_str = "--world \"%s\"" % world
 
 			var exe_file = "cataclysm-tiles.exe"
-			if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles.exe")):
+			if Settings.read("game") == "bn" and FileAccess.file_exists(Paths.game_dir.path_join("cataclysm-bn-tiles.exe")):
 				exe_file = "cataclysm-bn-tiles.exe"
-			if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
+			if Settings.read("game") == "tlg" and FileAccess.file_exists(Paths.game_dir.path_join("cataclysm-tlg-tiles.exe")):
 				exe_file = "cataclysm-tlg-tiles.exe"
 
 			# For Windows, we need to use cmd to change directory and launch the executable
 			# This ensures the game runs from its installation directory
 			command_path = "cmd"
-			var game_exe_path = Paths.game_dir.plus_file(exe_file)
+			var game_exe_path = Paths.game_dir.path_join(exe_file)
 			var cmd_string = "cd /d \"%s\" && \"%s\" --userdir \"%s/\"" % [Paths.game_dir, game_exe_path, Paths.userdata]
 			if world != "":
 				cmd_string += " --world \"%s\"" % world
 			command_args = ["/C", cmd_string]
 		"OSX":
 			# macOS - Check for cataclysm-launcher first, like Linux
-			var launcher_path = Paths.game_dir.plus_file("cataclysm-launcher")
-			var d = Directory.new()
+			var launcher_path = Paths.game_dir.path_join("cataclysm-launcher")
 			
-			if d.file_exists(launcher_path):
+			if FileAccess.file_exists(launcher_path):
 				# Use cataclysm-launcher if available (like Linux)
 				command_path = launcher_path
 				command_args = ["--userdir", _escape_path(Paths.userdata)]
@@ -772,7 +775,8 @@ func _start_game(world := "") -> void:
 				# Verify executable permissions
 				if not _verify_executable_permissions(command_path):
 					Status.post(tr("msg_fixing_executable_permissions") % command_path.get_file())
-					var chmod_result = OS.execute("chmod", ["+x", command_path], true)
+					var chmod_output: Array = []
+					var chmod_result = OS.execute("chmod", ["+x", command_path], chmod_output, true)
 					if chmod_result != 0:
 						Status.post(tr("msg_chmod_failed") % [command_path.get_file(), chmod_result], Enums.MSG_ERROR)
 						return
@@ -783,7 +787,7 @@ func _start_game(world := "") -> void:
 			else:
 				# No cataclysm-launcher, find game executable
 				var exe_info = _find_macos_executable(Paths.game_dir)
-				if exe_info.empty():
+				if exe_info.is_empty():
 					Status.post(tr("msg_no_executable_found_macos"), Enums.MSG_ERROR)
 					return
 				
@@ -801,7 +805,8 @@ func _start_game(world := "") -> void:
 					# Verify executable permissions
 					if not _verify_executable_permissions(command_path):
 						Status.post(tr("msg_fixing_executable_permissions") % command_path.get_file())
-						var chmod_result = OS.execute("chmod", ["+x", command_path], true)
+						var chmod_output: Array = []
+						var chmod_result = OS.execute("chmod", ["+x", command_path], chmod_output, true)
 						if chmod_result != 0:
 							Status.post(tr("msg_chmod_failed") % [command_path.get_file(), chmod_result], Enums.MSG_ERROR)
 							return
@@ -818,9 +823,9 @@ func _start_game(world := "") -> void:
 	if OS.get_name() == "Windows":
 		# For Windows, extract the actual game executable name from the command
 		var exe_file = "cataclysm-tiles.exe"
-		if Settings.read("game") == "bn" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-bn-tiles.exe")):
+		if Settings.read("game") == "bn" and FileAccess.file_exists(Paths.game_dir.path_join("cataclysm-bn-tiles.exe")):
 			exe_file = "cataclysm-bn-tiles.exe"
-		if Settings.read("game") == "tlg" and Directory.new().file_exists(Paths.game_dir.plus_file("cataclysm-tlg-tiles.exe")):
+		if Settings.read("game") == "tlg" and FileAccess.file_exists(Paths.game_dir.path_join("cataclysm-tlg-tiles.exe")):
 			exe_file = "cataclysm-tlg-tiles.exe"
 		game_name = exe_file
 	
@@ -836,7 +841,7 @@ func _start_game(world := "") -> void:
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
 		Status.post(tr("Closing launcher..."))
-		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 
 
@@ -846,7 +851,7 @@ func _on_game_process_exited() -> void:
 	
 	# Create automatic backup if enabled
 	if Settings.read("backup_after_closing"):
-		var datetime = OS.get_datetime()
+		var datetime = Time.get_datetime_dict_from_system()
 		var backup_name = "AutoExit_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
 			datetime["month"],
@@ -856,7 +861,7 @@ func _on_game_process_exited() -> void:
 		]
 		Status.post(tr("Creating automatic backup after game closed..."))
 		_backups.backup_current(backup_name)
-		yield(_backups, "backup_creation_finished")
+		await _backups.backup_creation_finished
 		Status.post(tr("Automatic backup created: %s") % backup_name)
 		
 		# Clean up old automatic backups if we exceed the maximum count
@@ -878,7 +883,7 @@ func _on_InstallsList_item_activated(index: int) -> void:
 	
 	var name = _lst_installs.get_item_text(index)
 	var path = _installs[Settings.read("game")][name]
-	if Directory.new().dir_exists(path):
+	if DirAccess.dir_exists_absolute(path):
 		_open_directory(path)
 
 
@@ -919,18 +924,13 @@ func _refresh_currently_installed() -> void:
 	if game in _installs:
 		_lbl_build.text = active_name
 		_btn_play.disabled = false
-		_btn_resume.disabled = not (Directory.new().file_exists(Paths.config.plus_file("lastworld.json")))
+		_btn_resume.disabled = not (FileAccess.file_exists(Paths.config.path_join("lastworld.json")))
 		_btn_game_dir.visible = true
 		_btn_user_dir.visible = true
 		if (_lst_builds.selected != -1) and (_lst_builds.selected < len(releases)):
-				var selected_release = releases[_lst_builds.selected]
-				var is_already_installed = selected_release["name"] in _installs[game]
-				var has_download_url = selected_release.get("url", "") != ""
 				if not Settings.read("update_to_same_build_allowed"):
-					_btn_install.disabled = is_already_installed or not has_download_url
+					_btn_install.disabled = (releases[_lst_builds.selected]["name"] in _installs[game])
 					_cb_update.disabled = _btn_install.disabled
-				else:
-					_btn_install.disabled = not has_download_url
 		else:
 			_btn_install.disabled = true
 
@@ -958,7 +958,7 @@ func _refresh_currently_installed() -> void:
 
 func _on_InfoIcon_gui_input(event: InputEvent) -> void:
 	
-	if (event is InputEventMouseButton) and (event.button_index == BUTTON_LEFT) and (event.is_pressed()):
+	if (event is InputEventMouseButton) and (event.button_index == MOUSE_BUTTON_LEFT) and (event.is_pressed()):
 		_easter_egg_counter += 1
 		if _easter_egg_counter == 3:
 			Status.post("[color=red]%s[/color]" % tr("msg_easter_egg_warning"))
@@ -970,14 +970,14 @@ func _activate_easter_egg() -> void:
 	
 	for node in Helpers.get_all_nodes_within(self):
 		if node is Control:
-			node.rect_pivot_offset = node.rect_size / 2.0
-			node.rect_rotation = randf() * 2.0 - 1.0
+			node.pivot_offset = node.size / 2.0
+			node.rotation = randf() * 2.0 - 1.0
 
 	Status.rainbow_text = true
 	
 	for i in range(20):
 		Status.post(tr("msg_easter_egg_activated"))
-		yield(get_tree().create_timer(0.1), "timeout")
+		await get_tree().create_timer(0.1).timeout
 
 
 func _on_BtnCheck_pressed() -> void:
@@ -1009,13 +1009,14 @@ func _on_version_check_completed(result, response_code, headers, body):
 		return
 	
 	# Parse the JSON response
-	var json = JSON.parse(body.get_string_from_utf8())
-	if json.error != OK:
+	var test_json_conv = JSON.new()
+	var parse_error = test_json_conv.parse(body.get_string_from_utf8())
+	if parse_error != OK:
 		Status.post(tr("Error parsing response from server"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
 		return
 	
-	var response = json.result
+	var response = test_json_conv.data
 	if typeof(response) != TYPE_DICTIONARY:
 		Status.post(tr("Invalid response format from server"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
@@ -1046,11 +1047,11 @@ func _on_version_check_completed(result, response_code, headers, body):
 		
 		# Simple version comparison
 		if _is_newer_version(_latest_version, current_version):
-			Status.post(tr("A new version is available! You can update to v%s") % _latest_version, Enums.MSG_SUCCESS)
+			Status.post(tr("A new version is available! You can update to v%s") % _latest_version, Enums.MSG_INFO)
 			_btn_update.disabled = false
 			_is_update_available = true
 		else:
-			Status.post(tr("You have Dabdoob's latest version!"), Enums.MSG_SUCCESS)
+			Status.post(tr("You have Dabdoob's latest version!"), Enums.MSG_INFO)
 			_btn_update.disabled = true
 			_is_update_available = false
 	else:
@@ -1103,7 +1104,7 @@ func _perform_update() -> void:
 		return
 	
 	# Check if we have download URLs available
-	if _download_urls.empty():
+	if _download_urls.is_empty():
 		Status.post(tr("No download URLs found. Opening release page in browser..."))
 		OS.shell_open(_release_page_url)
 		return
@@ -1112,11 +1113,10 @@ func _perform_update() -> void:
 	_btn_update.disabled = true
 	
 	# Create a temporary directory for the download
-	var temp_dir = OS.get_user_data_dir().plus_file("update_temp")
-	var dir = Directory.new()
-	if dir.dir_exists(temp_dir):
+	var temp_dir = OS.get_user_data_dir().path_join("update_temp")
+	if DirAccess.dir_exists_absolute(temp_dir):
 		_remove_directory_recursive(temp_dir)
-	dir.make_dir(temp_dir)
+	DirAccess.make_dir_absolute(temp_dir)
 	
 	# Show update progress to user
 	Status.post(tr("Downloading update from GitHub..."))
@@ -1156,7 +1156,7 @@ func _perform_update() -> void:
 			break
 	
 	# If no matching asset was found, use the first one as a fallback
-	if download_url.empty():
+	if download_url.is_empty():
 		Status.post(tr("No OS-specific asset found for %s, using first available") % os_name)
 		download_url = _download_urls[0]["url"]
 		asset_name = _download_urls[0]["name"]
@@ -1166,7 +1166,7 @@ func _perform_update() -> void:
 	# Set up the downloader
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
-	http_request.connect("request_completed", self, "_on_update_download_completed", [temp_dir, asset_name])
+	http_request.connect("request_completed", Callable(self, "_on_update_download_completed").bind(temp_dir, asset_name))
 	
 	# Get authentication headers for the download
 	var headers = _get_github_auth_headers()
@@ -1194,11 +1194,11 @@ func _on_update_download_completed(result, response_code, headers, body, temp_di
 		return
 	
 	# Save the downloaded file
-	var downloaded_file = temp_dir.plus_file(asset_name)
-	var file = File.new()
-	var error = file.open(downloaded_file, File.WRITE)
-	if error != OK:
-		Status.post(tr("Failed to create temporary file: %s") % error, Enums.MSG_ERROR)
+	var downloaded_file = temp_dir.path_join(asset_name)
+	var file = FileAccess.open(downloaded_file, FileAccess.WRITE)
+	if file == null:
+		var err = FileAccess.get_open_error()
+		Status.post(tr("Failed to create temporary file: %s") % err, Enums.MSG_ERROR)
 		_cleanup_update(null, temp_dir)
 		return
 		
@@ -1220,14 +1220,14 @@ $ErrorActionPreference = "Stop"
 
 # Log function
 function Log-Message {
-    param([string]$Message)
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    "$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
+	param([string]$Message)
+	$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+	"$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
 }
 
 # Clear previous log and start a new one
-if (Test-Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt") {
-    Remove-Item -Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
+if (Test-Path3D "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt") {
+	Remove-Item -Path3D "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
 }
 
 Log-Message "Starting update process"
@@ -1235,66 +1235,66 @@ Log-Message "Downloaded file: %s"
 Log-Message "Target executable: %s"
 
 try {
-    # Wait for main process to exit
-    Log-Message "Waiting for application to close..."
-    Start-Sleep -Seconds 5
-    
-    $processName = [System.IO.Path]::GetFileNameWithoutExtension("%s")
-    Log-Message "Process name: $processName"
-    
-    # Check if process is still running
-    $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-    
-    if ($running) {
-        Log-Message "Process still running, waiting another 5 seconds..."
-        Start-Sleep -Seconds 5
-        
-        # Try to forcefully terminate if still running
-        $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-        if ($running) {
-            Log-Message "Terminating process..."
-            Stop-Process -Name $processName -Force
-            Start-Sleep -Seconds 2
-        }
-    }
-    
-    # Check if source and target files exist
-    if (-not (Test-Path "%s")) {
-        throw "Source file not found: %s"
-    }
-    
-    Log-Message "Source file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    
-    if (Test-Path "%s") {
-        Log-Message "Target file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        Log-Message "Target file does not exist yet"
-    }
-    
-    # Copy the executable
-    Log-Message "Copying executable file..."
-    Copy-Item -Path "%s" -Destination "%s" -Force
-    
-    # Verify the copy worked
-    if (Test-Path "%s") {
-        Log-Message "Verified: Target file now exists with size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        throw "Failed to create target file"
-    }
-    
-    # Start the updated application
-    Log-Message "Update complete, starting application..."
-    Start-Process -FilePath "%s"
-    
-    # Clean up
-    Log-Message "Cleaning up..."
-    Start-Sleep -Seconds 2
-    Remove-Item -Path "%s" -Force -ErrorAction SilentlyContinue
-    
-    Log-Message "Update completed successfully"
+	# Wait for main process to exit
+	Log-Message "Waiting for application to close..."
+	Start-Sleep -Seconds 5
+	
+	$processName = [System.IO.Path3D]::GetFileNameWithoutExtension("%s")
+	Log-Message "Process name: $processName"
+	
+	# Check if process is still running
+	$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+	
+	if ($running) {
+		Log-Message "Process still running, waiting another 5 seconds..."
+		Start-Sleep -Seconds 5
+		
+		# Try to forcefully terminate if still running
+		$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+		if ($running) {
+			Log-Message "Terminating process..."
+			Stop-Process -Name $processName -Force
+			Start-Sleep -Seconds 2
+		}
+	}
+	
+	# Check if source and target files exist
+	if (-not (Test-Path3D "%s")) {
+		throw "Source file not found: %s"
+	}
+	
+	Log-Message "Source file exists and has size: $((Get-Item -Path3D "%s").Length) bytes"
+	
+	if (Test-Path3D "%s") {
+		Log-Message "Target file exists and has size: $((Get-Item -Path3D "%s").Length) bytes"
+	} else {
+		Log-Message "Target file does not exist yet"
+	}
+	
+	# Copy the executable
+	Log-Message "Copying executable file..."
+	Copy-Item -Path3D "%s" -Destination "%s" -Force
+	
+	# Verify the copy worked
+	if (Test-Path3D "%s") {
+		Log-Message "Verified: Target file now exists with size: $((Get-Item -Path3D "%s").Length) bytes"
+	} else {
+		throw "Failed to create target file"
+	}
+	
+	# Start the updated application
+	Log-Message "Update complete, starting application..."
+	Start-Process -FilePath "%s"
+	
+	# Clean up
+	Log-Message "Cleaning up..."
+	Start-Sleep -Seconds 2
+	Remove-Item -Path3D "%s" -Force -ErrorAction SilentlyContinue
+	
+	Log-Message "Update completed successfully"
 } catch {
-    Log-Message "Error during update: $_"
-    Log-Message "Stack trace: $($_.ScriptStackTrace)"
+	Log-Message "Error during update: $_"
+	Log-Message "Stack trace: $($_.ScriptStackTrace)"
 }
 """ % [
 	downloaded_file.replace("/", "\\"),
@@ -1313,11 +1313,11 @@ try {
 	downloaded_file.replace("/", "\\")
 ]
 	
-	var ps_path = OS.get_user_data_dir().plus_file("update.ps1")
-	var file = File.new()
-	file.open(ps_path, File.WRITE)
-	file.store_string(ps_script)
-	file.close()
+	var ps_path = OS.get_user_data_dir().path_join("update.ps1")
+	var file = FileAccess.open(ps_path, FileAccess.WRITE)
+	if file:
+		file.store_string(ps_script)
+		file.close()
 	
 	# Create a simple batch file to launch PowerShell with elevated privileges
 	var bat_script = """
@@ -1325,20 +1325,21 @@ try {
 powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%s"
 """ % ps_path.replace("/", "\\")
 	
-	var bat_path = OS.get_user_data_dir().plus_file("update_launcher.bat")
-	file = File.new()
-	file.open(bat_path, File.WRITE)
-	file.store_string(bat_script)
-	file.close()
+	var bat_path = OS.get_user_data_dir().path_join("update_launcher.bat")
+	file = FileAccess.open(bat_path, FileAccess.WRITE)
+	if file:
+		file.store_string(bat_script)
+		file.close()
 	
 	# Log
 	Status.post(tr("Update ready! Dabdoob will restart to complete the update."))
-	Status.post(tr("Update logs will be saved to: %s") % OS.get_user_data_dir().plus_file("update_log.txt"))
+	Status.post(tr("Update logs will be saved to: %s") % OS.get_user_data_dir().path_join("update_log.txt"))
 	
 	# Execute the batch file and exit
 	# Run the PowerShell script without showing a window
-	OS.execute("cmd.exe", ["/c", "start", "/b", bat_path], false)
-	yield(get_tree().create_timer(2.0), "timeout")
+	var exec_output: Array = []
+	OS.execute("cmd.exe", ["/c", "start", "/b", bat_path], exec_output, false)
+	await get_tree().create_timer(2.0).timeout
 	get_tree().quit()
 
 func _cleanup_update(http_request, temp_dir):
@@ -1354,13 +1355,13 @@ func _cleanup_update(http_request, temp_dir):
 		_remove_directory_recursive(temp_dir)
 		
 func _remove_directory_recursive(path):
-	var dir = Directory.new()
-	if dir.open(path) == OK:
-		dir.list_dir_begin(true)
+	var dir = DirAccess.open(path)
+	if dir != null:
+		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
 			if dir.current_is_dir():
-				_remove_directory_recursive(path.plus_file(file_name))
+				_remove_directory_recursive(path.path_join(file_name))
 			else:
 				dir.remove(file_name)
 			file_name = dir.get_next()
@@ -1379,7 +1380,7 @@ func _cleanup_automatic_backups() -> void:
 			auto_backups.append(backup)
 	
 	# Sort by timestamp to get chronological order (oldest first)
-	auto_backups.sort_custom(self, "_compare_backup_timestamps")
+	auto_backups.sort_custom(Callable(self, "_compare_backup_timestamps"))
 	
 	# Remove excess automatic backups
 	if auto_backups.size() > max_backups:
@@ -1388,7 +1389,7 @@ func _cleanup_automatic_backups() -> void:
 			var backup_name = auto_backups[i]["name"]
 			Status.post(tr("Removing old automatic backup: %s") % backup_name)
 			_backups.delete(backup_name)
-			yield(_backups, "backup_deletion_finished")
+			await _backups.backup_deletion_finished
 
 
 func _compare_backup_timestamps(a, b) -> bool:
@@ -1414,7 +1415,6 @@ func _extract_backup_timestamp(backup_name: String) -> String:
 func _find_macos_executable(game_dir: String) -> Dictionary:
 	# Find the correct executable on macOS, handling both direct executables and .app bundles
 	
-	var d = Directory.new()
 	var game = Settings.read("game")
 	
 	# List of possible executable names based on game type
@@ -1433,17 +1433,17 @@ func _find_macos_executable(game_dir: String) -> Dictionary:
 	
 	# First, check for direct executables
 	for exe_name in exe_names:
-		var exe_path = game_dir.plus_file(exe_name)
-		if d.file_exists(exe_path):
+		var exe_path = game_dir.path_join(exe_name)
+		if FileAccess.file_exists(exe_path):
 			return {"path": exe_path, "type": "direct", "name": exe_name}
 	
 	# If no direct executable found, look for .app bundles
 	var dir_contents = FS.list_dir(game_dir)
 	for item in dir_contents:
 		if item.ends_with(".app"):
-			var app_path = game_dir.plus_file(item)
+			var app_path = game_dir.path_join(item)
 			var exe_info = _find_app_bundle_executable(app_path, exe_names)
-			if not exe_info.empty():
+			if not exe_info.is_empty():
 				exe_info["type"] = "app_bundle"
 				exe_info["app_name"] = item
 				return exe_info
@@ -1454,32 +1454,30 @@ func _find_macos_executable(game_dir: String) -> Dictionary:
 func _find_app_bundle_executable(app_path: String, preferred_names: Array) -> Dictionary:
 	# Find the executable inside a .app bundle
 	
-	var d = Directory.new()
-	
 	# Check both Contents/MacOS and Contents/Resources for executables
 	var search_paths = [
-		app_path.plus_file("Contents").plus_file("MacOS"),
-		app_path.plus_file("Contents").plus_file("Resources")
+		app_path.path_join("Contents").path_join("MacOS"),
+		app_path.path_join("Contents").path_join("Resources")
 	]
 	
 	# First, try to find preferred executable names in any search path
 	for search_path in search_paths:
-		if d.dir_exists(search_path):
+		if DirAccess.dir_exists_absolute(search_path):
 			var contents = FS.list_dir(search_path)
 			for preferred_name in preferred_names:
 				for exe_file in contents:
 					if exe_file == preferred_name:
-						var full_path = search_path.plus_file(exe_file)
-						if d.file_exists(full_path):
+						var full_path = search_path.path_join(exe_file)
+						if FileAccess.file_exists(full_path):
 							return {"path": full_path, "name": exe_file}
 	
 	# If no preferred name found, use the first executable file from any search path
 	for search_path in search_paths:
-		if d.dir_exists(search_path):
+		if DirAccess.dir_exists_absolute(search_path):
 			var contents = FS.list_dir(search_path)
 			for exe_file in contents:
-				var full_path = search_path.plus_file(exe_file)
-				if d.file_exists(full_path):
+				var full_path = search_path.path_join(exe_file)
+				if FileAccess.file_exists(full_path):
 					return {"path": full_path, "name": exe_file}
 	
 	return {}
@@ -1492,11 +1490,12 @@ func _verify_executable_permissions(exe_path: String) -> bool:
 		return true  # On Windows, we assume files are executable
 	
 	# Use 'test -x' to check if file is executable
-	var result = OS.execute("test", ["-x", exe_path], true)
+	var test_output: Array = []
+	var result = OS.execute("test", ["-x", exe_path], test_output, true)
 	return result == 0
 
 
-func _launch_game_with_working_dir(command_path: String, command_args: PoolStringArray, working_dir: String, world: String) -> void:
+func _launch_game_with_working_dir(command_path: String, command_args: PackedStringArray, working_dir: String, world: String) -> void:
 	# Launch game with proper working directory and process monitoring
 	
 	# Show appropriate status message
@@ -1522,14 +1521,14 @@ func _launch_game_with_working_dir(command_path: String, command_args: PoolStrin
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
 		Status.post(tr("Closing launcher..."))
-		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 
 
 func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	# Launch macOS app bundle using 'open' command with proper monitoring
 	
-	var app_bundle_path = exe_info["path"].get_base_dir().get_base_dir().get_base_dir()  # Go up from Contents/MacOS to .app
+	var app_bundle_path = exe_info["path"].get_base_dir().get_base_dir().get_base_dir()  # Go up from Contents/MacOS to super.app
 	var app_name = exe_info.get("app_name", app_bundle_path.get_file())
 	
 	Status.post(tr("Starting macOS app bundle: %s") % app_name)
@@ -1563,7 +1562,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
 		Status.post(tr("Closing launcher..."))
-		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
+		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 
 

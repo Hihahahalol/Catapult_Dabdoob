@@ -13,23 +13,23 @@ const TILESETS = [
 
 func parse_tileset_dir(tileset_dir: String) -> Array:
 	
-	if not Directory.new().dir_exists(tileset_dir):
+	if not DirAccess.dir_exists_absolute(tileset_dir):
 		Status.post(tr("msg_no_tileset_dir") % tileset_dir, Enums.MSG_ERROR)
 		return []
 	
 	var result = []
 	
 	for subdir in FS.list_dir(tileset_dir):
-		var f = File.new()
-		var info = tileset_dir.plus_file(subdir).plus_file("tile_config.json")
-		if f.file_exists(info):
-			f.open(info, File.READ)
+		var info = tileset_dir.path_join(subdir).path_join("tile_config.json")
+		if FileAccess.file_exists(info):
+			var f = FileAccess.open(info, FileAccess.READ)
 			var json_text = f.get_as_text()
-			var json = JSON.parse(json_text)
+			var test_json_conv = JSON.new()
+			var parse_error = test_json_conv.parse(json_text)
 			var name = ""
 			var desc = ""
-			if json.error == OK and json.result is Dictionary:
-				var data = json.result
+			if parse_error == OK and test_json_conv.data is Dictionary:
+				var data = test_json_conv.data
 				if "tile_info" in data and data["tile_info"] is Array and data["tile_info"].size() > 0:
 					var tile_info = data["tile_info"][0]
 					if "pixelscale" in tile_info:
@@ -43,7 +43,7 @@ func parse_tileset_dir(tileset_dir: String) -> Array:
 			var item = {}
 			item["name"] = name
 			item["description"] = desc
-			item["location"] = tileset_dir.plus_file(subdir)
+			item["location"] = tileset_dir.path_join(subdir)
 			result.append(item)
 			f.close()
 		
@@ -54,7 +54,7 @@ func get_installed(include_stock = false) -> Array:
 	
 	var tilesets = []
 	
-	if Directory.new().dir_exists(Paths.tileset_user):
+	if DirAccess.dir_exists_absolute(Paths.tileset_user):
 		tilesets.append_array(parse_tileset_dir(Paths.tileset_user))
 		for tileset in tilesets:
 			tileset["is_stock"] = false
@@ -75,7 +75,7 @@ func delete_tileset(name: String) -> void:
 			emit_signal("tileset_deletion_started")
 			Status.post(tr("msg_deleting_tileset") % tileset["location"])
 			FS.rm_dir(tileset["location"])
-			yield(FS, "rm_dir_done")
+			await FS.rm_dir_done
 			emit_signal("tileset_deletion_finished")
 			return
 			
@@ -87,7 +87,7 @@ func install_tileset(tileset_index: int, from_file = null, reinstall = false, ke
 	var tileset = TILESETS[tileset_index]
 	var game = Settings.read("game")
 	var tileset_dir = Paths.tileset_user
-	var tmp_dir = Paths.tmp_dir.plus_file(tileset["name"])
+	var tmp_dir = Paths.tmp_dir.path_join(tileset["name"])
 	var archive = ""
 	
 	emit_signal("tileset_installation_started")
@@ -100,37 +100,38 @@ func install_tileset(tileset_index: int, from_file = null, reinstall = false, ke
 	if from_file:
 		archive = from_file
 	else:
-		archive = Paths.cache_dir.plus_file(tileset["filename"])
-		if Settings.read("ignore_cache") or not Directory.new().file_exists(archive):
+		archive = Paths.cache_dir.path_join(tileset["filename"])
+		if Settings.read("ignore_cache") or not FileAccess.file_exists(archive):
 			Downloader.download_file(tileset["url"], Paths.cache_dir, tileset["filename"])
-			yield(Downloader, "download_finished")
-		if not Directory.new().file_exists(archive):
+			await Downloader.download_finished
+		if not FileAccess.file_exists(archive):
 			Status.post(tr("msg_tileset_download_failed"), Enums.MSG_ERROR)
 			emit_signal("tileset_installation_finished")
 			return
 		
 	if reinstall:
-		FS.rm_dir(tileset_dir.plus_file(tileset["name"]))
-		yield(FS, "rm_dir_done")
+		FS.rm_dir(tileset_dir.path_join(tileset["name"]))
+		await FS.rm_dir_done
 		
 	FS.extract(archive, tmp_dir)
-	yield(FS, "extract_done")
+	await FS.extract_done
 	if not keep_archive and not Settings.read("keep_cache"):
-		Directory.new().remove(archive)
+		DirAccess.remove_absolute(archive)
 	
 	if FS.last_extract_result == 0:
 		# Check if the expected directory exists after extraction
-		var source_path = tmp_dir.plus_file(tileset["internal_path"])
-		if Directory.new().dir_exists(source_path):
-			FS.move_dir(source_path, tileset_dir.plus_file(tileset["name"]))
-			yield(FS, "move_dir_done")
+		var source_path = tmp_dir.path_join(tileset["internal_path"])
+		if DirAccess.dir_exists_absolute(source_path):
+			FS.move_dir(source_path, tileset_dir.path_join(tileset["name"]))
+			await FS.move_dir_done
 			
 			# On macOS, ensure proper permissions for the installed tileset
 			if OS.get_name() == "OSX":
-				var installed_tileset_path = tileset_dir.plus_file(tileset["name"])
-				var chmod_result = OS.execute("chmod", ["-R", "755", installed_tileset_path], true)
+				var installed_tileset_path = tileset_dir.path_join(tileset["name"])
+				var chmod_output: Array = []
+				var chmod_result = OS.execute("chmod", ["-R", "755", installed_tileset_path], chmod_output, true)
 				if chmod_result != 0:
-					Status.post("Warning: Could not set tileset directory permissions", Enums.MSG_WARNING)
+					Status.post("Warning: Could not set tileset directory permissions", Enums.MSG_WARN)
 			
 			Status.post(tr("msg_tileset_installed"))
 		else:
@@ -141,6 +142,6 @@ func install_tileset(tileset_index: int, from_file = null, reinstall = false, ke
 	
 	# Clean up temporary directory
 	FS.rm_dir(tmp_dir)
-	yield(FS, "rm_dir_done")
+	await FS.rm_dir_done
 	
 	emit_signal("tileset_installation_finished") 

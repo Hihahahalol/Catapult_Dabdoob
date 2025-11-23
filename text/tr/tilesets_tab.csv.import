@@ -2,13 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
+uid="uid://b13fal1jmx5lh"
 
 [deps]
 
-files=[ "res://text/tr/tilesets_tab.tr.translation" ]
+files=["res://text/tr/tilesets_tab.tr.translation"]
 
 source_file="res://text/tr/tilesets_tab.csv"
-dest_files=[ "res://text/tr/tilesets_tab.tr.translation" ]
+dest_files=["res://text/tr/tilesets_tab.tr.translation"]
 
 [params]
 

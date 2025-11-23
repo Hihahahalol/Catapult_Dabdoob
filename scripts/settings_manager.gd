@@ -14,7 +14,7 @@ const _HARDCODED_DEFAULTS = {
 	"active_install_tlg":"",
 	"update_current_when_installing": true,
 	"launcher_locale": "",
-	"launcher_theme": "Godot_3.res",
+	"launcher_theme": "Grey.res",
 	"window_state": {},
 	"print_tips_of_the_day": true,
 	"update_to_same_build_allowed": false,
@@ -74,23 +74,21 @@ func _load() -> void:
 	if _initialized:
 		return
 	
-	_settings_file = Paths.own_dir.plus_file(_SETTINGS_FILENAME)
+	_settings_file = Paths.own_dir.path_join(_SETTINGS_FILENAME)
 	
 	# Ensure the directory exists before trying to read/write
-	var dir = Directory.new()
 	var own_dir = Paths.own_dir
-	if not dir.dir_exists(own_dir):
-		var err = dir.make_dir_recursive(own_dir)
-		if err != OK:
-			push_error("Failed to create settings directory: " + str(err))
-			_current = _HARDCODED_DEFAULTS
-			_initialized = true
-			return
+	var err = DirAccess.make_dir_absolute(own_dir)
+	if err != OK and err != ERR_ALREADY_EXISTS:
+		push_error("Failed to create settings directory: " + str(err))
+		_current = _HARDCODED_DEFAULTS
+		_initialized = true
+		return
 	
-	if File.new().file_exists(_settings_file):
+	if FileAccess.file_exists(_settings_file):
 		_current = _read_from_file(_settings_file)
 		# If reading failed, use defaults
-		if _current.empty():
+		if _current.is_empty():
 			_current = _HARDCODED_DEFAULTS
 			_write_to_file(_HARDCODED_DEFAULTS, _settings_file)
 	else:
@@ -102,33 +100,34 @@ func _load() -> void:
 
 func _read_from_file(path: String) -> Dictionary:
 	
-	var f = File.new()
-	
-	if not f.file_exists(path):
+	if not FileAccess.file_exists(path):
 		Status.post(tr("msg_nonexistent_attempt") % path, Enums.MSG_ERROR)
 		return {}
-		
-	f.open(path, File.READ)
-	var s = f.get_as_text()
-	var result: JSONParseResult = JSON.parse(s)
 	
-	if result.error:
-		Status.post(tr("msg_settings_parse_error") % [result.error_line, result.error_string], Enums.MSG_ERROR)
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+		
+	var s = f.get_as_text()
+	var json = JSON.new()
+	var error = json.parse(s)
+	
+	if error != OK:
+		Status.post(tr("msg_settings_parse_error") % [json.get_error_line(), json.get_error_message()], Enums.MSG_ERROR)
 		return {}
 	else:
-		return result.result
+		return json.data
 
 
 func _write_to_file(data: Dictionary, path: String) -> void:
 	
-	var f = File.new()
-	var content = JSON.print(data, "    ")
-	var err = f.open(path, File.WRITE)
-	if err != OK:
+	var f = FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		var err = FileAccess.get_open_error()
 		push_error("Failed to write settings file: " + str(err))
 		return
+	var content = JSON.stringify(data, "    ")
 	f.store_string(content)
-	f.close()
 
 
 func read(setting_name: String):
@@ -150,3 +149,4 @@ func read(setting_name: String):
 func store(setting_name: String, setting_value) -> void:
 	
 	_current[setting_name] = setting_value
+

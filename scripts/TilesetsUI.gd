@@ -1,15 +1,15 @@
 extends VBoxContainer
 
 
-onready var _tileset = $"/root/Catapult/Tileset"
-onready var _installed_list = $HBox/Installed/InstalledList
-onready var _available_list = $HBox/Downloadable/AvailableList
-onready var _btn_install = $HBox/Downloadable/BtnInstall
-onready var _dlg_manual_dl = $ConfirmManualDownload
-onready var _dlg_file = $InstallFromFileDialog
-onready var _cbox_stock = $HBox/Installed/ShowStock
-onready var _preview_image = $PreviewArea/PreviewImage
-onready var _no_preview_label = $PreviewArea/NoPreviewLabel
+@onready var _tileset = $"/root/Catapult/Tileset"
+@onready var _installed_list = $HBox/Installed/InstalledList
+@onready var _available_list = $HBox/Downloadable/AvailableList
+@onready var _btn_install = $HBox/Downloadable/BtnInstall
+@onready var _dlg_manual_dl = $ConfirmManualDownload
+@onready var _dlg_file = $InstallFromFileDialog
+@onready var _cbox_stock = $HBox/Installed/ShowStock
+@onready var _preview_image = $PreviewArea/PreviewImage
+@onready var _no_preview_label = $PreviewArea/NoPreviewLabel
 
 var _installed_tilesets = []
 
@@ -72,7 +72,7 @@ func _on_Tabs_tab_changed(tab: int) -> void:
 	if tab != 2:
 		return
 		
-	_cbox_stock.pressed = true  # Always checked since it's disabled
+	_cbox_stock.button_pressed = true  # Always checked since it's disabled
 	_cbox_stock.disabled = true  # Ensure it stays disabled
 	
 	_btn_install.disabled = true
@@ -119,15 +119,15 @@ func _on_BtnInstall_pressed() -> void:
 	var tileset = _tileset.TILESETS[tileset_index]
 	
 	if ("manual_download" in tileset) and (tileset["manual_download"] == true):
-		_dlg_manual_dl.rect_size = Vector2(300, 150)
-		_dlg_manual_dl.get_cancel().text = tr("btn_cancel")
+		_dlg_manual_dl.size = Vector2(300, 150)
+		_dlg_manual_dl.get_cancel_button().text = tr("btn_cancel")
 		_dlg_manual_dl.popup_centered()
 	else:
 		if _is_tileset_installed(tileset["name"]):
 			_tileset.install_tileset(tileset_index, null, true)
 		else:
 			_tileset.install_tileset(tileset_index)
-		yield(_tileset, "tileset_installation_finished")
+		await _tileset.tileset_installation_finished
 		refresh_installed()
 
 
@@ -151,7 +151,7 @@ func _on_InstallFromFileDialog_file_selected(path: String) -> void:
 	else:
 		_tileset.install_tileset(index, path, false, true)
 	
-	yield(_tileset, "tileset_installation_finished")
+	await _tileset.tileset_installation_finished
 	refresh_installed()
 
 
@@ -233,8 +233,7 @@ func _show_tileset_preview(tileset_name: String) -> void:
 			print("Debug: Failed to load, trying alternative approaches...")
 			
 			# Check if the file exists in the filesystem
-			var file = File.new()
-			var file_exists = file.file_exists(preview_path)
+			var file_exists = FileAccess.file_exists(preview_path)
 			print("Debug: File exists check: ", file_exists)
 			
 			# Try a few common variations of the filename
