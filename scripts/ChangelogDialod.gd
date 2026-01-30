@@ -16,7 +16,10 @@ var _pr_data = ""
 
 
 func open() -> void:
-	
+
+	# Set the window title with translation
+	title = tr("dlg_changelog_title")
+
 	download_pull_requests()
 	popup_centered_ratio(0.9)
 

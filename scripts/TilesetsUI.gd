@@ -119,6 +119,7 @@ func _on_BtnInstall_pressed() -> void:
 	var tileset = _tileset.TILESETS[tileset_index]
 	
 	if ("manual_download" in tileset) and (tileset["manual_download"] == true):
+		_dlg_manual_dl.title = tr("dlg_tileset_manual_dl_title")
 		_dlg_manual_dl.size = Vector2(300, 150)
 		_dlg_manual_dl.get_cancel_button().text = tr("btn_cancel")
 		_dlg_manual_dl.popup_centered()

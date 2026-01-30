@@ -516,6 +516,7 @@ func _on_BtnDelete_pressed() -> void:
 	
 	var num = len(_mods_to_delete)
 	if num > 1:
+		_dlg_del_multiple.title = tr("dlg_deleting_n_mods_title")
 		_dlg_del_multiple.dialog_text = tr("dlg_deleting_n_mods_text") % num
 		_dlg_del_multiple.get_cancel_button().text = tr("btn_cancel")
 		_dlg_del_multiple.size = Vector2(250, 100)

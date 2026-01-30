@@ -11,24 +11,24 @@ extends Node
 @onready var _mods = $Mods  
 @onready var _releases = $Releases
 @onready var _installer = $ReleaseInstaller
-@onready var _btn_install = $Main/TabBar/Game/BtnInstall
-@onready var _btn_refresh = $Main/TabBar/Game/Builds/BtnRefresh
+@onready var _btn_install = $Main/TabBar/Game/BuildsContainer/ButtonContainer/BtnInstall
+@onready var _btn_refresh = $Main/TabBar/Game/BuildsContainer/Builds/BtnRefresh
 @onready var _changelog = $Main/TabBar/Game/ChangelogDialog
-@onready var _lbl_changelog = $Main/TabBar/Game/Channel/HBox/ChangelogLink
+@onready var _lbl_changelog = $Main/TabBar/Game/Channel/ChannelHeader/ChangelogLink
 @onready var _btn_game_dir = $Main/TabBar/Game/ActiveInstall/Build/GameDir
 @onready var _btn_user_dir = $Main/TabBar/Game/ActiveInstall/Build/UserDir
-@onready var _btn_play = $Main/TabBar/Game/ActiveInstall/Launch/BtnPlay
-@onready var _btn_resume = $Main/TabBar/Game/ActiveInstall/Launch/BtnResume
-@onready var _wiki_search_input = $Main/TabBar/Game/ActiveInstall/Launch/WikiSearchInput
-@onready var _btn_search_wiki = $Main/TabBar/Game/ActiveInstall/Launch/BtnSearchWiki
+@onready var _btn_play = $Main/TabBar/Game/ActiveInstall/LaunchControls/Launch/BtnPlay
+@onready var _btn_resume = $Main/TabBar/Game/ActiveInstall/LaunchControls/Launch/BtnResume
+@onready var _wiki_search_input = $Main/TabBar/Game/ActiveInstall/LaunchControls/WikiSearch/WikiSearchInput
+@onready var _btn_search_wiki = $Main/TabBar/Game/ActiveInstall/LaunchControls/WikiSearch/BtnSearchWiki
 # Button removed - update check now happens automatically
-@onready var _btn_update = $Main/TabBar/Game/ActiveInstall/Update/BtnUpdate
-@onready var _lst_builds = $Main/TabBar/Game/Builds/BuildsList
-@onready var _lst_games = $Main/GameChoice/GamesList
+@onready var _btn_update = $Main/TabBar/Game/ActiveInstall/LaunchControls/Update/BtnUpdate
+@onready var _lst_builds = $Main/TabBar/Game/BuildsContainer/Builds/BuildsList
+@onready var _lst_games = $Main/HeaderSection/GameSelectContainer/GamesList
 @onready var _rbtn_stable = $Main/TabBar/Game/Channel/Group/RBtnStable
 @onready var _rbtn_exper = $Main/TabBar/Game/Channel/Group/RBtnExperimental
 @onready var _lbl_build = $Main/TabBar/Game/ActiveInstall/Build/Name
-@onready var _cb_update = $Main/TabBar/Game/UpdateCurrent
+@onready var _cb_update = $Main/TabBar/Game/BuildsContainer/ButtonContainer/UpdateCurrent
 @onready var _lst_installs = $Main/TabBar/Game/GameInstalls/HBox/InstallsList
 @onready var _btn_make_active = $Main/TabBar/Game/GameInstalls/HBox/VBox/btnMakeActive
 @onready var _btn_delete = $Main/TabBar/Game/GameInstalls/HBox/VBox/btnDelete
@@ -74,7 +74,7 @@ func _get_github_auth_headers() -> PackedStringArray:
 	# and contain only alphanumeric characters, underscores, and possibly other characters
 	if token.length() < 20:
 		# Token too short, use unauthenticated requests
-		Status.post("Auth_Token.txt found but token appears too short, using unauthenticated requests")
+		Status.post(tr("msg_auth_token_too_short"))
 		return PackedStringArray()
 	
 	# GitHub tokens typically contain only alphanumeric characters, underscores, and sometimes dashes
@@ -83,11 +83,11 @@ func _get_github_auth_headers() -> PackedStringArray:
 	regex.compile("^[a-zA-Z0-9_-]+$")
 	if not regex.search(token):
 		# Invalid characters in token, use unauthenticated requests
-		Status.post("Auth_Token.txt found but token contains invalid characters, using unauthenticated requests")
+		Status.post(tr("msg_auth_token_invalid_chars"))
 		return PackedStringArray()
 	
 	# Return headers with authentication
-	Status.post("Using GitHub authentication token for API requests")
+	Status.post(tr("msg_using_auth_token"))
 	return PackedStringArray(["Authorization: token " + token])
 
 
@@ -105,8 +105,10 @@ func _ready() -> void:
 	_scale_control_min_sizes(Geom.scale)
 	Geom.connect("scale_changed", Callable(self, "_on_ui_scale_changed"))
 	
+	# Call translation after a short delay to ensure everything is loaded
+	await get_tree().create_timer(0.05).timeout
 	assign_localized_text()
-	
+
 	_btn_resume.grab_focus()
 	
 	var welcome_msg = tr("str_welcome")
@@ -116,7 +118,10 @@ func _ready() -> void:
 	
 	_unpack_utils()
 	_setup_ui()
-	
+
+	# Prevent screen from locking while launcher is active
+	DisplayServer.screen_set_keep_on(true)
+
 	# Connect the BtnUpdate button signal
 	_btn_update.connect("pressed", Callable(self, "_on_BtnUpdate_pressed"))
 	
@@ -143,12 +148,17 @@ func _save_icon_sizes() -> void:
 
 
 func assign_localized_text() -> void:
-	
+
+	# Ensure locale is set before translating
+	var locale = Settings.read("launcher_locale")
+	if locale != "":
+		TranslationServer.set_locale(locale)
+
 	var version = Settings.read("version")
 	var window_title_text = tr("window_title")
 	get_window().set_title(window_title_text)
 	_title_bar.set_title(window_title_text)
-	
+
 	_tabs.set_tab_title(0, tr("tab_game"))
 	_tabs.set_tab_title(1, tr("tab_mods"))
 	_tabs.set_tab_title(2, tr("tab_tilesets"))
@@ -157,9 +167,9 @@ func assign_localized_text() -> void:
 	_tabs.set_tab_title(5, tr("tab_backups"))
 	_tabs.set_tab_title(6, tr("tab_settings"))
 	_tabs.set_tab_title(7, tr("tab_about"))
-	
+
 	_lbl_changelog.text = tr("lbl_changelog")
-	
+
 	var game = Settings.read("game")
 	if game == "dda":
 		_game_desc.text = tr("desc_dda")
@@ -171,6 +181,103 @@ func assign_localized_text() -> void:
 		_game_desc.text = tr("desc_tish")
 	elif game == "tlg":
 		_game_desc.text = tr("desc_tlg")
+
+	# Translate all button texts
+	_translate_all_ui_text()
+
+
+func _translate_all_ui_text() -> void:
+	"""Translates all button and UI element texts in the interface"""
+
+	# Game Tab buttons
+	_btn_refresh.text = tr("btn_refresh")
+	_btn_install.text = tr("btn_install")
+	_btn_play.text = tr("btn_play")
+	_btn_resume.text = tr("btn_resume")
+	_btn_update.text = tr("btn_update_launcher")
+	_btn_make_active.text = tr("btn_activate")
+	_btn_delete.text = tr("btn_delete")
+	
+	# Game Tab - Labels
+	$Main/GameChoice/Label.text = tr("lbl_game")
+	$Main/TabBar/Game/Builds/Label.text = tr("lbl_builds")
+	$Main/TabBar/Game/UpdateCurrent.text = tr("cb_update_active")
+	$Main/TabBar/Game/ActiveInstall/Label.text = tr("lbl_active_install")
+	$Main/TabBar/Game/ActiveInstall/Build/Name.text = tr("lbl_none")
+	$Main/TabBar/Game/GameInstalls/Label2.text = tr("lbl_installs")
+	
+	# Game Tab - Checkboxes and Radio buttons
+	$Main/TabBar/Game/Channel/Group/Label.text = tr("lbl_channel")
+	$Main/TabBar/Game/Channel/Group/RBtnStable.text = tr("rbtn_stable")
+	$Main/TabBar/Game/Channel/Group/RBtnExperimental.text = tr("rbtn_experimental")
+	
+	# Mods Tab
+	$Main/TabBar/Mods/HBox/Installed/Label.text = tr("lbl_installed_mods")
+	$Main/TabBar/Mods/HBox/Available/Label.text = tr("lbl_mod_repo")
+	$Main/TabBar/Mods/ButtonsRow/LeftButtons/ShowStock.text = tr("cbtn_stock_mods")
+	$Main/TabBar/Mods/ButtonsRow/LeftButtons/BtnDelete.text = tr("btn_delete_mods")
+	$Main/TabBar/Mods/ButtonsRow/RightButtons/BtnAddSelectedMod.text = tr("btn_add_sel_mods")
+	$Main/TabBar/Mods/ButtonsRow/RightButtons/BtnAddAllMods.text = tr("btn_add_all_mods")
+	
+	# Tilesets Tab
+	$Main/TabBar/Tilesets/HBox/Installed/Label.text = tr("lbl_installed_tilesets")
+	$Main/TabBar/Tilesets/HBox/Downloadable/Label.text = tr("lbl_avail_tilesets")
+	$Main/TabBar/Tilesets/HBox/Installed/ShowStock.text = tr("cbtn_stock_tilesets")
+	$Main/TabBar/Tilesets/HBox/Downloadable/BtnInstall.text = tr("btn_install_tilesets")
+	
+	# Soundpacks Tab
+	$Main/TabBar/Soundpacks/HBox/Installed/Label.text = tr("lbl_installed_sound")
+	$Main/TabBar/Soundpacks/HBox/Downloadable/Label.text = tr("lbl_avail_sound")
+	$Main/TabBar/Soundpacks/HBox/Installed/ShowStock.text = tr("cbtn_stock_sound")
+	$Main/TabBar/Soundpacks/HBox/Installed/BtnDelete.text = tr("btn_delete_sound")
+	$Main/TabBar/Soundpacks/HBox/Installed/BtnActivate.text = tr("btn_activate_sound")
+	$Main/TabBar/Soundpacks/HBox/Downloadable/BtnInstall.text = tr("btn_install_sound")
+	
+	# Fonts Tab
+	$Main/TabBar/Fonts/FontSelection/RightPane/Label.text = tr("lbl_avail_fonts")
+	$Main/TabBar/Fonts/FontSelection/RightPane/Buttons/BtnSetFontUI.text = tr("btn_set_font_ui")
+	$Main/TabBar/Fonts/FontSelection/RightPane/Buttons/BtnSetFontMap.text = tr("btn_set_font_map")
+	$Main/TabBar/Fonts/FontSelection/RightPane/Buttons/BtnSetFontOvermap.text = tr("btn_set_font_omap")
+	$Main/TabBar/Fonts/FontSelection/RightPane/Buttons/BtnSetFontAll.text = tr("btn_set_font_all")
+	$Main/TabBar/Fonts/FontSelection/RightPane/Buttons/BtnResetFont.text = tr("btn_reset_font")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/Label.text = tr("lbl_font_preview")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/PreviewCyrillic.text = tr("cbtn_preview_cyrillics")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/OtherSettings/Label.text = tr("lbl_other_settings")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/FontSizeUI/Label.text = tr("lbl_font_sz_ui")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/FontSizeMap/Label.text = tr("lbl_font_sz_map")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/FontSizeOvermap/Label.text = tr("lbl_font_sz_overmap")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/FontBlending.text = tr("cbtn_font_blending")
+	$Main/TabBar/Fonts/FontSelection/LeftPane/BtnSaveFontOptions.text = tr("btn_save_font")
+	
+	# Backups Tab
+	$Main/TabBar/Backups/Available/Label.text = tr("lbl_save_backups")
+	$Main/TabBar/Backups/Available/Buttons/BtnRestore.text = tr("btn_restore_backup")
+	$Main/TabBar/Backups/Available/Buttons/BtnDelete.text = tr("btn_delete_backup")
+	$Main/TabBar/Backups/Available/Buttons/BtnRefresh.text = tr("btn_refresh_backups")
+	$Main/TabBar/Backups/BackupBeforeLaunch.text = tr("cbtn_backup_before_launch")
+	$Main/TabBar/Backups/BackupAfterClosing.text = tr("cbtn_backup_after_closing")
+	$Main/TabBar/Backups/Current/Label.text = tr("lbl_manual_backup")
+	$Main/TabBar/Backups/Current/HBox/Label.text = tr("lbl_backup_name")
+	$Main/TabBar/Backups/Current/HBox/BtnCreate.text = tr("btn_create_backup")
+	
+	# Settings Tab
+	$Main/TabBar/Settings/LauncherLanguage/Label.text = tr("lbl_launcher_language")
+	$Main/TabBar/Settings/LauncherTheme/Label.text = tr("lbl_launcher_theme")
+	$Main/TabBar/Settings/ShowGameDesc.text = tr("cbtn_show_game_desc")
+	$Main/TabBar/Settings/KeepLauncherOpen.text = tr("cbtn_keep_launcher_open")
+	$Main/TabBar/Settings/PrintTips.text = tr("cbtn_print_tips")
+	$Main/TabBar/Settings/UpdateToSame.text = tr("cbtn_updating_to_same_build")
+	$Main/TabBar/Settings/ShortenNames.text = tr("cbtn_shorten_release_names")
+	$Main/TabBar/Settings/AlwaysShowInstalls.text = tr("cbtn_always_show_installs")
+	$Main/TabBar/Settings/ShowObsoleteMods.text = tr("cbtn_show_obsolete_mods")
+	$Main/TabBar/Settings/KeepCache.text = tr("cbtn_keep_cache")
+	$Main/TabBar/Settings/IgnoreCache.text = tr("cbtn_ignore_cache")
+	$Main/TabBar/Settings/ShowDebug.text = tr("cbtn_debug_mode")
+	$Main/TabBar/Settings/NumReleases/Label.text = tr("lbl_num_releases_to_request")
+	$Main/TabBar/Settings/NumPrs/Label.text = tr("lbl_num_prs_to_request")
+	$Main/TabBar/Settings/ProxySettings/Label.text = tr("lbl_proxy_settings")
+	$Main/TabBar/Settings/ScaleOverride/Label.text = tr("lbl_ui_scale_override")
+	$Main/TabBar/Settings/ScaleOverride/cbScaleOverrideEnable.text = tr("cbtn_enable_scale")
 
 
 func load_ui_theme(theme_file: String) -> void:
@@ -262,7 +369,7 @@ func _unpack_utils() -> void:
 					copy_error = ERR_FILE_NOT_FOUND
 			
 			if copy_error != OK:
-				Status.post("[error] Failed to copy 7-Zip binary: " + str(copy_error), Enums.MSG_ERROR)
+				Status.post(tr("msg_7zip_copy_failed") % str(copy_error), Enums.MSG_ERROR)
 				return
 			
 			# Make executable on Linux and macOS
@@ -270,10 +377,10 @@ func _unpack_utils() -> void:
 				var chmod_output: Array = []
 				OS.execute("chmod", ["+x", sevenzip_exe], chmod_output, true)
 		else:
-			Status.post("[error] 7-Zip binary not found in any of the following locations:", Enums.MSG_ERROR)
+			Status.post(tr("msg_7zip_not_found"), Enums.MSG_ERROR)
 			for location in possible_locations:
-				Status.post("  - " + location, Enums.MSG_ERROR)
-			Status.post("[error] Please ensure 7-Zip binary is included in the project or placed next to the executable.", Enums.MSG_ERROR)
+				Status.post(tr("msg_7zip_location") % location, Enums.MSG_ERROR)
+			Status.post(tr("msg_7zip_please_ensure"), Enums.MSG_ERROR)
 			return
 
 
@@ -668,7 +775,7 @@ func _check_soundpack_warning() -> void:
 		
 		# Show warning only if there's exactly one stock soundpack and it's "Basic"
 		if stock_only.size() == 1 and stock_only[0]["name"] == "Basic":
-			Status.post("No installed soundpack for the selected game version", Enums.MSG_WARN)
+			Status.post(tr("msg_no_soundpack_warning"), Enums.MSG_WARN)
 
 
 func _on_BtnPlay_pressed() -> void:
@@ -716,11 +823,11 @@ func _start_game(world := "") -> void:
 			datetime["minute"],
 		]
 		# Create the backup
-		Status.post(tr("Creating automatic backup before game launch..."))
+		Status.post(tr("msg_creating_auto_backup_launch"))
 		_backups.backup_current(backup_name)
 		# Wait for backup to complete before launching game
 		await _backups.backup_creation_finished
-		Status.post(tr("Automatic backup created: %s") % backup_name)
+		Status.post(tr("msg_automatic_backup_created") % backup_name)
 		
 		# Clean up old automatic backups if we exceed the maximum count
 		_cleanup_automatic_backups()
@@ -815,7 +922,7 @@ func _start_game(world := "") -> void:
 					_launch_game_with_working_dir(command_path, command_args, Paths.game_dir, world)
 					return
 		_:
-			Status.post(tr("Unsupported operating system for game launching"), Enums.MSG_ERROR)
+			Status.post(tr("msg_unsupported_os"), Enums.MSG_ERROR)
 			return
 	
 	# Show appropriate status message
@@ -829,25 +936,25 @@ func _start_game(world := "") -> void:
 			exe_file = "cataclysm-tlg-tiles.exe"
 		game_name = exe_file
 	
-	Status.post(tr("Starting game: %s") % game_name)
+	Status.post(tr("msg_starting_game") % game_name)
 	
 	# Launch game with process monitoring
 	_game_process.execute(command_path, command_args, false)
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
-		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+		Status.post(tr("msg_game_launched_monitoring"))
 	
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
-		Status.post(tr("Closing launcher..."))
+		Status.post(tr("msg_closing_launcher"))
 		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 
 
 func _on_game_process_exited() -> void:
 	# Game has closed, handle post-game actions
-	Status.post(tr("Game process has exited (exit code: %s)") % _game_process.exit_code)
+	Status.post(tr("msg_game_process_exited") % _game_process.exit_code)
 	
 	# Create automatic backup if enabled
 	if Settings.read("backup_after_closing"):
@@ -859,10 +966,10 @@ func _on_game_process_exited() -> void:
 			datetime["hour"],
 			datetime["minute"],
 		]
-		Status.post(tr("Creating automatic backup after game closed..."))
+		Status.post(tr("msg_creating_auto_backup_exit"))
 		_backups.backup_current(backup_name)
 		await _backups.backup_creation_finished
-		Status.post(tr("Automatic backup created: %s") % backup_name)
+		Status.post(tr("msg_automatic_backup_created") % backup_name)
 		
 		# Clean up old automatic backups if we exceed the maximum count
 		_cleanup_automatic_backups()
@@ -922,6 +1029,7 @@ func _refresh_currently_installed() -> void:
 	_btn_delete.disabled = true
 	
 	if game in _installs:
+		# Display the active install name - it will be formatted like "Cataclysm-TLG 1.0 2025-11-04-0009"
 		_lbl_build.text = active_name
 		_btn_play.disabled = false
 		_btn_resume.disabled = not (FileAccess.file_exists(Paths.config.path_join("lastworld.json")))
@@ -982,7 +1090,7 @@ func _activate_easter_egg() -> void:
 
 func _on_BtnCheck_pressed() -> void:
 	var current_version = Settings.get_hardcoded_version()
-	Status.post(tr("Checking for Dabdoob updates... Current version: v%s") % current_version)
+	Status.post(tr("msg_checking_updates") % current_version)
 	
 	# Disable the update button while checking
 	_btn_update.disabled = true
@@ -999,12 +1107,12 @@ func _on_BtnCheck_pressed() -> void:
 func _on_version_check_completed(result, response_code, headers, body):
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		Status.post(tr("Failed to connect to update server"), Enums.MSG_ERROR)
+		Status.post(tr("msg_update_server_error"), Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
 		return
 		
 	if response_code != 200:
-		Status.post(tr("Error response from update server: %d") % response_code, Enums.MSG_ERROR)
+		Status.post(tr("msg_update_server_response_error") % response_code, Enums.MSG_ERROR)
 		_btn_update.disabled = false  # Re-enable button on error
 		return
 	
@@ -1047,7 +1155,7 @@ func _on_version_check_completed(result, response_code, headers, body):
 		
 		# Simple version comparison
 		if _is_newer_version(_latest_version, current_version):
-			Status.post(tr("A new version is available! You can update to v%s") % _latest_version, Enums.MSG_INFO)
+			Status.post(tr("msg_new_version_available") % _latest_version, Enums.MSG_INFO)
 			_btn_update.disabled = false
 			_is_update_available = true
 		else:
@@ -1091,21 +1199,21 @@ func _is_newer_version(latest: String, current: String) -> bool:
 
 func _on_BtnUpdate_pressed() -> void:
 	if _is_update_available:
-		Status.post(tr("Starting update to version v%s...") % _latest_version)
+		Status.post(tr("msg_starting_update") % _latest_version)
 		_perform_update()
 	else:
-		Status.post(tr("No update available"))
+		Status.post(tr("msg_no_update_available"))
 
 func _perform_update() -> void:
 	# Check if automatic updates are supported on this platform
 	if OS.get_name() != "Windows":
-		Status.post(tr("Automatic updates are only supported on Windows. Please update manually."))
+		Status.post(tr("msg_updates_windows_only"))
 		OS.shell_open(_release_page_url)
 		return
 	
 	# Check if we have download URLs available
 	if _download_urls.is_empty():
-		Status.post(tr("No download URLs found. Opening release page in browser..."))
+		Status.post(tr("msg_no_download_urls"))
 		OS.shell_open(_release_page_url)
 		return
 	
@@ -1119,7 +1227,7 @@ func _perform_update() -> void:
 	DirAccess.make_dir_absolute(temp_dir)
 	
 	# Show update progress to user
-	Status.post(tr("Downloading update from GitHub..."))
+	Status.post(tr("msg_downloading_update"))
 	
 	# Find the appropriate asset for the current OS
 	var download_url = ""
@@ -1127,7 +1235,7 @@ func _perform_update() -> void:
 	var os_name = OS.get_name()
 	
 	# Log all available assets for debugging
-	Status.post(tr("Available assets:"))
+	Status.post(tr("msg_available_assets"))
 	for asset in _download_urls:
 		Status.post("- " + asset["name"])
 	
@@ -1138,30 +1246,30 @@ func _perform_update() -> void:
 		if os_name == "Windows" and (name.find("win") >= 0 or name.find("windows") >= 0 or name.ends_with(".exe")):
 			download_url = asset["url"]
 			asset_name = asset["name"]
-			Status.post(tr("Selected Windows asset: %s") % asset_name)
+			Status.post(tr("msg_selected_windows_asset") % asset_name)
 			break
 		
 		# Check for Linux assets
 		elif os_name == "X11" and (name.find("linux") >= 0 or name.find("x86_64") >= 0 or name.ends_with(".x86_64")):
 			download_url = asset["url"]
 			asset_name = asset["name"]
-			Status.post(tr("Selected Linux asset: %s") % asset_name)
+			Status.post(tr("msg_selected_linux_asset") % asset_name)
 			break
-		
+
 		# Check for macOS assets
 		elif os_name == "OSX" and (name.find("mac") >= 0 or name.find("osx") >= 0 or name.find("darwin") >= 0 or name.ends_with(".dmg")):
 			download_url = asset["url"]
 			asset_name = asset["name"]
-			Status.post(tr("Selected macOS asset: %s") % asset_name)
+			Status.post(tr("msg_selected_macos_asset") % asset_name)
 			break
 	
 	# If no matching asset was found, use the first one as a fallback
 	if download_url.is_empty():
-		Status.post(tr("No OS-specific asset found for %s, using first available") % os_name)
+		Status.post(tr("msg_no_os_asset") % os_name)
 		download_url = _download_urls[0]["url"]
 		asset_name = _download_urls[0]["name"]
 		
-	Status.post(tr("Downloading %s...") % asset_name)
+	Status.post(tr("msg_downloading_file") % asset_name)
 	
 	# Set up the downloader
 	var http_request = HTTPRequest.new()
@@ -1184,12 +1292,12 @@ func _on_update_download_completed(result, response_code, headers, body, temp_di
 		http_request.queue_free()
 	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		Status.post(tr("Download failed with error code: %s") % result, Enums.MSG_ERROR)
+		Status.post(tr("msg_download_failed_error") % result, Enums.MSG_ERROR)
 		_cleanup_update(null, temp_dir)
 		return
-		
+
 	if response_code != 200:
-		Status.post(tr("Server returned error code: %s") % response_code, Enums.MSG_ERROR)
+		Status.post(tr("msg_server_error_code") % response_code, Enums.MSG_ERROR)
 		_cleanup_update(null, temp_dir)
 		return
 	
@@ -1198,14 +1306,14 @@ func _on_update_download_completed(result, response_code, headers, body, temp_di
 	var file = FileAccess.open(downloaded_file, FileAccess.WRITE)
 	if file == null:
 		var err = FileAccess.get_open_error()
-		Status.post(tr("Failed to create temporary file: %s") % err, Enums.MSG_ERROR)
+		Status.post(tr("msg_temp_file_error") % err, Enums.MSG_ERROR)
 		_cleanup_update(null, temp_dir)
 		return
 		
 	file.store_buffer(body)
 	file.close()
 	
-	Status.post(tr("Download complete. Preparing update..."))
+	Status.post(tr("msg_download_complete"))
 	
 	# Create a PowerShell script to handle the update
 	_create_powershell_updater(downloaded_file)
@@ -1332,8 +1440,8 @@ powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%s"
 		file.close()
 	
 	# Log
-	Status.post(tr("Update ready! Dabdoob will restart to complete the update."))
-	Status.post(tr("Update logs will be saved to: %s") % OS.get_user_data_dir().path_join("update_log.txt"))
+	Status.post(tr("msg_update_ready"))
+	Status.post(tr("msg_update_logs_location") % OS.get_user_data_dir().path_join("update_log.txt"))
 	
 	# Execute the batch file and exit
 	# Run the PowerShell script without showing a window
@@ -1387,7 +1495,7 @@ func _cleanup_automatic_backups() -> void:
 		var backups_to_remove = auto_backups.size() - max_backups
 		for i in range(backups_to_remove):
 			var backup_name = auto_backups[i]["name"]
-			Status.post(tr("Removing old automatic backup: %s") % backup_name)
+			Status.post(tr("msg_removing_old_backup") % backup_name)
 			_backups.delete(backup_name)
 			await _backups.backup_deletion_finished
 
@@ -1500,7 +1608,7 @@ func _launch_game_with_working_dir(command_path: String, command_args: PackedStr
 	
 	# Show appropriate status message
 	var game_name = command_path.get_file()
-	Status.post(tr("Starting game: %s") % game_name)
+	Status.post(tr("msg_starting_game") % game_name)
 	Status.post(tr("msg_setting_working_dir") % working_dir)
 	
 	# For Unix systems, we need to use a shell command to change directory and launch
@@ -1516,11 +1624,11 @@ func _launch_game_with_working_dir(command_path: String, command_args: PackedStr
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
-		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+		Status.post(tr("msg_game_launched_monitoring"))
 	
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
-		Status.post(tr("Closing launcher..."))
+		Status.post(tr("msg_closing_launcher"))
 		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 
@@ -1557,11 +1665,11 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
-		Status.post(tr("Game launched. Monitoring process for automatic backup when game closes..."))
+		Status.post(tr("msg_game_launched_monitoring"))
 	
 	# Close launcher immediately after starting game if setting is disabled
 	if _launcher_should_close_after_game:
-		Status.post(tr("Closing launcher..."))
+		Status.post(tr("msg_closing_launcher"))
 		await get_tree().create_timer(1.0).timeout  # Give user time to see the message
 		get_tree().quit()
 

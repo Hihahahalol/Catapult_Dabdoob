@@ -8,12 +8,15 @@ signal response_no
 
 
 func open(num_mods: int) -> void:
-	
+
+	# Set the window title with translation
+	title = tr("dlg_mod_reinstall_title")
+
 	if num_mods == 1:
 		_label.text = tr("dlg_mod_reinstall_text_single")
 	else:
 		_label.text = tr("dlg_mod_reinstall_text_multiple") % num_mods
-	
+
 	size = Vector2(400, 150)
 	popup_centered()
 
