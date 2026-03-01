@@ -81,6 +81,7 @@ window/size/test_height=1
 window/dpi/allow_hidpi=true
 window/per_pixel_transparency/allowed=true
 window/per_pixel_transparency/enabled=true
+window/energy_saving/keep_screen_on=false
 
 [gdnative]
 
