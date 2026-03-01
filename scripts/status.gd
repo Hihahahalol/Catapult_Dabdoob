@@ -90,6 +90,8 @@ func _form_message(msg: String, msg_type: int) -> Dictionary:
 			bb_text += " [color=#ff3333][%s][/color] %s" % [tr("tag_error"), msg]
 		Enums.MSG_DEBUG:
 			bb_text += " [color=#999999][%s] %s[/color]" % [tr("tag_debug"), msg]
+		Enums.MSG_SUCCESS:
+			bb_text += " [color=#33cc66]%s[/color]" % msg
 	
 	bb_text += "\n"
 	return {"type": msg_type, "text": text, "bb_text": bb_text}

@@ -138,8 +138,7 @@ func _scale_control_min_sizes(factor: float) -> void:
 
 
 func _save_icon_sizes() -> void:
-	
-	var resources = load("res://")
+	pass
 
 
 func assign_localized_text() -> void:

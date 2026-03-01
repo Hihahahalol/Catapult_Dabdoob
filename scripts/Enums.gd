@@ -6,4 +6,5 @@ enum {  # Status message types.
 	MSG_WARN = 1,
 	MSG_ERROR = 2,
 	MSG_DEBUG = 3,
+	MSG_SUCCESS = 4,
 }
