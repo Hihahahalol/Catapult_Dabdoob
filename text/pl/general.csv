@@ -3,6 +3,7 @@
 "window_title","Dabdoob — program uruchamiający dla Cataclysm: DDA oraz BN"
 "str_welcome","Witaj w Dabdoob!"
 "str_tip_of_the_day","\n\n[u]Wskazówka dnia:[/u]\n"
+"str_donor_of_the_day","\n\n[color=#f5c842][b]— Message from a donor —[/b][/color]\n"
 "msg_theme_load_error","Nie udało się wczytać motywu %s."
 "debug_test","To jest tekst debugowania, sprawdzający odnalezienie translacji."
 ,

@@ -86,35 +86,15 @@ func recover_window_state() -> void:
 
 
 func _on_SceneTree_idle():
-	
+
 	yield(get_tree(), "idle_frame")
-	
-	# Disable per-pixel transparency IMMEDIATELY to fix Linux input issues
-	# Must be done before any deferred calls and BEFORE window state recovery
-	OS.window_per_pixel_transparency_enabled = false
-	ProjectSettings.set_setting("display/window/per_pixel_transparency/allowed", false)
-	
-	# On Linux, we need to wait for the window system to process the transparency change
-	# before we can reliably receive input events
-	yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")  # Extra frame for Linux window managers
-	
-	# Keep window borderless to use custom title bar
-	# OS.set_deferred("window_borderless", false)
+
 	OS.call_deferred("set_icon", load("res://icons/appiconpng.png").get_data())
-	
-	# Recover window state after transparency is disabled
-	# Must yield since recover_window_state() is a coroutine
+
 	var window_state_result = recover_window_state()
 	if window_state_result is GDScriptFunctionState:
 		yield(window_state_result, "completed")
 	_apply_scale()
-	
-	# Ensure the window has focus after all setup is complete
-	# This is critical on Linux with borderless windows
-	yield(get_tree(), "idle_frame")
-	OS.window_minimized = false  # Ensure not minimized
-	# Note: There's no direct "focus window" in Godot, but ensuring it's not minimized helps
 
 
 func _ready():

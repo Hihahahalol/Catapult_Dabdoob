@@ -112,6 +112,7 @@ func _ready() -> void:
 	var welcome_msg = tr("str_welcome")
 	if Settings.read("print_tips_of_the_day"):
 		welcome_msg += tr("str_tip_of_the_day") + TOTD.get_tip() + "\n"
+	welcome_msg += tr("str_donor_of_the_day") + DOTD.get_message() + "\n"
 	Status.post(welcome_msg)
 	
 	_unpack_utils()
@@ -373,9 +374,24 @@ func _on_ReleaseInstaller_operation_started() -> void:
 
 
 func _on_ReleaseInstaller_operation_finished() -> void:
-	
+
 	_smart_reenable_controls("disable_during_release_operations")
 	_refresh_currently_installed()
+
+
+func _on_ReleaseInstaller_game_updated() -> void:
+
+	if not Settings.read("update_mods_with_game"):
+		return
+
+	var ids_to_update = _mods.get_updatable_mod_ids()
+	if ids_to_update.empty():
+		return
+
+	Status.post(tr("msg_updating_mods_with_game") % ids_to_update.size())
+	_mods.delete_mods(ids_to_update)
+	yield(_mods, "mod_deletion_finished")
+	_mods.install_mods(ids_to_update)
 
 
 func _on_mod_operation_started() -> void:
@@ -1096,8 +1112,8 @@ func _on_BtnUpdate_pressed() -> void:
 
 func _perform_update() -> void:
 	# Check if automatic updates are supported on this platform
-	if OS.get_name() != "Windows":
-		Status.post(tr("Automatic updates are only supported on Windows. Please update manually."))
+	if not (OS.get_name() in ["Windows", "X11"]):
+		Status.post(tr("Automatic updates are only supported on Windows and Linux. Please update manually."))
 		OS.shell_open(_release_page_url)
 		return
 	
@@ -1205,9 +1221,81 @@ func _on_update_download_completed(result, response_code, headers, body, temp_di
 	file.close()
 	
 	Status.post(tr("Download complete. Preparing update..."))
-	
-	# Create a PowerShell script to handle the update
-	_create_powershell_updater(downloaded_file)
+
+	# Create an updater script to handle the update
+	if OS.get_name() == "X11":
+		_create_bash_updater(downloaded_file)
+	else:
+		_create_powershell_updater(downloaded_file)
+
+func _create_bash_updater(downloaded_file: String) -> void:
+	var current_exe = OS.get_executable_path()
+	var log_path = OS.get_user_data_dir().plus_file("update_log.txt")
+	var proc_name = current_exe.get_file()
+
+	var sh_script = """#!/bin/bash
+# Dabdoob Update Script - Linux Updater
+LOG_FILE="%s"
+DOWNLOADED="%s"
+TARGET="%s"
+PROC_NAME="%s"
+
+log() {
+    echo "$(date) - $1" >> "$LOG_FILE"
+}
+
+> "$LOG_FILE"
+log "Starting update process"
+log "Downloaded file: $DOWNLOADED"
+log "Target executable: $TARGET"
+
+log "Waiting for application to close..."
+sleep 3
+
+if pgrep -x "$PROC_NAME" > /dev/null 2>&1; then
+    log "Process still running, waiting 5 more seconds..."
+    sleep 5
+    if pgrep -x "$PROC_NAME" > /dev/null 2>&1; then
+        log "Terminating process..."
+        pkill -x "$PROC_NAME" || true
+        sleep 2
+    fi
+fi
+
+if [ ! -f "$DOWNLOADED" ]; then
+    log "Error: Source file not found: $DOWNLOADED"
+    exit 1
+fi
+
+log "Copying executable..."
+if cp "$DOWNLOADED" "$TARGET"; then
+    chmod +x "$TARGET"
+    log "Update complete, starting application..."
+    "$TARGET" &
+    sleep 2
+    rm -f "$DOWNLOADED"
+    log "Update completed successfully"
+else
+    log "Error: Failed to copy file (check write permissions on target location)"
+    exit 1
+fi
+""" % [log_path, downloaded_file, current_exe, proc_name]
+
+	var sh_path = OS.get_user_data_dir().plus_file("update.sh")
+	var file = File.new()
+	file.open(sh_path, File.WRITE)
+	file.store_string(sh_script)
+	file.close()
+
+	OS.execute("chmod", ["+x", sh_path], true)
+
+	Status.post(tr("Update ready! Dabdoob will restart to complete the update."))
+	Status.post(tr("Update logs will be saved to: %s") % log_path)
+
+	OS.execute("bash", [sh_path], false)
+	yield(get_tree().create_timer(2.0), "timeout")
+	get_tree().quit()
+
 
 func _create_powershell_updater(downloaded_file):
 	var current_exe = OS.get_executable_path()

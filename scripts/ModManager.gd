@@ -915,6 +915,36 @@ func _install_mod(mod_id: String) -> void:
 	emit_signal("_done_installing_mod")
 
 
+func get_updatable_mod_ids() -> Array:
+	# Returns available-list keys for installed GitHub mods that have a newer release than installed.
+	var result := []
+	var download_dates = Settings.read("mod_download_dates")
+	if download_dates == null:
+		download_dates = {}
+
+	for mod_id in installed:
+		if installed[mod_id]["is_stock"]:
+			continue
+		# Find the matching key in available
+		var available_key := ""
+		for key in available:
+			if available[key]["modinfo"]["id"] == mod_id or key == mod_id:
+				available_key = key
+				break
+		if available_key == "":
+			continue
+		var mod_location = available[available_key]["location"]
+		if not mod_location.begins_with("https://github.com/"):
+			continue
+		if not mod_id in download_dates:
+			continue
+		var release_date = _get_mod_latest_release_date(available_key)
+		if release_date != "" and release_date > download_dates[mod_id]:
+			result.append(available_key)
+
+	return result
+
+
 func install_mods(mod_ids: Array) -> void:
 	
 	if len(mod_ids) == 0:

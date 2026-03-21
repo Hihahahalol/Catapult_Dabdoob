@@ -7,6 +7,7 @@
 "msg_obsolete_mod_collision","Il y a déjà un mod obsolète avec l'ID %s. [i]%s[/i] sera installé avec un ID et un nom modifiés pour éviter les collisions."
 "msg_mod_installed","Installé %s"
 "msg_installing_n_mods","Installation de %s mods..."
+"msg_updating_mods_with_game","Updating %s mod(s) alongside the game..."
 "msg_wiping_mod_repo","Vide le dépôt..."
 "msg_mod_download_failed","Échec du téléchargement du mod %s"
 "msg_mod_extraction_failed","Échec de l'extraction du mod %s"

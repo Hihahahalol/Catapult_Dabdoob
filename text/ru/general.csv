@@ -3,6 +3,7 @@
 "window_title","Dabdoob — лончер для Cataclysm: DDA и BN"
 "str_welcome","Добро пожаловать в Dabdoob!"
 "str_tip_of_the_day","\n\n[u]Совет дня:[/u]\n"
+"str_donor_of_the_day","\n\n[color=#f5c842][b]— Message from a donor —[/b][/color]\n"
 "msg_theme_load_error","Не удалось загрузить тему %s."
 "debug_test","Это отладочный текст для проверки извлечения переводов."
 ,
