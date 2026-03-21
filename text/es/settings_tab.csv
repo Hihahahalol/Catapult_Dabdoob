@@ -15,6 +15,7 @@
 "cbtn_shorten_release_names","Acortar los nombres de los lanzamientos experimentales."
 "cbtn_always_show_installs","Mostrar siempre la lista de instalaciones"
 "cbtn_show_obsolete_mods","Listar los mods obsoletos en la lista de instalados"
+"cbtn_update_mods_with_game","Update mods when updating the game"
 "cbtn_debug_mode","Modo debug"
 "lbl_num_releases_to_request","Número de lanzamientos a solicitar:"
 "lbl_num_prs_to_request","Número de resultados para descargar para la lista de cambios:"
@@ -27,6 +28,7 @@
 "tooltip_updating_to_same_build","Permitir iniciar el procedimiento de actualización incluso cuando el lanzamiento\nseleccionado sea el mismo que el instalado actualmente."
 "tooltip_shorten_release_names","Acortar los nombres de lanzamiento a la fecha y el número\n(ej. ""2021-09-08-1927" "en vez de\n""Cataclysm-DDA experimental build 2021-09-08-1927"")."
 "tooltip_always_show_installs","Mostrar la lista de instalaciones incluso cuando solo\nse haya instalado una copia del juego, o ninguna".
+"tooltip_update_mods_with_game","When updating the game, automatically reinstall any\ninstalled mods that have a newer version available."
 "tooltip_show_obsolete_mods","Mostrar mods que vienen con el juego, pero están marcados como ""obsoletos"".\nNormalmente, esos mods no se consideran instalados."
 "tooltip_debug_mode","Muestra la pestaña ""Debug"" con algunas funciones de prueba\ny habilita los mensajes debug en el panel de estado\n(Esto es útil para solucionar problemas)."
 "tooltip_num_releases_to_request","Cuantos de los últimos lanzamientos serán solicitados\ndesde GitHub luego de iniciar el launcher,\nal elegir el juego o hacer clic en Refrescar."

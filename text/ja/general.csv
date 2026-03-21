@@ -3,6 +3,7 @@
 "window_title","Dabdoob — Cataclysmのランチャー"
 "str_welcome","Dabdoobへようこそ！"
 "str_tip_of_the_day","\n\n[u]今日のヒント：[/u]\n"
+"str_donor_of_the_day","\n\n[color=#f5c842][b]— Message from a donor —[/b][/color]\n"
 "msg_theme_load_error","テーマ %s を読み込めませんでした。"
 "debug_test","これは翻訳取得をテストするためのデバッグテキストです。"
 ,

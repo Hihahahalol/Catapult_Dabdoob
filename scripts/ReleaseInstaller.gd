@@ -3,6 +3,7 @@ extends Node
 
 signal operation_started
 signal operation_finished
+signal game_updated
 
 
 func install_release(release_info: Dictionary, game: String, update_in: String = "") -> void:
@@ -11,7 +12,10 @@ func install_release(release_info: Dictionary, game: String, update_in: String =
 
 	# Check if release has a valid download URL
 	if not release_info.get("url", ""):
-		Status.post(tr("msg_install_no_download_url") % release_info["name"], Enums.MSG_ERROR)
+		if not release_info.get("has_any_assets", true):
+			Status.post(tr("msg_install_build_in_progress") % release_info["name"], Enums.MSG_ERROR)
+		else:
+			Status.post(tr("msg_install_no_download_url") % release_info["name"], Enums.MSG_ERROR)
 		emit_signal("operation_finished")
 		return
 
@@ -69,6 +73,7 @@ func install_release(release_info: Dictionary, game: String, update_in: String =
 			if update_in:
 				Settings.store("active_install_" + Settings.read("game"), release_info["name"])
 				Status.post(tr("msg_game_updated"))
+				emit_signal("game_updated")
 			else:
 				Status.post(tr("msg_game_installed"))
 		else:

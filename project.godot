@@ -70,6 +70,7 @@ Helpers="*res://scripts/helpers.gd"
 FS="*res://scripts/filesystem_helper.gd"
 Downloader="*res://scripts/download_manager.gd"
 TOTD="*res://scripts/totd.gd"
+DOTD="*res://scripts/dotd.gd"
 
 [display]
 
@@ -79,8 +80,6 @@ window/size/borderless=true
 window/size/test_width=1
 window/size/test_height=1
 window/dpi/allow_hidpi=true
-window/per_pixel_transparency/allowed=true
-window/per_pixel_transparency/enabled=true
 window/energy_saving/keep_screen_on=false
 
 [gdnative]

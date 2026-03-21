@@ -12,3 +12,6 @@ git_api.gdns
 
 # vscode
 .vscode
+
+# Claude Code
+.claude

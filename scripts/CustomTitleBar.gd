@@ -25,7 +25,7 @@ func _ready() -> void:
 		icon.texture = app_icon
 	
 	# Set title from window
-	title_label.text = OS.get_window_title()
+	title_label.text = ProjectSettings.get_setting("application/config/name")
 	
 	# Apply dark theme styling
 	_apply_dark_theme()

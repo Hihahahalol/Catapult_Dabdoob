@@ -3,6 +3,7 @@
 "window_title","Dabdoob — spouštěč pro Cataclysm: DDA a BN"
 "str_welcome","Vítejte v Dabdoobu!"
 "str_tip_of_the_day","\n\n[u]Tip dne:[/u]\n"
+"str_donor_of_the_day","\n\n[color=#f5c842][b]— Message from a donor —[/b][/color]\n"
 "msg_theme_load_error","Nelze načíst téma %s."
 "debug_test","Toto je debugovací text pro testování získávání překladů."
 ,

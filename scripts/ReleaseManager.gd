@@ -542,6 +542,7 @@ func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> 
 		build["url"] = ""
 		build["filename"] = ""
 		build["published_at"] = rec.get("published_at", "")
+		build["has_any_assets"] = len(rec["assets"]) > 0
 
 		for asset in rec["assets"]:
 			if filter["substring"] in asset[filter["field"]]:

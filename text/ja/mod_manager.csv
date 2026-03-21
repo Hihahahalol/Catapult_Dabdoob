@@ -7,6 +7,7 @@
 "msg_obsolete_mod_collision","既にID %s の廃止されたMODが存在します。[%s] は衝突を避けるために変更されたIDと名前でインストールされます。"
 "msg_mod_installed","%s をインストールしました"
 "msg_installing_n_mods","%s 個のMODをインストール中..."
+"msg_updating_mods_with_game","Updating %s mod(s) alongside the game..."
 "msg_mod_download_failed","MOD %s のダウンロードに失敗しました"
 "msg_mod_extraction_failed","MOD %s の抽出に失敗しました"
 "msg_mod_extraction_error","MOD %s の抽出エラー：%s" 
