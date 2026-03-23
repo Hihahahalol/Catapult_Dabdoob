@@ -21,6 +21,7 @@ const _RELEASE_URLS = {
 }
 
 const _CATACLYSM_DB_BASE_URL = "https://github.com/SrGnis/cataclysm-db/releases/download/latest/"
+const _STABLE_CACHE_MAX_AGE_SECS = 7 * 24 * 60 * 60  # 7 days, matching cataclysm-db update frequency
 
 const _ASSET_FILTERS = {
 	"dda-experimental-linux": {
@@ -213,6 +214,34 @@ func _on_request_completed_tlg(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 
+func _get_stable_cache_path(game: String) -> String:
+	return OS.get_executable_path().get_base_dir().plus_file(
+		"stable_cache_%s_%s.json" % [game, _platform]
+	)
+
+
+func _load_stable_cache(game: String) -> Array:
+	var path = _get_stable_cache_path(game)
+	if not File.new().file_exists(path):
+		return []
+	var data = Helpers.load_json_file(path)
+	if data == null or typeof(data) != TYPE_DICTIONARY:
+		return []
+	if OS.get_unix_time() - data.get("timestamp", 0) > _STABLE_CACHE_MAX_AGE_SECS:
+		return []
+	var cached = data.get("releases", [])
+	if not cached is Array or cached.empty():
+		return []
+	return cached
+
+
+func _save_stable_cache(game: String, releases_data: Array) -> void:
+	Helpers.save_to_json_file(
+		{"timestamp": OS.get_unix_time(), "releases": releases_data},
+		_get_stable_cache_path(game)
+	)
+
+
 func _request_stable_releases(http: HTTPRequest, url: String) -> void:
 	emit_signal("started_fetching_releases")
 	_update_proxy(http)
@@ -287,6 +316,8 @@ func _on_request_completed_dda_stable(result: int, response_code: int,
 		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
 	else:
 		_parse_stable_builds_from_db(body, releases["dda-stable"])
+		if not releases["dda-stable"].empty():
+			_save_stable_cache("dda", releases["dda-stable"])
 
 	emit_signal("done_fetching_releases")
 
@@ -301,6 +332,8 @@ func _on_request_completed_bn_stable(result: int, response_code: int,
 		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
 	else:
 		_parse_stable_builds_from_db(body, releases["bn-stable"])
+		if not releases["bn-stable"].empty():
+			_save_stable_cache("bn", releases["bn-stable"])
 
 	emit_signal("done_fetching_releases")
 
@@ -344,14 +377,30 @@ func fetch(release_key: String) -> void:
 	
 	match release_key:
 		"dda-stable":
-			Status.post(tr("msg_fetching_releases_dda"))
-			_request_stable_releases($HTTPRequest_DDA_Stable, _CATACLYSM_DB_BASE_URL + "dda_releases.json")
+			var cached_dda = _load_stable_cache("dda")
+			if not cached_dda.empty():
+				releases["dda-stable"] = cached_dda
+				Status.post(tr("msg_got_n_releases") % len(cached_dda))
+				emit_signal("done_fetching_releases")
+			else:
+				Status.post(tr("msg_fetching_releases") % "DDA Stable")
+				Status.post(tr("msg_please_wait_stable"))
+				yield(get_tree().create_timer(1.0), "timeout")
+				_request_stable_releases($HTTPRequest_DDA_Stable, _CATACLYSM_DB_BASE_URL + "dda_releases.json")
 		"dda-experimental":
 			Status.post(tr("msg_fetching_releases_dda"))
 			_request_releases($HTTPRequest_DDA, "dda-experimental")
 		"bn-stable":
-			Status.post(tr("msg_fetching_releases_bn"))
-			_request_stable_releases($HTTPRequest_BN_Stable, _CATACLYSM_DB_BASE_URL + "bn_releases.json")
+			var cached_bn = _load_stable_cache("bn")
+			if not cached_bn.empty():
+				releases["bn-stable"] = cached_bn
+				Status.post(tr("msg_got_n_releases") % len(cached_bn))
+				emit_signal("done_fetching_releases")
+			else:
+				Status.post(tr("msg_fetching_releases") % "BN Stable")
+				Status.post(tr("msg_please_wait_stable"))
+				yield(get_tree().create_timer(1.0), "timeout")
+				_request_stable_releases($HTTPRequest_BN_Stable, _CATACLYSM_DB_BASE_URL + "bn_releases.json")
 		"bn-experimental":
 			Status.post(tr("msg_fetching_releases_bn"))
 			_request_releases($HTTPRequest_BN, "bn-experimental")

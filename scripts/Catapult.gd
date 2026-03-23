@@ -842,7 +842,7 @@ func _start_game(world := "") -> void:
 	Status.post(tr("Starting game: %s") % game_name)
 	
 	# Launch game with process monitoring
-	_game_process.execute(command_path, command_args, false)
+	_game_process.execute(command_path, command_args, true)
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
@@ -858,7 +858,17 @@ func _start_game(world := "") -> void:
 func _on_game_process_exited() -> void:
 	# Game has closed, handle post-game actions
 	Status.post(tr("Game process has exited (exit code: %s)") % _game_process.exit_code)
-	
+
+	# Log any captured output from the game process
+	if _game_process.output.size() > 0:
+		var raw_output = str(_game_process.output[0])
+		if raw_output.strip_edges() != "":
+			var msg_type = Enums.MSG_WARN if _game_process.exit_code != 0 else Enums.MSG_DEBUG
+			for line in raw_output.split("\n"):
+				var trimmed = line.strip_edges()
+				if trimmed != "":
+					Status.post(trimmed, msg_type)
+
 	# Create automatic backup if enabled
 	if Settings.read("backup_after_closing"):
 		var datetime = OS.get_datetime()
@@ -1600,7 +1610,7 @@ func _launch_game_with_working_dir(command_path: String, command_args: PoolStrin
 	var final_command_args = ["-c", shell_command]
 	
 	# Launch game with process monitoring using the existing system
-	_game_process.execute(final_command_path, final_command_args, false)
+	_game_process.execute(final_command_path, final_command_args, true)
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):
@@ -1641,7 +1651,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 		open_args.append(world)
 	
 	# Launch using 'open' command with process monitoring
-	_game_process.execute("open", open_args, false)
+	_game_process.execute("open", open_args, true)
 	
 	# Inform user about monitoring
 	if Settings.read("backup_after_closing"):

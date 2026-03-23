@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Sprowadzanie kompilacji dla TLG Experimental..."
 "msg_fetching_releases","Sprowadzanie kompilacji dla \""%s\""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() przeszło %s"
+"msg_please_wait","Proszę czekać..."
+"msg_please_wait_stable","Proszę czekać, pobieranie stabilnych kompilacji..."

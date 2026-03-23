@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Fetching releases for TLG Experimental..."
 "msg_fetching_releases","Fetching releases for \""%s""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() was passed %s"
+"msg_please_wait","Please wait..."
+"msg_please_wait_stable","Please wait, fetching stable releases..."
