@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Récupération des versions pour TLG Expérimental..."
 "msg_fetching_releases","Récupération des versions pour \""%s""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() a reçu %s"
+"msg_please_wait","Veuillez patienter..."
+"msg_please_wait_stable","Veuillez patienter, récupération des versions stables..."

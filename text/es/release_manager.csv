@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Obteniendo lanzamientos para TLG Experimental..."
 "msg_fetching_releases","Obteniendo lanzamientos para \""%s""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() recibió %s"
+"msg_please_wait","Por favor espere..."
+"msg_please_wait_stable","Por favor espere, obteniendo versiones estables..."

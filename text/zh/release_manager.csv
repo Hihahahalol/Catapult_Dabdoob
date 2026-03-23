@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","正在为TLG测试版获取发布..."
 "msg_fetching_releases","正在为\""%s\""获取发布..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch()已传至%s"
+"msg_please_wait","请稍候..."
+"msg_please_wait_stable","请稍候，正在获取稳定版本..."

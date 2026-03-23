@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Buscando versões para o TLG Experimental..."
 "msg_fetching_releases","Buscando versões para \""%s\""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() passou %s"
+"msg_please_wait","Por favor aguarde..."
+"msg_please_wait_stable","Por favor aguarde, obtendo versões estáveis..."

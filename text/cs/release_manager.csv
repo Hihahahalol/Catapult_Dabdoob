@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Získávám vydání pro TLG Experimental..."
 "msg_fetching_releases","Získávám vydání pro \""%s""..."
 "msg_invalid_fetch_func_param","ReleaseManager.fetch() byl předán %s"
+"msg_please_wait","Prosím čekejte..."
+"msg_please_wait_stable","Prosím čekejte, načítám stabilní vydání..."

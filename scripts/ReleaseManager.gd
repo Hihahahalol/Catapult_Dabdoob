@@ -20,6 +20,9 @@ const _RELEASE_URLS = {
 		"https://api.github.com/repos/Cataclysm-TLG/Cataclysm-TLG/releases",
 }
 
+const _CATACLYSM_DB_BASE_URL = "https://github.com/SrGnis/cataclysm-db/releases/download/latest/"
+const _STABLE_CACHE_MAX_AGE_SECS = 7 * 24 * 60 * 60  # 7 days, matching cataclysm-db update frequency
+
 const _ASSET_FILTERS = {
 	"dda-experimental-linux": {
 		"field": "name",
@@ -83,318 +86,6 @@ const _ASSET_FILTERS = {
 	},
 }
 
-const _DDA_STABLE_LINUX = [
-	{
-		"name": "0.H Herbert",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.H-RELEASE/cdda-linux-with-graphics-x64-2024-11-23-1857.tar.gz",
-		"filename": "cdda-linux-with-graphics-x64-2024-11-23-1857.tar.gz"
-	},	
-	{
-		"name": "0.G Gaiman",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.G/cdda-linux-tiles-x64-2023-03-01-0054.tar.gz",
-		"filename": "cdda-linux-tiles-x64-2023-03-01-0054.tar.gz"
-	},	
-	{
-		"name": "0.F-2 Frank-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-2/cataclysmdda-0.F-Linux_x64-Tiles-0.F-2.tar.gz",
-		"filename": "cataclysmdda-0.F-Linux_x64-Tiles-0.F-2.tar.gz"
-	},
-	{
-		"name": "0.F-1 Frank-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-1/cataclysmdda-0.F-Linux_x64-Tiles-0.F-1.tar.gz",
-		"filename": "cataclysmdda-0.F-Linux_x64-Tiles-0.F-1.tar.gz"
-	},
-	{
-		"name": "0.F Frank",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F/cdda-linux-tiles-x64-2021-07-03-0512.tar.gz",
-		"filename": "cdda-linux-tiles-x64-2021-07-03-0512.tar.gz"
-	},
-	{
-		"name": "0.E-3 Ellison-3",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-3/cataclysmdda-0.E-Linux_x64-Tiles-0.E-3.tar.gz",
-		"filename": "cataclysmdda-0.E-Linux_x64-Tiles-0.E-3.tar.gz"
-	},
-	{
-		"name": "0.E-2 Ellison-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-2/cataclysmdda-0.E-Linux_x64-Tiles-0.E-2.tar.gz",
-		"filename": "cataclysmdda-0.E-Linux_x64-Tiles-0.E-2.tar.gz"
-	},
-	{
-		"name": "0.E-1 Ellison-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-1/cataclysmdda-0.E-Linux_x64-Tiles-0.E-1.tar.gz",
-		"filename": "cataclysmdda-0.E-Linux_x64-Tiles-0.E-1.tar.gz"
-	},
-	{
-		"name": "0.E Ellison",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E/cataclysmdda-0.E-Linux_x64-Tiles-10478.tar.gz",
-		"filename": "cataclysmdda-0.E-Linux_x64-Tiles-10478.tar.gz"
-	},
-	{
-		"name": "0.D Danny",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.D/cataclysmdda-0.D-8574-Linux-Tiles.tar.gz",
-		"filename": "cataclysmdda-0.D-8574-Linux-Tiles.tar.gz"
-	},
-]
-
-const _DDA_STABLE_WIN = [
-	{
-		"name": "0.H Herbert",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.H-RELEASE/cdda-windows-with-graphics-x64-2024-11-23-1857.zip",
-		"filename": "cdda-windows-with-graphics-x64-2024-11-23-1857.zip"
-	},	
-	{
-		"name": "0.G Gaiman",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.G/cdda-windows-tiles-x64-2023-03-01-0054.zip",
-		"filename": "cdda-windows-tiles-x64-2023-03-01-0054.zip"
-	},	
-	{
-		"name": "0.F-3 Frank-3",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-3/cataclysmdda-0.F-Windows_x64-Tiles-0.F-3.zip",
-		"filename": "cataclysmdda-0.F-Windows_x64-Tiles-0.F-3.zip"
-	},	
-	{
-		"name": "0.F-2 Frank-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-2/cataclysmdda-0.F-Windows_x64-Tiles-0.F-2.zip",
-		"filename": "cataclysmdda-0.F-Windows_x64-Tiles-0.F-2.zip"
-	},
-	{
-		"name": "0.F-1 Frank-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-1/cataclysmdda-0.F-Windows_x64-Tiles-0.F-1.zip",
-		"filename": "cataclysmdda-0.F-Windows_x64-Tiles-0.F-1.zip"
-	},
-	{
-		"name": "0.F Frank",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F/cdda-windows-tiles-x64-2021-07-03-0512.zip",
-		"filename": "cdda-windows-tiles-x64-2021-07-03-0512.zip"
-	},
-	{
-		"name": "0.E-3 Ellison-3",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-3/cataclysmdda-0.E-Windows_x64-Tiles-0.E-3.zip",
-		"filename": "cataclysmdda-0.E-Windows_x64-Tiles-0.E-3.zip"
-	},
-	{
-		"name": "0.E-2 Ellison-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-2/cataclysmdda-0.E-Windows_x64-Tiles-0.E-2.zip",
-		"filename": "cataclysmdda-0.E-Windows_x64-Tiles-0.E-2.zip"
-	},
-	{
-		"name": "0.E-1 Ellison-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-1/cataclysmdda-0.E-Windows_x64-Tiles-0.E-1.zip",
-		"filename": "cataclysmdda-0.E-Windows_x64-Tiles-0.E-1.zip"
-	},
-	{
-		"name": "0.E Ellison",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E/cataclysmdda-0.E-Windows_x64-Tiles-10478.zip",
-		"filename": "cataclysmdda-0.E-Windows_x64-Tiles-10478.zip"
-	},
-	{
-		"name": "0.D Danny",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.D/cataclysmdda-0.D-8574-Win64-Tiles.zip",
-		"filename": "cataclysmdda-0.D-8574-Win64-Tiles.zip"
-	},
-]
-
-const _BN_STABLE_LINUX = [
-	{
-		"name": "0.7.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.7.0/cbn-linux-tiles-x64-v0.7.0.tar.gz",
-		"filename": "cbn-linux-tiles-x64-v0.7.0.tar.gz"
-	},
-	{
-		"name": "0.6.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.6.0/cbn-linux-tiles-x64-v0.6.0.tar.gz",
-		"filename": "cbn-linux-tiles-x64-v0.6.0.tar.gz"
-	},
-	{
-		"name": "0.5.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5.2/cbn-linux-tiles-x64-0.5.2.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.5.2.tar.gz"
-	},
-	{
-		"name": "0.5.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5.1/cbn-linux-tiles-x64-0.5.1.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.5.1.tar.gz"
-	},
-	{
-		"name": "0.5",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5/cbn-linux-tiles-x64-0.5.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.5.tar.gz"
-	},
-	{
-		"name": "0.4",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.4/cbn-linux-tiles-x64-0.4.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.4.tar.gz"
-	},
-	{
-		"name": "0.3",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.3/cbn-linux-tiles-x64-0.3.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.3.tar.gz"
-	},
-	{
-		"name": "0.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.2/cbn-linux-tiles-x64-0.2.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.2.tar.gz"
-	},
-	{
-		"name": "0.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.1/cbn-linux-tiles-x64-0.1.tar.gz",
-		"filename": "cbn-linux-tiles-x64-0.1.tar.gz"
-	},
-]
-
-const _BN_STABLE_WIN = [
-	{
-		"name": "0.7.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.7.0/cbn-windows-tiles-x64-v0.7.0.zip",
-		"filename": "cbn-windows-tiles-x64-v0.7.0.zip"
-	},
-	{
-		"name": "0.6.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.6.0/cbn-windows-tiles-x64-v0.6.0.zip",
-		"filename": "cbn-windows-tiles-x64-v0.6.0.zip"
-	},
-	{
-		"name": "0.5.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.5.2/cbn-windows-tiles-x64-msvc-v0.5.2.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.5.2.zip"
-	},
-	{
-		"name": "0.5.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5.1/cbn-windows-tiles-x64-msvc-0.5.1.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.5.1.zip"
-	},
-	{
-		"name": "0.5",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5/cbn-windows-tiles-x64-msvc-0.5.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.5.zip"
-	},
-	{
-		"name": "0.4",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.4/cbn-windows-tiles-x64-msvc-0.4.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.4.zip"
-	},
-	{
-		"name": "0.3",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.3/cbn-windows-tiles-x64-msvc-0.3.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.3.zip"
-	},
-	{
-		"name": "0.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.2/cbn-windows-tiles-x64-msvc-0.2.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.2.zip"
-	},
-	{
-		"name": "0.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.1/cbn-windows-tiles-x64-msvc-0.1.zip",
-		"filename": "cbn-windows-tiles-x64-msvc-0.1.zip"
-	}
-]
-
-const _DDA_STABLE_MAC = [
-	{
-		"name": "0.H Herbert",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.H-RELEASE/cdda-osx-with-graphics-universal-2024-11-23-1857.dmg",
-		"filename": "cdda-osx-with-graphics-universal-2024-11-23-1857.dmg"
-	},
-	{
-		"name": "0.G Gaiman",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.G/cdda-osx-with-graphics-universal-2023-03-01-0054.dmg",
-		"filename": "cdda-osx-with-graphics-universal-2023-03-01-0054.dmg"
-	},
-	{
-		"name": "0.F-3 Frank-3",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-3/cataclysmdda-0.F-OSX-Tiles-0.F-3.dmg",
-		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-3.dmg"
-	},
-	{
-		"name": "0.F-2 Frank-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-2/cataclysmdda-0.F-OSX-Tiles-0.F-2.dmg",
-		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-2.dmg"
-	},
-	{
-		"name": "0.F-1 Frank-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F-1/cataclysmdda-0.F-OSX-Tiles-0.F-1.dmg",
-		"filename": "cataclysmdda-0.F-OSX-Tiles-0.F-1.dmg"
-	},
-	{
-		"name": "0.F Frank",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.F/cdda-osx-with-graphics-universal-2021-07-03-0512.dmg",
-		"filename": "cdda-osx-with-graphics-universal-2021-07-03-0512.dmg"
-	},
-	{
-		"name": "0.E-3 Ellison-3",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-3/cataclysmdda-0.E-OSX-Tiles-0.E-3.dmg",
-		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-3.dmg"
-	},
-	{
-		"name": "0.E-2 Ellison-2",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-2/cataclysmdda-0.E-OSX-Tiles-0.E-2.dmg",
-		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-2.dmg"
-	},
-	{
-		"name": "0.E-1 Ellison-1",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E-1/cataclysmdda-0.E-OSX-Tiles-0.E-1.dmg",
-		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E-1.dmg"
-	},
-	{
-		"name": "0.E Ellison",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.E/cataclysmdda-0.E-OSX-Tiles-0.E.dmg",
-		"filename": "cataclysmdda-0.E-OSX-Tiles-0.E.dmg"
-	},
-	{
-		"name": "0.D Danny",
-		"url": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.D/cataclysmdda-0.D-8574-OSX-Tiles.dmg",
-		"filename": "cataclysmdda-0.D-8574-OSX-Tiles.dmg"
-	},
-]
-
-const _BN_STABLE_MAC = [
-	{
-		"name": "0.7.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.7.0/cbn-osx-tiles-v0.7.0.dmg",
-		"filename": "cbn-osx-tiles-v0.7.0.dmg"
-	},
-	{
-		"name": "0.6.0",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.6.0/cbn-osx-tiles-v0.6.0.dmg",
-		"filename": "cbn-osx-tiles-v0.6.0.dmg"
-	},
-	{
-		"name": "0.5.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/v0.5.2/cbn-osx-tiles-v0.5.2.dmg",
-		"filename": "cbn-osx-tiles-v0.5.2.dmg"
-	},
-	{
-		"name": "0.5.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5.1/cbn-osx-tiles-0.5.1.dmg",
-		"filename": "cbn-osx-tiles-0.5.1.dmg"
-	},
-	{
-		"name": "0.5",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.5/cbn-osx-tiles-0.5.dmg",
-		"filename": "cbn-osx-tiles-0.5.dmg"
-	},
-	{
-		"name": "0.4",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.4/cbn-osx-tiles-0.4.dmg",
-		"filename": "cbn-osx-tiles-0.4.dmg"
-	},
-	{
-		"name": "0.3",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.3/cbn-osx-tiles-0.3.dmg",
-		"filename": "cbn-osx-tiles-0.3.dmg"
-	},
-	{
-		"name": "0.2",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.2/cbn-osx-tiles-0.2.dmg",
-		"filename": "cbn-osx-tiles-0.2.dmg"
-	},
-	{
-		"name": "0.1",
-		"url": "https://github.com/cataclysmbnteam/Cataclysm-BN/releases/download/cbn-0.1/cbn-osx-tiles-0.1.dmg",
-		"filename": "cbn-osx-tiles-0.1.dmg"
-	}
-]
 
 var releases = {
 	"dda-stable": [],
@@ -523,6 +214,130 @@ func _on_request_completed_tlg(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 
+func _get_stable_cache_path(game: String) -> String:
+	return OS.get_executable_path().get_base_dir().plus_file(
+		"stable_cache_%s_%s.json" % [game, _platform]
+	)
+
+
+func _load_stable_cache(game: String) -> Array:
+	var path = _get_stable_cache_path(game)
+	if not File.new().file_exists(path):
+		return []
+	var data = Helpers.load_json_file(path)
+	if data == null or typeof(data) != TYPE_DICTIONARY:
+		return []
+	if OS.get_unix_time() - data.get("timestamp", 0) > _STABLE_CACHE_MAX_AGE_SECS:
+		return []
+	var cached = data.get("releases", [])
+	if not cached is Array or cached.empty():
+		return []
+	return cached
+
+
+func _save_stable_cache(game: String, releases_data: Array) -> void:
+	Helpers.save_to_json_file(
+		{"timestamp": OS.get_unix_time(), "releases": releases_data},
+		_get_stable_cache_path(game)
+	)
+
+
+func _request_stable_releases(http: HTTPRequest, url: String) -> void:
+	emit_signal("started_fetching_releases")
+	_update_proxy(http)
+	http.request(url)
+
+
+func _get_db_platform() -> String:
+	match _platform:
+		"win": return "windows"
+		"linux": return "linux"
+		"mac": return "macos"
+	return "unknown"
+
+
+func _parse_stable_builds_from_db(data: PoolByteArray, write_to: Array) -> void:
+	var json = JSON.parse(data.get_string_from_utf8()).result
+
+	if typeof(json) != TYPE_ARRAY:
+		if typeof(json) == TYPE_DICTIONARY and "message" in json:
+			Status.post(tr("msg_releases_api_failure") % json["message"])
+		return
+
+	var db_platform = _get_db_platform()
+	var db_arch = "universal" if _platform == "mac" else "x64"
+	var tmp_arr = []
+
+	for rec in json:
+		if rec.get("channel", "") != "stable":
+			continue
+
+		var build = {}
+		build["name"] = rec.get("name", rec.get("tag_name", ""))
+		if Settings.read("shorten_release_names"):
+			build["name"] = build["name"].split(" ")[-1]
+		build["url"] = ""
+		build["filename"] = ""
+		build["published_at"] = rec.get("published_at", "")
+		build["has_any_assets"] = len(rec.get("assets", [])) > 0
+
+		var best_asset = null
+		for asset in rec.get("assets", []):
+			if asset.get("platform", "") != db_platform:
+				continue
+			if asset.get("graphics", "") != "tiles":
+				continue
+			if asset.get("arch", "") != db_arch:
+				continue
+			if best_asset == null:
+				best_asset = asset
+			elif asset.get("sounds", "") == "sounds" and best_asset.get("sounds", "") != "sounds":
+				best_asset = asset
+
+		if best_asset != null:
+			build["url"] = best_asset.get("download_url", "")
+			build["filename"] = best_asset.get("name", "")
+
+		tmp_arr.append(build)
+
+	if len(tmp_arr) > 0:
+		write_to.clear()
+		write_to.append_array(tmp_arr)
+		Status.post(tr("msg_got_n_releases") % len(tmp_arr))
+
+
+func _on_request_completed_dda_stable(result: int, response_code: int,
+		headers: PoolStringArray, body: PoolByteArray) -> void:
+
+	Status.post(tr("msg_http_request_info") %
+			[result, response_code, headers], Enums.MSG_DEBUG)
+
+	if result:
+		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
+	else:
+		_parse_stable_builds_from_db(body, releases["dda-stable"])
+		if not releases["dda-stable"].empty():
+			_save_stable_cache("dda", releases["dda-stable"])
+
+	emit_signal("done_fetching_releases")
+
+
+func _on_request_completed_bn_stable(result: int, response_code: int,
+		headers: PoolStringArray, body: PoolByteArray) -> void:
+
+	Status.post(tr("msg_http_request_info") %
+			[result, response_code, headers], Enums.MSG_DEBUG)
+
+	if result:
+		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
+	else:
+		_parse_stable_builds_from_db(body, releases["bn-stable"])
+		if not releases["bn-stable"].empty():
+			_save_stable_cache("bn", releases["bn-stable"])
+
+	emit_signal("done_fetching_releases")
+
+
 func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> void:
 
 	var json = JSON.parse(data.get_string_from_utf8()).result
@@ -562,26 +377,30 @@ func fetch(release_key: String) -> void:
 	
 	match release_key:
 		"dda-stable":
-			match _platform:
-				"linux":
-					releases["dda-stable"] = _DDA_STABLE_LINUX
-				"win":
-					releases["dda-stable"] = _DDA_STABLE_WIN
-				"mac":
-					releases["dda-stable"] = _DDA_STABLE_MAC
-			emit_signal("done_fetching_releases")
+			var cached_dda = _load_stable_cache("dda")
+			if not cached_dda.empty():
+				releases["dda-stable"] = cached_dda
+				Status.post(tr("msg_got_n_releases") % len(cached_dda))
+				emit_signal("done_fetching_releases")
+			else:
+				Status.post(tr("msg_fetching_releases") % "DDA Stable")
+				Status.post(tr("msg_please_wait_stable"))
+				yield(get_tree().create_timer(1.0), "timeout")
+				_request_stable_releases($HTTPRequest_DDA_Stable, _CATACLYSM_DB_BASE_URL + "dda_releases.json")
 		"dda-experimental":
 			Status.post(tr("msg_fetching_releases_dda"))
 			_request_releases($HTTPRequest_DDA, "dda-experimental")
 		"bn-stable":
-			match _platform:
-				"linux":
-					releases["bn-stable"] = _BN_STABLE_LINUX
-				"win":
-					releases["bn-stable"] = _BN_STABLE_WIN
-				"mac":
-					releases["bn-stable"] = _BN_STABLE_MAC
-			emit_signal("done_fetching_releases")
+			var cached_bn = _load_stable_cache("bn")
+			if not cached_bn.empty():
+				releases["bn-stable"] = cached_bn
+				Status.post(tr("msg_got_n_releases") % len(cached_bn))
+				emit_signal("done_fetching_releases")
+			else:
+				Status.post(tr("msg_fetching_releases") % "BN Stable")
+				Status.post(tr("msg_please_wait_stable"))
+				yield(get_tree().create_timer(1.0), "timeout")
+				_request_stable_releases($HTTPRequest_BN_Stable, _CATACLYSM_DB_BASE_URL + "bn_releases.json")
 		"bn-experimental":
 			Status.post(tr("msg_fetching_releases_bn"))
 			_request_releases($HTTPRequest_BN, "bn-experimental")

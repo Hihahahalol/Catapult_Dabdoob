@@ -11,3 +11,5 @@
 "msg_fetching_releases_tlg","Получение списка экспериментальных релизов TLG..."
 "msg_fetching_releases","Получение списка релизов для \""%s\""..."
 "msg_invalid_fetch_func_param","В ReleaseManager.fetch() был передан аргумент %s"
+"msg_please_wait","Пожалуйста, подождите..."
+"msg_please_wait_stable","Пожалуйста, подождите, загружаю стабильные релизы..."

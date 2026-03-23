@@ -10,4 +10,6 @@
 "msg_fetching_releases_tish","TISH Experimental のリリースを取得中..."
 "msg_fetching_releases_tlg","TLG Experimental のリリースを取得中..."
 "msg_fetching_releases","\""%s\"" のリリースを取得中..."
-"msg_invalid_fetch_func_param","ReleaseManager.fetch() に %s が渡されました" 
+"msg_invalid_fetch_func_param","ReleaseManager.fetch() に %s が渡されました"
+"msg_please_wait","しばらくお待ちください..."
+"msg_please_wait_stable","しばらくお待ちください、安定版リリースを取得中..."
