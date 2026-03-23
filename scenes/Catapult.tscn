@@ -1706,6 +1706,10 @@ __meta__ = {
 
 [node name="HTTPRequest_TLG" type="HTTPRequest" parent="Releases"]
 
+[node name="HTTPRequest_DDA_Stable" type="HTTPRequest" parent="Releases"]
+
+[node name="HTTPRequest_BN_Stable" type="HTTPRequest" parent="Releases"]
+
 [node name="ReleaseInstaller" type="Node" parent="."]
 script = ExtResource( 9 )
 __meta__ = {
@@ -1847,6 +1851,8 @@ __meta__ = {
 [connection signal="request_completed" from="Releases/HTTPRequest_EOD" to="Releases" method="_on_request_completed_eod"]
 [connection signal="request_completed" from="Releases/HTTPRequest_TISH" to="Releases" method="_on_request_completed_tish"]
 [connection signal="request_completed" from="Releases/HTTPRequest_TLG" to="Releases" method="_on_request_completed_tlg"]
+[connection signal="request_completed" from="Releases/HTTPRequest_DDA_Stable" to="Releases" method="_on_request_completed_dda_stable"]
+[connection signal="request_completed" from="Releases/HTTPRequest_BN_Stable" to="Releases" method="_on_request_completed_bn_stable"]
 [connection signal="operation_finished" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_finished"]
 [connection signal="operation_started" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_started"]
 [connection signal="game_updated" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_game_updated"]
