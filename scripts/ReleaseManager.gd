@@ -269,9 +269,6 @@ func _parse_stable_builds_from_db(data: PoolByteArray, write_to: Array) -> void:
 	var tmp_arr = []
 
 	for rec in json:
-		if rec.get("channel", "") != "stable":
-			continue
-
 		var build = {}
 		build["name"] = rec.get("name", rec.get("tag_name", ""))
 		if Settings.read("shorten_release_names"):
@@ -386,7 +383,7 @@ func fetch(release_key: String) -> void:
 				Status.post(tr("msg_fetching_releases") % "DDA Stable")
 				Status.post(tr("msg_please_wait_stable"))
 				yield(get_tree().create_timer(1.0), "timeout")
-				_request_stable_releases($HTTPRequest_DDA_Stable, _CATACLYSM_DB_BASE_URL + "dda_releases.json")
+				_request_stable_releases($HTTPRequest_DDA_Stable, _CATACLYSM_DB_BASE_URL + "dda_stable_releases.json")
 		"dda-experimental":
 			Status.post(tr("msg_fetching_releases_dda"))
 			_request_releases($HTTPRequest_DDA, "dda-experimental")
@@ -400,7 +397,7 @@ func fetch(release_key: String) -> void:
 				Status.post(tr("msg_fetching_releases") % "BN Stable")
 				Status.post(tr("msg_please_wait_stable"))
 				yield(get_tree().create_timer(1.0), "timeout")
-				_request_stable_releases($HTTPRequest_BN_Stable, _CATACLYSM_DB_BASE_URL + "bn_releases.json")
+				_request_stable_releases($HTTPRequest_BN_Stable, _CATACLYSM_DB_BASE_URL + "bn_stable_releases.json")
 		"bn-experimental":
 			Status.post(tr("msg_fetching_releases_bn"))
 			_request_releases($HTTPRequest_BN, "bn-experimental")
@@ -415,4 +412,3 @@ func fetch(release_key: String) -> void:
 			_request_releases($HTTPRequest_TLG, "tlg-experimental")
 		_:
 			Status.post((tr("msg_invalid_fetch_func_param") % [release_key] ), Enums.MSG_ERROR)
-
