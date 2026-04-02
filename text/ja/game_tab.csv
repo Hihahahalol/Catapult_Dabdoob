@@ -36,4 +36,6 @@
 "tooltip_delete","選択したゲームのコピーを削除します。\n（セーブ、設定、その他のユーザーデータは\n別々に保存されており、失われません。）"
 "tooltip_installs_item","場所：\n%s\n（ダブルクリックでフォルダーを開く）"
 ,
-"msg_set_active","アクティブなインストールを %s に設定中。" 
+"msg_set_active","アクティブなインストールを %s に設定中。"
+"msg_glibc_version_warning","Warning: this game build requires GLIBC %s, which is newer than what your system provides. The game may fail to start."
+"msg_glibc_upgrade_hint","To fix this, upgrade your Linux distribution or use a newer Ubuntu/Debian base. Experimental builds track the latest GLIBC."

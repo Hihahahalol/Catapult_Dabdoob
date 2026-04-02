@@ -37,3 +37,5 @@ tooltip_delete,"선택한 게임 사본을 삭제하세요.\n(저장 파일, 설
 tooltip_installs_item,위치:\n%s\n(폴더를 열려면 두 번 클릭)
 ,
 msg_set_active,활성 설치를 %s(으)로 설정 중입니다.
+msg_glibc_version_warning,"Warning: this game build requires GLIBC %s, which is newer than what your system provides. The game may fail to start."
+msg_glibc_upgrade_hint,"To fix this, upgrade your Linux distribution or use a newer Ubuntu/Debian base. Experimental builds track the latest GLIBC."

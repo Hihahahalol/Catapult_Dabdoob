@@ -37,3 +37,5 @@
 "tooltip_installs_item","Umístění:\n%s\n(složku otevřete dvojitým kliknutím)"
 ,
 "msg_set_active","Nastavuji aktivní instalaci na %s."
+"msg_glibc_version_warning","Warning: this game build requires GLIBC %s, which is newer than what your system provides. The game may fail to start."
+"msg_glibc_upgrade_hint","To fix this, upgrade your Linux distribution or use a newer Ubuntu/Debian base. Experimental builds track the latest GLIBC."
