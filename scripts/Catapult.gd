@@ -748,7 +748,6 @@ func _start_game(world := "") -> void:
 	
 	match OS.get_name():
 		"X11":
-			_check_linux_glibc(Paths.game_dir)
 			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
 			command_args = ["--userdir", _escape_path(Paths.userdata)]
 			if world != "":
@@ -1252,7 +1251,7 @@ TARGET="%s"
 PROC_NAME="%s"
 
 log() {
-    echo "$(date) - $1" >> "$LOG_FILE"
+	echo "$(date) - $1" >> "$LOG_FILE"
 }
 
 > "$LOG_FILE"
@@ -1264,31 +1263,31 @@ log "Waiting for application to close..."
 sleep 3
 
 if pgrep -x "$PROC_NAME" > /dev/null 2>&1; then
-    log "Process still running, waiting 5 more seconds..."
-    sleep 5
-    if pgrep -x "$PROC_NAME" > /dev/null 2>&1; then
-        log "Terminating process..."
-        pkill -x "$PROC_NAME" || true
-        sleep 2
-    fi
+	log "Process still running, waiting 5 more seconds..."
+	sleep 5
+	if pgrep -x "$PROC_NAME" > /dev/null 2>&1; then
+		log "Terminating process..."
+		pkill -x "$PROC_NAME" || true
+		sleep 2
+	fi
 fi
 
 if [ ! -f "$DOWNLOADED" ]; then
-    log "Error: Source file not found: $DOWNLOADED"
-    exit 1
+	log "Error: Source file not found: $DOWNLOADED"
+	exit 1
 fi
 
 log "Copying executable..."
 if cp "$DOWNLOADED" "$TARGET"; then
-    chmod +x "$TARGET"
-    log "Update complete, starting application..."
-    "$TARGET" &
-    sleep 2
-    rm -f "$DOWNLOADED"
-    log "Update completed successfully"
+	chmod +x "$TARGET"
+	log "Update complete, starting application..."
+	"$TARGET" &
+	sleep 2
+	rm -f "$DOWNLOADED"
+	log "Update completed successfully"
 else
-    log "Error: Failed to copy file (check write permissions on target location)"
-    exit 1
+	log "Error: Failed to copy file (check write permissions on target location)"
+	exit 1
 fi
 """ % [log_path, downloaded_file, current_exe, proc_name]
 
@@ -1318,14 +1317,14 @@ $ErrorActionPreference = "Stop"
 
 # Log function
 function Log-Message {
-    param([string]$Message)
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    "$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
+	param([string]$Message)
+	$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+	"$timestamp - $Message" | Out-File -FilePath "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Append
 }
 
 # Clear previous log and start a new one
 if (Test-Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt") {
-    Remove-Item -Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
+	Remove-Item -Path "$env:USERPROFILE\\AppData\\Roaming\\Godot\\app_userdata\\Dabdoob\\update_log.txt" -Force
 }
 
 Log-Message "Starting update process"
@@ -1333,66 +1332,66 @@ Log-Message "Downloaded file: %s"
 Log-Message "Target executable: %s"
 
 try {
-    # Wait for main process to exit
-    Log-Message "Waiting for application to close..."
-    Start-Sleep -Seconds 5
-    
-    $processName = [System.IO.Path]::GetFileNameWithoutExtension("%s")
-    Log-Message "Process name: $processName"
-    
-    # Check if process is still running
-    $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-    
-    if ($running) {
-        Log-Message "Process still running, waiting another 5 seconds..."
-        Start-Sleep -Seconds 5
-        
-        # Try to forcefully terminate if still running
-        $running = Get-Process -Name $processName -ErrorAction SilentlyContinue
-        if ($running) {
-            Log-Message "Terminating process..."
-            Stop-Process -Name $processName -Force
-            Start-Sleep -Seconds 2
-        }
-    }
-    
-    # Check if source and target files exist
-    if (-not (Test-Path "%s")) {
-        throw "Source file not found: %s"
-    }
-    
-    Log-Message "Source file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    
-    if (Test-Path "%s") {
-        Log-Message "Target file exists and has size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        Log-Message "Target file does not exist yet"
-    }
-    
-    # Copy the executable
-    Log-Message "Copying executable file..."
-    Copy-Item -Path "%s" -Destination "%s" -Force
-    
-    # Verify the copy worked
-    if (Test-Path "%s") {
-        Log-Message "Verified: Target file now exists with size: $((Get-Item -Path "%s").Length) bytes"
-    } else {
-        throw "Failed to create target file"
-    }
-    
-    # Start the updated application
-    Log-Message "Update complete, starting application..."
-    Start-Process -FilePath "%s"
-    
-    # Clean up
-    Log-Message "Cleaning up..."
-    Start-Sleep -Seconds 2
-    Remove-Item -Path "%s" -Force -ErrorAction SilentlyContinue
-    
-    Log-Message "Update completed successfully"
+	# Wait for main process to exit
+	Log-Message "Waiting for application to close..."
+	Start-Sleep -Seconds 5
+	
+	$processName = [System.IO.Path]::GetFileNameWithoutExtension("%s")
+	Log-Message "Process name: $processName"
+	
+	# Check if process is still running
+	$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+	
+	if ($running) {
+		Log-Message "Process still running, waiting another 5 seconds..."
+		Start-Sleep -Seconds 5
+		
+		# Try to forcefully terminate if still running
+		$running = Get-Process -Name $processName -ErrorAction SilentlyContinue
+		if ($running) {
+			Log-Message "Terminating process..."
+			Stop-Process -Name $processName -Force
+			Start-Sleep -Seconds 2
+		}
+	}
+	
+	# Check if source and target files exist
+	if (-not (Test-Path "%s")) {
+		throw "Source file not found: %s"
+	}
+	
+	Log-Message "Source file exists and has size: $((Get-Item -Path "%s").Length) bytes"
+	
+	if (Test-Path "%s") {
+		Log-Message "Target file exists and has size: $((Get-Item -Path "%s").Length) bytes"
+	} else {
+		Log-Message "Target file does not exist yet"
+	}
+	
+	# Copy the executable
+	Log-Message "Copying executable file..."
+	Copy-Item -Path "%s" -Destination "%s" -Force
+	
+	# Verify the copy worked
+	if (Test-Path "%s") {
+		Log-Message "Verified: Target file now exists with size: $((Get-Item -Path "%s").Length) bytes"
+	} else {
+		throw "Failed to create target file"
+	}
+	
+	# Start the updated application
+	Log-Message "Update complete, starting application..."
+	Start-Process -FilePath "%s"
+	
+	# Clean up
+	Log-Message "Cleaning up..."
+	Start-Sleep -Seconds 2
+	Remove-Item -Path "%s" -Force -ErrorAction SilentlyContinue
+	
+	Log-Message "Update completed successfully"
 } catch {
-    Log-Message "Error during update: $_"
-    Log-Message "Stack trace: $($_.ScriptStackTrace)"
+	Log-Message "Error during update: $_"
+	Log-Message "Stack trace: $($_.ScriptStackTrace)"
 }
 """ % [
 	downloaded_file.replace("/", "\\"),
@@ -1581,76 +1580,6 @@ func _find_app_bundle_executable(app_path: String, preferred_names: Array) -> Di
 					return {"path": full_path, "name": exe_file}
 	
 	return {}
-
-
-func _check_linux_glibc(game_dir: String) -> void:
-	# Proactively check for GLIBC version mismatches before launching on Linux.
-	# Runs ldd on the actual ELF binary (not the cataclysm-launcher shell wrapper)
-	# and warns the user if the installed GLIBC is too old for the game build.
-
-	var game = Settings.read("game")
-	var elf_candidates: Array
-	match game:
-		"bn":    elf_candidates = ["cataclysm-bn-tiles",   "cataclysm-tiles"]
-		"tlg":   elf_candidates = ["cataclysm-tlg-tiles",  "cataclysm-tiles"]
-		"eod":   elf_candidates = ["cataclysm-eod-tiles",  "cataclysm-tiles"]
-		"tish":  elf_candidates = ["cataclysm-tish-tiles", "cataclysm-tiles"]
-		_:       elf_candidates = ["cataclysm-tiles"]
-
-	var d = Directory.new()
-	var elf_path := ""
-	for candidate in elf_candidates:
-		var path = game_dir.plus_file(candidate)
-		if d.file_exists(path):
-			elf_path = path
-			break
-
-	if elf_path == "":
-		return
-
-	var ldd_output := []
-	var exit_code = OS.execute("ldd", [elf_path], true, ldd_output, true)
-	if exit_code < 0 or ldd_output.size() == 0:
-		return
-
-	var output_str: String = str(ldd_output[0])
-	if output_str.strip_edges() == "" or "not found" not in output_str:
-		return
-
-	var highest_major := -1
-	var highest_minor := -1
-	var highest_version := ""
-
-	for line in output_str.split("\n"):
-		if "not found" not in line or "GLIBC_" not in line:
-			continue
-		var start = line.find("GLIBC_")
-		if start == -1:
-			continue
-		var after_prefix = line.substr(start + 6)
-		var version_str := ""
-		for ch in after_prefix:
-			if ch.is_valid_integer() or ch == ".":
-				version_str += ch
-			else:
-				break
-		if version_str == "" or "." not in version_str:
-			continue
-		var parts = version_str.split(".")
-		if parts.size() < 2:
-			continue
-		var major = int(parts[0])
-		var minor = int(parts[1])
-		if major > highest_major or (major == highest_major and minor > highest_minor):
-			highest_major = major
-			highest_minor = minor
-			highest_version = version_str
-
-	if highest_version == "":
-		return
-
-	Status.post(tr("msg_glibc_version_warning") % highest_version, Enums.MSG_WARN)
-	Status.post(tr("msg_glibc_upgrade_hint"), Enums.MSG_WARN)
 
 
 func _verify_executable_permissions(exe_path: String) -> bool:
