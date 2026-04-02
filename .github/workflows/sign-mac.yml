@@ -20,6 +20,9 @@ jobs:
       - name: Unzip app bundle
         run: unzip -q Dabdoob-mac-beta.app.zip
 
+      - name: List extracted contents
+        run: find . -maxdepth 3 -not -path './.git/*'
+
       - name: Ad-hoc codesign
         run: codesign --force --deep --sign - Dabdoob-mac-beta.app
 
