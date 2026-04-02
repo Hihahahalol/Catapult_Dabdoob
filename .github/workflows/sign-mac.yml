@@ -1,0 +1,54 @@
+name: Sign and package macOS app
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  sign-and-package:
+    runs-on: macos-latest
+
+    steps:
+      - name: Download macOS asset from release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download "${{ github.event.release.tag_name }}" \
+            --pattern "Dabdoob-mac-beta.app.zip" \
+            --repo "${{ github.repository }}"
+
+      - name: Unzip app bundle
+        run: unzip -q Dabdoob-mac-beta.app.zip
+
+      - name: Ad-hoc codesign
+        run: codesign --force --deep --sign - Dabdoob-mac-beta.app
+
+      - name: Build DMG
+        run: |
+          mkdir _dmg_tmp
+          cp -R Dabdoob-mac-beta.app _dmg_tmp/
+          ln -s /Applications _dmg_tmp/Applications
+          hdiutil create \
+            -volname "Dabdoob" \
+            -srcfolder _dmg_tmp \
+            -ov \
+            -format UDZO \
+            Dabdoob-mac-beta.dmg
+
+      - name: Upload DMG to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            Dabdoob-mac-beta.dmg \
+            --repo "${{ github.repository }}" \
+            --clobber
+
+      - name: Remove zip asset from release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete-asset "${{ github.event.release.tag_name }}" \
+            Dabdoob-mac-beta.app.zip \
+            --repo "${{ github.repository }}" \
+            --yes
