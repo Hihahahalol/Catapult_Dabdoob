@@ -20,16 +20,17 @@ jobs:
       - name: Unzip app bundle
         run: unzip -q Dabdoob-mac-beta.app.zip
 
-      - name: List extracted contents
-        run: find . -maxdepth 3 -not -path './.git/*'
-
-      - name: Ad-hoc codesign
-        run: codesign --force --deep --sign - Dabdoob-mac-beta.app
+      - name: Find and codesign app bundle
+        run: |
+          APP_PATH=$(find . -name "*.app" -maxdepth 5 | head -1)
+          echo "Found app at: $APP_PATH"
+          codesign --force --deep --sign - "$APP_PATH"
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Build DMG
         run: |
           mkdir _dmg_tmp
-          cp -R Dabdoob-mac-beta.app _dmg_tmp/
+          cp -R "$APP_PATH" _dmg_tmp/
           ln -s /Applications _dmg_tmp/Applications
           hdiutil create \
             -volname "Dabdoob" \
