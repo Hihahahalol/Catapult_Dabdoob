@@ -748,6 +748,7 @@ func _start_game(world := "") -> void:
 	
 	match OS.get_name():
 		"X11":
+			_check_linux_glibc(Paths.game_dir)
 			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
 			command_args = ["--userdir", _escape_path(Paths.userdata)]
 			if world != "":
@@ -1580,6 +1581,76 @@ func _find_app_bundle_executable(app_path: String, preferred_names: Array) -> Di
 					return {"path": full_path, "name": exe_file}
 	
 	return {}
+
+
+func _check_linux_glibc(game_dir: String) -> void:
+	# Proactively check for GLIBC version mismatches before launching on Linux.
+	# Runs ldd on the actual ELF binary (not the cataclysm-launcher shell wrapper)
+	# and warns the user if the installed GLIBC is too old for the game build.
+
+	var game = Settings.read("game")
+	var elf_candidates: Array
+	match game:
+		"bn":    elf_candidates = ["cataclysm-bn-tiles",   "cataclysm-tiles"]
+		"tlg":   elf_candidates = ["cataclysm-tlg-tiles",  "cataclysm-tiles"]
+		"eod":   elf_candidates = ["cataclysm-eod-tiles",  "cataclysm-tiles"]
+		"tish":  elf_candidates = ["cataclysm-tish-tiles", "cataclysm-tiles"]
+		_:       elf_candidates = ["cataclysm-tiles"]
+
+	var d = Directory.new()
+	var elf_path := ""
+	for candidate in elf_candidates:
+		var path = game_dir.plus_file(candidate)
+		if d.file_exists(path):
+			elf_path = path
+			break
+
+	if elf_path == "":
+		return
+
+	var ldd_output := []
+	var exit_code = OS.execute("ldd", [elf_path], true, ldd_output, true)
+	if exit_code < 0 or ldd_output.size() == 0:
+		return
+
+	var output_str: String = str(ldd_output[0])
+	if output_str.strip_edges() == "" or "not found" not in output_str:
+		return
+
+	var highest_major := -1
+	var highest_minor := -1
+	var highest_version := ""
+
+	for line in output_str.split("\n"):
+		if "not found" not in line or "GLIBC_" not in line:
+			continue
+		var start = line.find("GLIBC_")
+		if start == -1:
+			continue
+		var after_prefix = line.substr(start + 6)
+		var version_str := ""
+		for ch in after_prefix:
+			if ch.is_valid_integer() or ch == ".":
+				version_str += ch
+			else:
+				break
+		if version_str == "" or "." not in version_str:
+			continue
+		var parts = version_str.split(".")
+		if parts.size() < 2:
+			continue
+		var major = int(parts[0])
+		var minor = int(parts[1])
+		if major > highest_major or (major == highest_major and minor > highest_minor):
+			highest_major = major
+			highest_minor = minor
+			highest_version = version_str
+
+	if highest_version == "":
+		return
+
+	Status.post(tr("msg_glibc_version_warning") % highest_version, Enums.MSG_WARN)
+	Status.post(tr("msg_glibc_upgrade_hint"), Enums.MSG_WARN)
 
 
 func _verify_executable_permissions(exe_path: String) -> bool:
