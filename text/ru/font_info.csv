@@ -5,3 +5,8 @@
 "font_desc_inconsolata","Вариант шрифта Inconsolata (созданного Raph Levien)\nс добавлением греческих и кириллических символов."
 "font_desc_pt","Машинописный шрифт от компании ParaType\nс отличной кириллической типографикой."
 "font_desc_ubuntu","Шрифт с неповторимым стилем, созданный компанией\nCanonical для одноименного дистрибутива Линукса."
+
+"font_desc_consolas","A bold variant of Consolas, a monospace font
+designed by Lucas de Groot for Microsoft."
+"font_desc_whiterabbit","A square monospace font inspired by science fiction
+computer displays, by Matthew Welch."

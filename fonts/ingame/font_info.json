@@ -69,4 +69,18 @@
         "height": 1.1,
         "width": 0.5,
     },
+    {
+        "name": "Consolas Bold",
+        "file": "Consolas Bold.ttf",
+        "desc_key": "font_desc_consolas",
+        "height": 1.1,
+        "width": 0.55,
+    },
+    {
+        "name": "White Rabbit",
+        "file": "WHITRABT.TTF",
+        "desc_key": "font_desc_whiterabbit",
+        "height": 1.0,
+        "width": 0.5,
+    },
 ]

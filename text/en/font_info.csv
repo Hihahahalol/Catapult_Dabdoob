@@ -5,3 +5,5 @@
 "font_desc_inconsolata","A variant of Inconsolata font (originally by Raph Levien)\nwith addition of Greek and Cyrillic characters."
 "font_desc_pt","A typewriter font by ParaType with excellent Cyrillic typography."
 "font_desc_ubuntu","A font by Canonical with a very distinct style,\ndesigned for the eponymous Linux distribution."
+"font_desc_consolas","A bold variant of Consolas, a monospace font\ndesigned by Lucas de Groot for Microsoft."
+"font_desc_whiterabbit","A square monospace font inspired by science fiction\ncomputer displays, by Matthew Welch."

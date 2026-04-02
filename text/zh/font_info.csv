@@ -5,3 +5,8 @@
 "font_desc_inconsolata","Inconsolata 字体的变体（最初由 Raph Levien 设计）\n添加了希腊语和西里尔字符。"
 "font_desc_pt","ParaType 的打字机字体，在显示西里尔字体上很出色。"
 "font_desc_ubuntu","Canonical 的字体，风格非常独特，\n为同名的 Linux 发行版设计。"
+
+"font_desc_consolas","A bold variant of Consolas, a monospace font
+designed by Lucas de Groot for Microsoft."
+"font_desc_whiterabbit","A square monospace font inspired by science fiction
+computer displays, by Matthew Welch."
