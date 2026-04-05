@@ -566,9 +566,7 @@ func apply_game_choice() -> void:
 		_rbtn_stable.disabled = false
 		if channel == "stable":
 			_rbtn_stable.pressed = true
-			_btn_refresh.disabled = true
-		else:
-			_btn_refresh.disabled = false
+		_btn_refresh.disabled = false
 	elif game in ["eod", "tish", "tlg"]:
 		# These Forks do not have a stable channel
 		_rbtn_exper.pressed = true
@@ -937,31 +935,33 @@ func _refresh_currently_installed() -> void:
 #			if name == active_name:
 #				_lst_installs.set_item_custom_fg_color(curr_idx, Color(0, 0.8, 0))
 	
-	_lst_builds.select(-1)
 	_btn_make_active.disabled = true
 	_btn_delete.disabled = true
-	
+
+	var has_valid_selection = (_lst_builds.selected != -1) and (_lst_builds.selected < len(releases))
+	var has_download_url = has_valid_selection and releases[_lst_builds.selected].get("url", "") != ""
+
 	if game in _installs:
 		_lbl_build.text = active_name
 		_btn_play.disabled = false
 		_btn_resume.disabled = not (Directory.new().file_exists(Paths.config.plus_file("lastworld.json")))
 		_btn_game_dir.visible = true
 		_btn_user_dir.visible = true
-		if (_lst_builds.selected != -1) and (_lst_builds.selected < len(releases)):
-				var selected_release = releases[_lst_builds.selected]
-				var is_already_installed = selected_release["name"] in _installs[game]
-				var has_download_url = selected_release.get("url", "") != ""
-				if not Settings.read("update_to_same_build_allowed"):
-					_btn_install.disabled = is_already_installed or not has_download_url
-					_cb_update.disabled = _btn_install.disabled
-				else:
-					_btn_install.disabled = not has_download_url
+		if has_valid_selection:
+			var selected_release = releases[_lst_builds.selected]
+			var is_already_installed = selected_release["name"] in _installs[game]
+			if not Settings.read("update_to_same_build_allowed"):
+				_btn_install.disabled = is_already_installed or not has_download_url
+			else:
+				_btn_install.disabled = not has_download_url
+			_cb_update.disabled = _btn_install.disabled
 		else:
 			_btn_install.disabled = true
+			_cb_update.disabled = true
 
 	else:
 		_lbl_build.text = tr("lbl_none")
-		_btn_install.disabled = false
+		_btn_install.disabled = not has_download_url
 		_cb_update.disabled = true
 		_btn_play.disabled = true
 		_btn_resume.disabled = true
