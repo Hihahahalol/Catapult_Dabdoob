@@ -193,6 +193,14 @@ pressed = true
 group = SubResource( 1 )
 text = "rbtn_experimental"
 
+[node name="CbBNRolling" type="CheckBox" parent="Main/Tabs/Game/Channel/Group" groups=["disable_during_release_operations", "disable_while_fetching_releases"]]
+margin_left = 259.0
+margin_right = 440.0
+margin_bottom = 28.0
+hint_tooltip = "tooltip_bn_rolling"
+text = "cbtn_bn_rolling"
+visible = false
+
 [node name="Builds" type="HBoxContainer" parent="Main/Tabs/Game"]
 margin_top = 60.0
 margin_right = 577.0
@@ -1710,6 +1718,8 @@ __meta__ = {
 
 [node name="HTTPRequest_BN_Stable" type="HTTPRequest" parent="Releases"]
 
+[node name="HTTPRequest_BN_Rolling" type="HTTPRequest" parent="Releases"]
+
 [node name="ReleaseInstaller" type="Node" parent="."]
 script = ExtResource( 9 )
 __meta__ = {
@@ -1853,6 +1863,7 @@ __meta__ = {
 [connection signal="request_completed" from="Releases/HTTPRequest_TLG" to="Releases" method="_on_request_completed_tlg"]
 [connection signal="request_completed" from="Releases/HTTPRequest_DDA_Stable" to="Releases" method="_on_request_completed_dda_stable"]
 [connection signal="request_completed" from="Releases/HTTPRequest_BN_Stable" to="Releases" method="_on_request_completed_bn_stable"]
+[connection signal="request_completed" from="Releases/HTTPRequest_BN_Rolling" to="Releases" method="_on_request_completed_bn_rolling"]
 [connection signal="operation_finished" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_finished"]
 [connection signal="operation_started" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_started"]
 [connection signal="game_updated" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_game_updated"]

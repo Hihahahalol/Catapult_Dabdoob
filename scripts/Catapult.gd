@@ -27,6 +27,7 @@ onready var _lst_builds = $Main/Tabs/Game/Builds/BuildsList
 onready var _lst_games = $Main/GameChoice/GamesList
 onready var _rbtn_stable = $Main/Tabs/Game/Channel/Group/RBtnStable
 onready var _rbtn_exper = $Main/Tabs/Game/Channel/Group/RBtnExperimental
+onready var _cb_bn_rolling = $Main/Tabs/Game/Channel/Group/CbBNRolling
 onready var _lbl_build = $Main/Tabs/Game/ActiveInstall/Build/Name
 onready var _cb_update = $Main/Tabs/Game/UpdateCurrent
 onready var _lst_installs = $Main/Tabs/Game/GameInstalls/HBox/InstallsList
@@ -342,6 +343,12 @@ func _on_GamesList_item_selected(index: int) -> void:
 	_mods.refresh_available()
 
 
+func _on_CbBNRolling_toggled(button_pressed: bool) -> void:
+	Settings.store("bn_rolling_experimental", button_pressed)
+	_releases.releases["bn-rolling"].clear()
+	apply_game_choice()
+
+
 func _on_RBtnStable_toggled(button_pressed: bool) -> void:
 	if (Settings.read("game") == "eod") or (Settings.read("game") == "tish"):
 		Settings.store("channel", "experimental")
@@ -496,10 +503,13 @@ func _on_cbUpdateCurrent_toggled(button_pressed: bool) -> void:
 func _get_release_key() -> String:
 	# Compiles a string looking like "dda-stable" or "bn-experimental"
 	# from settings.
-	
+
 	var game = Settings.read("game")
 	var key = game + "-" + Settings.read("channel")
-	
+
+	if key == "bn-experimental" and Settings.read("bn_rolling_experimental"):
+		return "bn-rolling"
+
 	return key
 
 
@@ -540,6 +550,7 @@ func _setup_ui() -> void:
 	
 	_lst_games.connect("item_selected", self, "_on_GamesList_item_selected")
 	_rbtn_stable.connect("toggled", self, "_on_RBtnStable_toggled")
+	_cb_bn_rolling.connect("toggled", self, "_on_CbBNRolling_toggled")
 	# Had to leave these signals unconnected in the editor and only connect
 	# them now from code to avoid cyclic calls of apply_game_choice.
 	
@@ -561,6 +572,10 @@ func apply_game_choice() -> void:
 	var game = Settings.read("game")
 	var channel = Settings.read("channel")
 	
+	_cb_bn_rolling.visible = (game == "bn") and (channel == "experimental")
+	if game == "bn":
+		_cb_bn_rolling.pressed = Settings.read("bn_rolling_experimental")
+
 	if (game == "dda") or (game == "bn"):
 		_rbtn_exper.disabled = false
 		_rbtn_stable.disabled = false
@@ -605,7 +620,7 @@ func apply_game_choice() -> void:
 
 func _update_wiki_button() -> void:
 	var game = Settings.read("game")
-	if game == "tlg":
+	if game == "tlg" or game == "bn":
 		_wiki_search_input.editable = true
 		_btn_search_wiki.disabled = false
 	else:
@@ -711,6 +726,21 @@ func _perform_wiki_search() -> void:
 		else:
 			# Open the wiki homepage if no search term provided
 			OS.shell_open("https://cataclysmtlg.miraheze.org/")
+	elif game == "bn":
+		var search_term = _wiki_search_input.text.strip_edges()
+		var version = Settings.read("active_install_bn")
+		var base_url = "https://cataclysmbn-guide.com"
+		if search_term != "":
+			var encoded_term = search_term.http_escape()
+			if version != "":
+				OS.shell_open(base_url + "/" + version + "/search/" + encoded_term)
+			else:
+				OS.shell_open(base_url + "/search/" + encoded_term)
+		else:
+			if version != "":
+				OS.shell_open(base_url + "/" + version + "/")
+			else:
+				OS.shell_open(base_url + "/")
 
 
 func _start_game(world := "") -> void:

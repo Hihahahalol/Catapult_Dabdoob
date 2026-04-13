@@ -106,18 +106,26 @@ func _on_MaximizeButton_pressed() -> void:
 func _toggle_maximize() -> void:
 	if is_maximized:
 		# Restore
-		OS.window_maximized = false
 		OS.window_position = unmaximized_position
 		OS.window_size = unmaximized_size
 		is_maximized = false
 		maximize_button.texture_normal = maximize_icon
 	else:
-		# Maximize
+		# Maximize to work area (respects taskbar, like File Explorer)
 		unmaximized_position = OS.window_position
 		unmaximized_size = OS.window_size
-		OS.window_maximized = true
 		is_maximized = true
 		maximize_button.texture_normal = restore_icon
+		var screen_idx := OS.get_current_screen()
+		var work_area: Rect2 = OS.get_screen_work_area(screen_idx)
+		if work_area.size.x > 100 and work_area.size.y > 100:
+			OS.window_position = work_area.position
+			OS.window_size = work_area.size
+		else:
+			# get_screen_work_area returned a bad rect (can occur with borderless windows);
+			# fall back to full screen size — may overlap taskbar but won't vanish
+			OS.window_position = OS.get_screen_position(screen_idx)
+			OS.window_size = OS.get_screen_size(screen_idx)
 
 
 func _on_CloseButton_pressed() -> void:

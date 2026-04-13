@@ -44,6 +44,7 @@ const _HARDCODED_DEFAULTS = {
 	"backup_after_closing": false,
 	"max_auto_backups": 5,
 	"mod_download_dates": {},
+	"bn_rolling_experimental": false,
 }
 
 var _settings_file = ""
