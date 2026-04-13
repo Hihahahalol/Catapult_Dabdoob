@@ -12,6 +12,8 @@ const _RELEASE_URLS = {
 		"https://api.github.com/repos/CleverRaven/Cataclysm-DDA/releases",
 	"bn-experimental":
 		"https://api.github.com/repos/cataclysmbnteam/Cataclysm-BN/releases",
+	"bn-rolling":
+		"https://api.github.com/repos/cataclysmbn/Cataclysm-BN/releases/tags/experimental",
 	"eod-experimental":
 		"https://api.github.com/repos/AtomicFox556/Cataclysm-EOD/releases",
 	"tish-experimental":
@@ -92,6 +94,7 @@ var releases = {
 	"dda-experimental": [],
 	"bn-stable": [],
 	"bn-experimental": [],
+	"bn-rolling": [],
 	"eod-stable": [],
 	#"eod-stable": [], Does not exist?
 	"eod-experimental": [],
@@ -335,6 +338,61 @@ func _on_request_completed_bn_stable(result: int, response_code: int,
 	emit_signal("done_fetching_releases")
 
 
+func _request_rolling_release(http: HTTPRequest, url: String) -> void:
+	emit_signal("started_fetching_releases")
+	_update_proxy(http)
+	var headers = PoolStringArray()
+	var catapult = get_parent()
+	if catapult and catapult.has_method("_get_github_auth_headers"):
+		headers = catapult._get_github_auth_headers()
+	http.request(url, headers)
+
+
+func _on_request_completed_bn_rolling(result: int, response_code: int,
+		headers: PoolStringArray, body: PoolByteArray) -> void:
+
+	Status.post(tr("msg_http_request_info") %
+			[result, response_code, headers], Enums.MSG_DEBUG)
+
+	if result:
+		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
+	else:
+		_parse_rolling_build(body, releases["bn-rolling"])
+
+	emit_signal("done_fetching_releases")
+
+
+func _parse_rolling_build(data: PoolByteArray, write_to: Array) -> void:
+	var json = JSON.parse(data.get_string_from_utf8()).result
+
+	if typeof(json) != TYPE_DICTIONARY:
+		Status.post(tr("msg_releases_request_failed"), Enums.MSG_WARN)
+		return
+
+	if "message" in json:
+		Status.post(tr("msg_releases_api_failure") % json["message"])
+		return
+
+	var filter = _ASSET_FILTERS["bn-experimental-" + _platform]
+	var build = {}
+	build["name"] = json.get("name", json.get("tag_name", "experimental"))
+	if Settings.read("shorten_release_names"):
+		build["name"] = build["name"].split(" ")[-1]
+	build["url"] = ""
+	build["filename"] = ""
+	build["published_at"] = json.get("published_at", "")
+	build["has_any_assets"] = len(json.get("assets", [])) > 0
+
+	for asset in json.get("assets", []):
+		if filter["substring"] in asset[filter["field"]]:
+			build["url"] = asset["browser_download_url"]
+			build["filename"] = asset["name"]
+
+	write_to.clear()
+	write_to.append(build)
+	Status.post(tr("msg_got_n_releases") % 1)
+
+
 func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> void:
 
 	var json = JSON.parse(data.get_string_from_utf8()).result
@@ -401,6 +459,9 @@ func fetch(release_key: String) -> void:
 		"bn-experimental":
 			Status.post(tr("msg_fetching_releases_bn"))
 			_request_releases($HTTPRequest_BN, "bn-experimental")
+		"bn-rolling":
+			Status.post(tr("msg_fetching_releases_bn"))
+			_request_rolling_release($HTTPRequest_BN_Rolling, _RELEASE_URLS["bn-rolling"])
 		"eod-experimental":
 			Status.post(tr("msg_fetching_releases_eod"))
 			_request_releases($HTTPRequest_EOD, "eod-experimental")

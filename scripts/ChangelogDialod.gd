@@ -9,10 +9,19 @@ const _PR_URL = {
 	"tlg": "https://api.github.com/search/issues?q=repo%3ACataclysm-TLG/Cataclysm-TLG/",
 }
 
+const _COMMITS_URL = {
+	"dda": "https://api.github.com/repos/CleverRaven/Cataclysm-DDA/commits",
+	"bn": "https://api.github.com/repos/cataclysmbnteam/Cataclysm-BN/commits",
+	"eod": "https://api.github.com/repos/AtomicFox556/Cataclysm-EOD/commits",
+	"tish": "https://api.github.com/repos/Cataclysm-TISH-team/Cataclysm-TISH/commits",
+	"tlg": "https://api.github.com/repos/Cataclysm-TLG/Cataclysm-TLG/commits",
+}
+
 onready var _pullRequests := $PullRequests
 onready var _changelogTextBox := $Panel/Margin/VBox/ChangelogText
 
 var _pr_data = ""
+var _using_releases_fallback := false
 
 
 func open() -> void:
@@ -32,41 +41,55 @@ func _update_proxy(http: HTTPRequest) -> void:
 		http.set_https_proxy("", -1)
 
 
-func download_pull_requests():
-	var game_selected = Settings.read("game")
-	var prs = Settings.read("num_prs_to_request")
-	var url = _PR_URL[Settings.read("game")]
-	url += "+is%3Apr+is%3Amerged&per_page=" + prs
+func _get_auth_headers() -> Array:
 	var headers = ["user-agent: CatapultGodotApp"]
-	
-	# Get authentication headers from the main Catapult instance if available
 	var catapult = get_node("/root/Catapult")
 	if catapult and catapult.has_method("_get_github_auth_headers"):
 		var auth_headers = catapult._get_github_auth_headers()
-		if auth_headers.size() > 0:
-			# Add authentication headers to the existing user-agent header
-			for auth_header in auth_headers:
-				headers.append(auth_header)
-	
+		for auth_header in auth_headers:
+			headers.append(auth_header)
+	return headers
+
+
+func download_pull_requests():
+	_using_releases_fallback = false
+	var prs = Settings.read("num_prs_to_request")
+	var url = _PR_URL[Settings.read("game")]
+	url += "+is%3Apr+is%3Amerged&per_page=" + prs
 	_pr_data = tr("str_fetching_changes")
 	_update_proxy(_pullRequests)
-	_pullRequests.request(url, headers)
+	_pullRequests.request(url, _get_auth_headers())
 	_changelogTextBox.clear()
 	_changelogTextBox.append_bbcode(_pr_data)
 	_changelogTextBox.clear()
 	_changelogTextBox.append_bbcode(_pr_data)
+
+
+func _download_commits():
+	var prs = Settings.read("num_prs_to_request")
+	var url = _COMMITS_URL[Settings.read("game")]
+	url += "?per_page=" + prs
+	_update_proxy(_pullRequests)
+	_pullRequests.request(url, _get_auth_headers())
 
 
 func _on_PullRequests_request_completed(result, response_code, headers, body):
 	var json = parse_json(body.get_string_from_utf8())
 	if response_code != 200:
+		if response_code == 422 and not _using_releases_fallback:
+			_using_releases_fallback = true
+			_download_commits()
+			return
 		_pr_data = tr("str_error_retrieving_data")
 		_pr_data += tr("str_hhtp_response_code") % response_code
 		if (json) and ("message" in json):
 			_pr_data += tr("str_github_says") % json["message"]
 		_pr_data += tr("str_try_later")
 	else:
-		_pr_data = process_pr_data(json)
+		if _using_releases_fallback:
+			_pr_data = process_commits_data(json)
+		else:
+			_pr_data = process_pr_data(json)
 	_changelogTextBox.clear()
 	_changelogTextBox.append_bbcode(_pr_data)
 
@@ -114,6 +137,39 @@ func process_pr_data(data):
 			day_str = PullRequest.format_two_digit(latest_day)
 			r_val = r_val + "\n[b]" + str(latest_year) + "-" + mon_str+ "-" + day_str + "[/b]\n"
 		r_val = r_val + "[indent]• [url=" + pr.get_link() + "]" + pr.get_summary() + "[/url][/indent]\n"
+	return r_val
+
+
+func process_commits_data(data):
+	var game_title = ""
+	match Settings.read("game"):
+		"dda":
+			game_title = "Cataclysm: Dark Days Ahead"
+		"bn":
+			game_title = "Cataclysm: Bright Nights"
+		"eod":
+			game_title = "Cataclysm: Era of Decay"
+		"tish":
+			game_title = "Cataclysm: There Is Still Hope"
+		"tlg":
+			game_title = "Cataclysm: The Last Generation"
+		_:
+			game_title = "{BUG!!}"
+
+	var r_val = tr("str_changelog_intro") % [Settings.read("num_prs_to_request"), game_title]
+	r_val += "\n[i](PR search unavailable — showing commits)[/i]\n"
+
+	var latest_date = ""
+	for commit in data:
+		var date_str = commit.get("commit", {}).get("author", {}).get("date", "")
+		var date = date_str.substr(0, 10) if date_str.length() >= 10 else ""
+		var commit_url = commit.get("html_url", "")
+		var message = commit.get("commit", {}).get("message", "")
+		var title = message.split("\n")[0]
+		if date != latest_date:
+			latest_date = date
+			r_val += "\n[b]" + date + "[/b]\n"
+		r_val += "[indent]• [url=" + commit_url + "]" + title + "[/url][/indent]\n"
 	return r_val
 
 
