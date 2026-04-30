@@ -915,9 +915,54 @@ func _on_game_process_exited() -> void:
 		# Clean up old automatic backups if we exceed the maximum count
 		_cleanup_automatic_backups()
 	
+	# Check for known renderer crash caused by incompatible old userdata
+	if _game_process and _game_process.exit_code != 0:
+		_check_for_renderer_crash()
+
 	# Clean up the process wrapper
 	if _game_process:
 		_game_process = null
+
+
+func _check_for_renderer_crash() -> void:
+	var crash_log_path = Paths.config_dir.plus_file("crash.log")
+	var f = File.new()
+	if not f.file_exists(crash_log_path):
+		return
+
+	if f.open(crash_log_path, File.READ) != OK:
+		return
+
+	var content = f.get_as_text()
+	f.close()
+
+	# Check for known SDL renderer crash pattern introduced in CDDA ~2026-04-10.
+	# Old userdata containing an "opengles" renderer setting triggers a segfault
+	# in SetupRenderTarget/WinCreate during SDL initialisation (issue #175).
+	if not ("SetupRenderTarget" in content or "WinCreate" in content):
+		return
+
+	Status.post(tr("msg_crash_renderer_detected"), Enums.MSG_WARN)
+
+	var options_path = Paths.config_dir.plus_file("options.json")
+	if not File.new().file_exists(options_path):
+		return
+
+	var dlg = ConfirmationDialog.new()
+	dlg.window_title = tr("msg_crash_renderer_dialog_title")
+	dlg.dialog_text = tr("msg_crash_renderer_fix_offer")
+	dlg.get_ok().text = tr("btn_reset_display_settings")
+	add_child(dlg)
+	dlg.connect("confirmed", self, "_on_renderer_crash_dialog_confirmed", [options_path])
+	dlg.connect("popup_hide", dlg, "queue_free")
+	dlg.popup_centered()
+
+
+func _on_renderer_crash_dialog_confirmed(options_path: String) -> void:
+	if Directory.new().remove(options_path) == OK:
+		Status.post(tr("msg_crash_renderer_options_deleted"), Enums.MSG_SUCCESS)
+	else:
+		Status.post(tr("msg_crash_renderer_options_delete_failed"), Enums.MSG_ERROR)
 
 
 func _on_InstallsList_item_selected(index: int) -> void:
