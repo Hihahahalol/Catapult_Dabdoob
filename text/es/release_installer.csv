@@ -5,8 +5,8 @@
 "msg_game_updated","Actualización terminada."
 "msg_game_installed","Instalación terminada."
 "msg_deleting_game","Eliminando %s..."
-"msg_game_deleted","Eliminación finalizada".
-"msg_delete_not_found","Intenté eliminar la versión \"%s\", pero no pude encontrarla en el disco".
+"msg_game_deleted","Eliminación finalizada"
+"msg_delete_not_found","Intenté eliminar la versión ""%s"", pero no pude encontrarla en el disco."
 "msg_install_no_game_dir_found","No se encontró un directorio de juego válido en el archivo extraído."
 "msg_install_extract_failed","La extracción del archivo falló con código de error: %s"
 "msg_install_archive_not_found","Archivo de instalación no encontrado: %s"
