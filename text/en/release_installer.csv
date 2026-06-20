@@ -6,7 +6,7 @@
 "msg_game_installed","Installation finished."
 "msg_deleting_game","Removing %s..."
 "msg_game_deleted","Removal finished."
-"msg_delete_not_found","Attempted to remove release \"%s\", but could not find it on disk."
+"msg_delete_not_found","Attempted to remove release ""%s"", but could not find it on disk."
 "msg_install_no_game_dir_found","No valid game directory found in extracted archive."
 "msg_install_extract_failed","Archive extraction failed with error code: %s"
 "msg_install_archive_not_found","Installation archive not found: %s"

@@ -2,4 +2,4 @@
 ,
 "msg_nonexistent_attempt","Se intentó cargar configuraciones desde el archivo inexistente %s"
 "msg_settings_parse_error","Error al analizar configuraciones desde JSON, línea %s, mensaje: %s"
-"msg_nonexisting_setting","Se intentó leer la configuración inexistente \"%s\""
+"msg_nonexisting_setting","Se intentó leer la configuración inexistente \""%s\"""

@@ -323,7 +323,7 @@ margin_bottom = 32.0
 rect_min_size = Vector2( 90, 0 )
 size_flags_horizontal = 4
 editable = false
-placeholder_text = "Search term"
+placeholder_text = "ph_wiki_search"
 
 [node name="BtnSearchWiki" type="Button" parent="Main/Tabs/Game/ActiveInstall/Launch"]
 margin_left = 364.0
@@ -332,7 +332,7 @@ margin_bottom = 32.0
 hint_tooltip = "tooltip_search_wiki"
 size_flags_horizontal = 4
 disabled = true
-text = "Open/Search Wiki"
+text = "btn_wiki_open"
 icon = ExtResource( 52 )
 
 [node name="Update" type="HBoxContainer" parent="Main/Tabs/Game/ActiveInstall"]
@@ -348,7 +348,7 @@ margin_right = 106.0
 margin_bottom = 32.0
 hint_tooltip = "Update the current installation of Dabdoob to the latest version"
 size_flags_horizontal = 4
-text = "Update Dabdoob"
+text = "btn_update_launcher"
 icon = ExtResource( 3 )
 
 [node name="GameInstalls" type="VBoxContainer" parent="Main/Tabs/Game"]
