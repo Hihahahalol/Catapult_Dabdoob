@@ -8,6 +8,7 @@ signal mod_deletion_finished
 
 signal _done_installing_mod
 signal _done_deleting_mod
+signal bn_registry_loaded
 
 # Stability rating mappings (in days)
 const STABILITY_RATINGS = {
@@ -213,179 +214,10 @@ func refresh_available():
 				}
 			}
 		}
-	# Custom mods for Bright Nights (BN)
 	elif Settings.read("game") == "bn":
-		available = {
-			"CataclysmSecondChance": {
-				"location": "https://github.com/Tefnut/Cataclysm-Second-Chance",
-				"modinfo": {
-					"id": "cataclysm_second_chance",
-					"name": "Cataclysm: Second Chance",
-					"authors": ["Tefnut"],
-					"maintainers": ["Tefnut"],
-					"description": "A mod for Cataclysm: Bright Nights which adds my own custom content to it",
-					"category": "content",
-					"dependencies": [],
-					"stability": 1
-				}
-			},
-			"BetterHolsters": {
-				"location": "https://github.com/Tefnut/Better-Holsters",
-				"modinfo": {
-					"id": "better_holsters",
-					"name": "Better Holsters",
-					"authors": ["Tefnut"],
-					"maintainers": ["Tefnut"],
-					"description": "A mod for Cataclysm: Bright Nights that improves the holster experience",
-					"category": "items",
-					"dependencies": [],
-					"stability": 4
-				}
-			},
-			"FalloutNewEnglandRemastered": {
-				"location": "https://github.com/Tefnut/Fallout-New-England-Remastered",
-				"modinfo": {
-					"id": "fallout_new_england_remastered",
-					"name": "Fallout: New England Remastered",
-					"authors": ["Tefnut"],
-					"maintainers": ["Tefnut"],
-					"description": "A remastering of my original Fallout mod for C:DDA. Should work with newest Bright Nights release for as long as I update and maintain it.",
-					"category": "content",
-					"dependencies": [],
-					"stability": -1
-				}
-			},
-			"ReallyDarkSkies": {
-				"location": "https://github.com/Zlorthishen/Really_Dark_Skies",
-				"modinfo": {
-					"id": "realdarkskies",
-					"name": "Really Dark Skies",
-					"authors": ["Zlorthishen"],
-					"maintainers": ["Zlorthishen"],
-					"description": "Really Dark Skies. The community supported mod that enhances the Bright Nights experience by adding an inscrutable alien-humanoid paramilitary expeditionary force to your typical survival scenario.",
-					"category": "content",
-					"dependencies": [],
-					"stability": 2
-				}
-			},
-			"TheArcologyMod": {
-				"location": "https://github.com/Zlorthishen/The_Arcology_Mod",
-				"modinfo": {
-					"id": "arcology",
-					"name": "The Arcology Mod",
-					"authors": ["Zlorthishen"],
-					"maintainers": ["Zlorthishen"],
-					"description": "The mod that adds Arcology-type buildings, very large, self-contained buildings with a Cyberpunk aesthetic to Bright Nights.",
-					"category": "buildings",
-					"dependencies": [],
-					"stability": 4
-				}
-			},
-			"ZombieHighMod": {
-				"location": "https://github.com/Zlorthishen/ZombieHighMod",
-				"modinfo": {
-					"id": "Zhigh_Mod",
-					"name": "Zombie High Mod",
-					"authors": ["thhoney08"],
-					"maintainers": ["Zlorthishen"],
-					"description": "A mod for cataclysm: Bright Nights, which sets on a bunker-like school.",
-					"category": "buildings",
-					"dependencies": [],
-					"stability": 1
-				}
-			},
-			"GrowMoreDrugs": {
-				"location": "https://github.com/Zlorthishen/grow_more_drugs",
-				"modinfo": {
-					"id": "grow_more_drugs",
-					"name": "Grow More Drugs",
-					"authors": ["jackledead"],
-					"maintainers": ["Zlorthishen"],
-					"description": "Cataclysm - Bright Nights mod, adding different drug crops that would not grow in New England. Plants/seeds: Coca, coffee, tea, poppy, tobacco. Includes recipes for cocaine.",
-					"category": "content",
-					"dependencies": [],
-					"stability": 5
-				}
-			},
-			"LonesTechAndWeapons": {
-				"location": "https://github.com/Zlorthishen/Lones-Tech-and-Weapons-mod",
-				"modinfo": {
-					"id": "lonestweaks",
-					"name": "Lones Tweaks",
-					"authors": ["thelonestander"],
-					"maintainers": ["Zlorthishen"],
-					"description": "Weapons and tech for the game Bright Nights",
-					"category": "items",
-					"dependencies": [],
-					"stability": 2
-				}
-			},
-			"NoHopeAndDinos": {
-				"location": "https://github.com/Zlorthishen/No-Hope-and-Dinos",
-				"modinfo": {
-					"id": "no_hope_and_dinos",
-					"name": "No Hope and Dinos",
-					"authors": ["jackledead"],
-					"maintainers": ["Zlorthishen"],
-					"description": "CDDA Mod. It's like No Hope, but replaces zombies with dinosaurs, and requires TropiCataclysm and Dinomod. Removes portals and portal storms. Only spawn Dinosaurs, Robots, Cyborgs, Mutants, Insects.",
-					"category": "content",
-					"dependencies": [],
-					"stability": 1
-				}
-			},
-			"AddBanditsExpanded": {
-				"location": "https://github.com/Zlorthishen/Compatible-Add-Bandits-Expanded",
-				"modinfo": {
-					"id": "GOV_BANDITS_KAI_R",
-					"name": "Add Bandits Expanded+",
-					"authors": ["Jolmar7"],
-					"maintainers": ["Zlorthishen"],
-					"description": "Adds a large amount of content to the Add Bandits mod, and a few NPCs as well",
-					"category": "content",
-					"dependencies": [],
-					"stability": 3
-				}
-			},
-			"ArcanaAndMagicItems": {
-				"location": "https://github.com/Zlorthishen/cdda-arcana-mod",
-				"modinfo": {
-					"id": "Arcana",
-					"name": "Arcana and Magic Items",
-					"authors": ["chaosvolt"],
-					"maintainers": ["Zlorthishen"],
-					"description": "Arcana and Magic Items mod for Cataclysm: Bright Nights",
-					"category": "content",
-					"dependencies": [],
-					"stability": 1
-				}
-			},
-			"SteampunkMod": {
-				"location": "https://github.com/Zlorthishen/CDDA-BN-Steampunk-Mod",
-				"modinfo": {
-					"id": "steampunk_arcanum",
-					"name": "Steampunk Mod",
-					"authors": ["Jolmar7"],
-					"maintainers": ["Zlorthishen"],
-					"description": "A mod that adds several steampunk inspired items, recipes, locations and a small NPC town. Inspired by the Arcanum: Of Steamworks of Magick Obscure RPG.",
-					"category": "content",
-					"dependencies": [],
-					"stability": 2
-				}
-			},
-			"HackThePlanet": {
-				"location": "https://github.com/Zlorthishen/hacktheplanet",
-				"modinfo": {
-					"id": "hacktheplanet",
-					"name": "Hack The Planet",
-					"authors": ["kettleswordfang"],
-					"maintainers": ["Zlorthishen"],
-					"description": "CDDA Hacker Gear",
-					"category": "items",
-					"dependencies": [],
-					"stability": 3
-				}
-			}
-		}
+		available = {}
+		_fetch_bn_mods_from_registry()
+		return
 			# Custom mods for DDA (Dark Days Ahead)
 	elif Settings.read("game") == "dda":
 		available = {
@@ -474,6 +306,66 @@ func _delete_mod(mod_id: String) -> void:
 		Status.post(tr("msg_mod_not_found") % mod_id, Enums.MSG_ERROR)
 	
 	emit_signal("_done_deleting_mod")
+
+
+func _fetch_bn_mods_from_registry() -> void:
+
+	Status.post("Fetching BN mod registry...", Enums.MSG_INFO)
+	var http = HTTPRequest.new()
+	add_child(http)
+	if Settings.read("proxy_option") == "on":
+		http.set_http_proxy(Settings.read("proxy_host"), Settings.read("proxy_port") as int)
+		http.set_https_proxy(Settings.read("proxy_host"), Settings.read("proxy_port") as int)
+	http.connect("request_completed", self, "_on_bn_registry_received", [http])
+	if http.request("https://mods.cataclysmbn.org/generated/mods.json") != OK:
+		Status.post("Failed to connect to BN mod registry.", Enums.MSG_ERROR)
+		remove_child(http)
+		http.queue_free()
+		emit_signal("bn_registry_loaded")
+
+
+func _on_bn_registry_received(result: int, response_code: int, _headers: PoolStringArray, body: PoolByteArray, http: HTTPRequest) -> void:
+
+	remove_child(http)
+	http.queue_free()
+
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		Status.post("Failed to load BN mod registry (HTTP %d)." % response_code, Enums.MSG_ERROR)
+		emit_signal("bn_registry_loaded")
+		return
+
+	var json = JSON.parse(body.get_string_from_utf8())
+	if json.error != OK:
+		Status.post("Failed to parse BN mod registry.", Enums.MSG_ERROR)
+		emit_signal("bn_registry_loaded")
+		return
+
+	for entry in json.result:
+		if "yanked" in entry:
+			continue
+		if entry.get("package_type", "mod") != "mod":
+			continue
+		var mod_id = entry["id"]
+		var cats = entry.get("categories", [])
+		available[mod_id] = {
+			"location": entry["source"]["url"],
+			"source_type": "bn_registry",
+			"homepage": entry.get("homepage", entry["source"]["url"]),
+			"last_updated": entry.get("last_updated", ""),
+			"modinfo": {
+				"id": mod_id,
+				"name": entry.get("display_name", mod_id),
+				"authors": entry.get("author", []),
+				"maintainers": [],
+				"description": entry.get("short_description", ""),
+				"category": cats[0] if cats.size() > 0 else "content",
+				"dependencies": entry.get("dependencies", {}).keys(),
+				"stability": 100
+			}
+		}
+
+	Status.post("Loaded %d mods from BN registry." % available.size(), Enums.MSG_SUCCESS)
+	emit_signal("bn_registry_loaded")
 
 
 func delete_mods(mod_ids: Array) -> void:
@@ -888,8 +780,12 @@ func _install_mod(mod_id: String) -> void:
 	if mod_id in available:
 		var mod = available[mod_id]
 		
+		# Registry mods have a direct ZIP URL — skip the GitHub releases API step
+		if mod.get("source_type") == "bn_registry":
+			_download_and_install_mod(mod["location"], mod["modinfo"]["name"])
+			return
 		# Check if this is a GitHub URL
-		if mod["location"].begins_with("https://github.com/"):
+		elif mod["location"].begins_with("https://github.com/"):
 			# Handle GitHub mod installation - get latest release
 			_get_latest_release_url(mod["location"], mod["modinfo"]["name"])
 			return
@@ -1012,12 +908,20 @@ func _get_mod_latest_release_date(mod_id: String) -> String:
 	
 	var mod = available[mod_id]
 	var location = mod["location"]
-	
+
+	# Registry mods carry last_updated directly — no GitHub API needed
+	if mod.get("source_type") == "bn_registry":
+		var ts = mod.get("last_updated", "")
+		if ts != "":
+			_mod_release_date_cache[mod_id] = ts
+			return ts
+		return ""
+
 	# Check if this is a GitHub URL
 	if not location.begins_with("https://github.com/"):
 		# For non-GitHub mods, we can't determine release date
 		return ""
-	
+
 	# Return empty string for now - real data will be fetched asynchronously
 	return ""
 
@@ -1055,8 +959,8 @@ func fetch_all_mod_release_dates() -> void:
 		var mod = available[mod_id]
 		var location = mod["location"]
 		
-		# Only fetch for GitHub mods that aren't already cached
-		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache:
+		# Only fetch for GitHub mods that aren't already cached; registry mods use stored last_updated
+		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache and mod.get("source_type") != "bn_registry":
 			# Extract owner and repo from GitHub URL
 			var url_parts = location.replace("https://github.com/", "").split("/")
 			if len(url_parts) >= 2:
@@ -1097,8 +1001,8 @@ func _fetch_all_mod_release_dates_rest_api() -> void:
 		var mod = available[mod_id]
 		var location = mod["location"]
 		
-		# Only fetch for GitHub mods that aren't already cached
-		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache:
+		# Only fetch for GitHub mods that aren't already cached; registry mods use stored last_updated
+		if location.begins_with("https://github.com/") and not mod_id in _mod_release_date_cache and mod.get("source_type") != "bn_registry":
 			_pending_api_calls.append(mod_id)
 			mods_to_fetch += 1
 	
