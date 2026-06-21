@@ -289,6 +289,8 @@ func _parse_stable_builds_from_db(data: PoolByteArray, write_to: Array) -> void:
 				continue
 			if asset.get("arch", "") != db_arch:
 				continue
+			if "-pdb" in asset.get("name", ""):
+				continue
 			if best_asset == null:
 				best_asset = asset
 			elif asset.get("sounds", "") == "sounds" and best_asset.get("sounds", "") != "sounds":
@@ -415,7 +417,7 @@ func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> 
 		build["has_any_assets"] = len(rec["assets"]) > 0
 
 		for asset in rec["assets"]:
-			if filter["substring"] in asset[filter["field"]]:
+			if filter["substring"] in asset[filter["field"]] and not "-pdb" in asset["name"]:
 				build["url"] = asset["browser_download_url"]
 				build["filename"] = asset["name"]
 

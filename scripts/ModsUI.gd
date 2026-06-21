@@ -34,9 +34,14 @@ func reset_mod_fetch_session_tracking() -> void:
 
 
 func _ready() -> void:
-	
-	# Connect to the mod compatibility signal
+
 	_mods.connect("mod_compatibility_checked", self, "_on_mod_compatibility_checked")
+	_mods.connect("bn_registry_loaded", self, "_on_bn_registry_loaded")
+
+
+func _on_bn_registry_loaded() -> void:
+
+	reload_available()
 
 
 func _populate_list_with_mods(mods_array: Array, list: ItemList) -> void:
@@ -160,7 +165,17 @@ func reload_available() -> void:
 		_btn_add.disabled = true
 		_btn_add_all.disabled = true
 		return
-	
+	elif game == "bn" and len(_mods.available) == 0:
+		_available_mods_view.clear()
+		_available_list.clear()
+		_available_list.add_item("Loading mods from mods.cataclysmbn.org...")
+		_available_list.set_item_disabled(0, true)
+		_available_list.set_item_custom_fg_color(0, Color(0.7, 0.7, 0.7))
+		_lbl_repo.text = tr("lbl_mod_repo") % ""
+		_btn_add.disabled = true
+		_btn_add_all.disabled = true
+		return
+
 	var include_installed = Settings.read("show_installed_mods_in_available")
 	var hidden_mods = 0
 
@@ -287,25 +302,27 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 				break
 	
 	if mod_dict_key != "":
-		var mod_location = _mods.available[mod_dict_key]["location"]
-		
+		var mod_entry = _mods.available[mod_dict_key]
+		var mod_location = mod_entry["location"]
+		var display_url = mod_entry.get("homepage", mod_location)
+
 		# Only show URL for downloadable mods (GitHub URLs)
-		if mod_location.begins_with("https://github.com/") or mod_location.begins_with("http"):
-			result += "[b][u]%s[/u][/b] [color=#3b93f7][url=%s]%s[/url][/color]\n" % [tr("str_mod_url"), mod_location, mod_location]
+		if display_url.begins_with("https://github.com/") or display_url.begins_with("http"):
+			result += "[b][u]%s[/u][/b] [color=#3b93f7][url=%s]%s[/url][/color]\n" % [tr("str_mod_url"), display_url, display_url]
 		
 	# Show mod's last release date for all downloadable mods
 	if mod_dict_key != "":
 		var mod_release_date = _mods._get_mod_latest_release_date(mod_dict_key)
+		var is_registry_mod = _mods.available[mod_dict_key].get("source_type") == "bn_registry"
 		var mod_location = _mods.available[mod_dict_key]["location"]
-		
-		if mod_location.begins_with("https://github.com/"):
-			if mod_release_date != "":
-				var days_since_mod_release = _mods._calculate_days_since_release(mod_release_date)
-				result += "[b][u]Last Updated:[/u][/b] %s (%d days ago)\n" % [mod_release_date, days_since_mod_release]
-			else:
-				result += "[b][u]Last Updated:[/u][/b] [color=yellow]Fetching from GitHub...[/color]\n"
+
+		if mod_release_date != "":
+			var days_since_mod_release = _mods._calculate_days_since_release(mod_release_date)
+			result += "[b][u]Last Updated:[/u][/b] %s (%d days ago)\n" % [mod_release_date, days_since_mod_release]
+		elif mod_location.begins_with("https://github.com/") and not is_registry_mod:
+			result += "[b][u]Last Updated:[/u][/b] [color=yellow]Fetching from GitHub...[/color]\n"
 		else:
-			result += "[b][u]Last Updated:[/u][/b] [color=gray]Not available (non-GitHub mod)[/color]\n"
+			result += "[b][u]Last Updated:[/u][/b] [color=gray]Not available[/color]\n"
 	
 	# Add stability rating information for all channels (both stable and experimental)
 	if "stability" in modinfo:
@@ -328,7 +345,10 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 			5:
 				stability_text = "2 years"
 			100:
-				stability_text = "forever"
+				if mod_dict_key != "" and _mods.available[mod_dict_key].get("source_type") == "bn_registry":
+					stability_text = "officially maintained"
+				else:
+					stability_text = "forever"
 			_:
 				stability_text = "unknown"
 		
