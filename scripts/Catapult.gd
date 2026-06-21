@@ -93,7 +93,13 @@ func _get_github_auth_headers() -> PoolStringArray:
 
 
 func _ready() -> void:
-	
+
+	# Window decorations: custom borderless title bar on Windows only.
+	# On Linux/X11 a borderless top-level window conflicts with some window
+	# managers during creation (X Error: BadAccess on X_ChangeWindowAttributes),
+	# and native decorations are the expected look on Linux/macOS anyway.
+	_setup_window_decorations()
+
 	# Add the HTTPRequest node for version checking
 	add_child(_version_check_request)
 	_version_check_request.connect("request_completed", self, "_on_version_check_completed")
@@ -124,6 +130,23 @@ func _ready() -> void:
 	
 	# Automatically check for updates on startup
 	_on_BtnCheck_pressed()
+
+
+func _setup_window_decorations() -> void:
+	# The borderless flag is set per-platform in project.godot (false base,
+	# true on Windows) so the window is created correctly BEFORE this runs --
+	# the X11 crash happens at window creation, before any GDScript executes,
+	# so it cannot be fixed from here alone. This applies the matching node
+	# layout and acts as a safety net for the borderless flag.
+	if OS.get_name() == "Windows":
+		OS.window_borderless = true
+		return
+
+	# Native window-manager decorations on Linux/macOS.
+	OS.window_borderless = false
+	_title_bar.visible = false
+	# Reclaim the vertical space the custom title bar reserved at the top.
+	$Main.margin_top = 4
 
 
 func _save_control_min_sizes() -> void:

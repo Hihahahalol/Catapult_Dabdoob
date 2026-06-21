@@ -24,6 +24,7 @@ const _RELEASE_URLS = {
 
 const _CATACLYSM_DB_BASE_URL = "https://github.com/SrGnis/cataclysm-db/releases/download/latest/"
 const _STABLE_CACHE_MAX_AGE_SECS = 7 * 24 * 60 * 60  # 7 days, matching cataclysm-db update frequency
+const _STABLE_CACHE_VERSION = 2  # bump when asset selection logic changes
 
 const _ASSET_FILTERS = {
 	"dda-experimental-linux": {
@@ -230,6 +231,8 @@ func _load_stable_cache(game: String) -> Array:
 	var data = Helpers.load_json_file(path)
 	if data == null or typeof(data) != TYPE_DICTIONARY:
 		return []
+	if data.get("version", 0) != _STABLE_CACHE_VERSION:
+		return []
 	if OS.get_unix_time() - data.get("timestamp", 0) > _STABLE_CACHE_MAX_AGE_SECS:
 		return []
 	var cached = data.get("releases", [])
@@ -240,7 +243,7 @@ func _load_stable_cache(game: String) -> Array:
 
 func _save_stable_cache(game: String, releases_data: Array) -> void:
 	Helpers.save_to_json_file(
-		{"timestamp": OS.get_unix_time(), "releases": releases_data},
+		{"version": _STABLE_CACHE_VERSION, "timestamp": OS.get_unix_time(), "releases": releases_data},
 		_get_stable_cache_path(game)
 	)
 
