@@ -1,7 +1,3 @@
-# For the time being, Dabdoob is not looking for contributions
-
-
-
 # Contributing
 ## Working with the project
 
