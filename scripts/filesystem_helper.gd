@@ -313,8 +313,8 @@ func extract(path: String, dest_dir: String) -> void:
 		else:
 			Status.post("[Extract] No output captured", Enums.MSG_ERROR)
 			
-		# On macOS, try a fallback extraction method using Python if available
-		if OS.get_name() == "OSX" and path.to_lower().ends_with(".zip"):
+		# On macOS/Linux, try a fallback extraction method using Python if available
+		if (OS.get_name() == "OSX" or OS.get_name() == "X11") and path.to_lower().ends_with(".zip"):
 			Status.post("Attempting fallback extraction using Python...", Enums.MSG_INFO)
 			_extract_zip_python_fallback(path, dest_dir)
 			return
@@ -509,8 +509,9 @@ func _check_extraction_tool_available(tool_name: String) -> bool:
 				check_command = "where"
 				check_args = [tool_name]
 		"OSX", "X11":
-			check_command = "which"
-			check_args = [tool_name]
+			# Use `sh -c 'command -v'` (POSIX) instead of `which` (not always available)
+			check_command = "sh"
+			check_args = ["-c", "command -v '%s' || which '%s'" % [tool_name, tool_name]]
 	
 	if check_command == "":
 		return true  # Assume available if we can't check
@@ -520,8 +521,8 @@ func _check_extraction_tool_available(tool_name: String) -> bool:
 		Status.post(tr("msg_extract_tool_not_found") % tool_name, Enums.MSG_DEBUG)
 		return false
 	
-	# On macOS, also check if 7za binary has executable permissions
-	if OS.get_name() == "OSX" and tool_name.ends_with("7za"):
+	# Ensure 7za binary has executable permissions (macOS and Linux)
+	if (OS.get_name() == "OSX" or OS.get_name() == "X11") and tool_name.ends_with("7za"):
 		var chmod_result = OS.execute("chmod", ["+x", tool_name], true)
 		if chmod_result != 0:
 			Status.post("Warning: Could not set executable permissions for 7za", Enums.MSG_WARNING)

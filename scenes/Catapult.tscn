@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=54 format=2]
 
 [ext_resource path="res://icons/info.svg" type="Texture" id=1]
 [ext_resource path="res://icons/buttons/tex_resume.tex" type="Texture" id=2]
@@ -85,7 +85,7 @@ margin_right = 65.0
 margin_bottom = 24.0
 text = "lbl_game"
 
-[node name="GamesList" type="OptionButton" parent="Main/GameChoice" groups=["disable_during_mod_operations", "disable_during_soundpack_operations", "disable_during_release_operations", "disable_while_fetching_releases", "disable_while_installing_game"]]
+[node name="GamesList" type="OptionButton" parent="Main/GameChoice" groups=["disable_during_mod_operations", "disable_during_release_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases", "disable_while_installing_game"]]
 margin_left = 71.0
 margin_right = 592.0
 margin_bottom = 24.0
@@ -135,7 +135,7 @@ margin_bottom = 100.0
 [node name="Tabs" type="TabContainer" parent="Main" groups=["disable_during_backup_operations", "disable_during_mod_operations", "disable_during_release_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases"]]
 margin_top = 104.0
 margin_right = 592.0
-margin_bottom = 535.0
+margin_bottom = 571.0
 tab_align = 0
 script = ExtResource( 16 )
 
@@ -194,12 +194,12 @@ group = SubResource( 1 )
 text = "rbtn_experimental"
 
 [node name="CbBNRolling" type="CheckBox" parent="Main/Tabs/Game/Channel/Group" groups=["disable_during_release_operations", "disable_while_fetching_releases"]]
+visible = false
 margin_left = 259.0
 margin_right = 440.0
 margin_bottom = 28.0
 hint_tooltip = "tooltip_bn_rolling"
 text = "cbtn_bn_rolling"
-visible = false
 
 [node name="Builds" type="HBoxContainer" parent="Main/Tabs/Game"]
 margin_top = 60.0
@@ -293,9 +293,9 @@ hint_tooltip = "tooltip_user_dir"
 texture_normal = ExtResource( 23 )
 
 [node name="Launch" type="HBoxContainer" parent="Main/Tabs/Game/ActiveInstall"]
-margin_left = 187.0
+margin_left = 77.0
 margin_top = 56.0
-margin_right = 389.0
+margin_right = 500.0
 margin_bottom = 88.0
 size_flags_horizontal = 4
 
@@ -318,7 +318,7 @@ icon = ExtResource( 2 )
 
 [node name="WikiSearchInput" type="LineEdit" parent="Main/Tabs/Game/ActiveInstall/Launch"]
 margin_left = 208.0
-margin_right = 358.0
+margin_right = 298.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 90, 0 )
 size_flags_horizontal = 4
@@ -326,8 +326,8 @@ editable = false
 placeholder_text = "ph_wiki_search"
 
 [node name="BtnSearchWiki" type="Button" parent="Main/Tabs/Game/ActiveInstall/Launch"]
-margin_left = 364.0
-margin_right = 458.0
+margin_left = 304.0
+margin_right = 423.0
 margin_bottom = 32.0
 hint_tooltip = "tooltip_search_wiki"
 size_flags_horizontal = 4
@@ -336,15 +336,14 @@ text = "btn_wiki_open"
 icon = ExtResource( 52 )
 
 [node name="Update" type="HBoxContainer" parent="Main/Tabs/Game/ActiveInstall"]
-margin_left = 184.0
+margin_left = 206.0
 margin_top = 92.0
-margin_right = 393.0
+margin_right = 370.0
 margin_bottom = 124.0
 size_flags_horizontal = 4
 
 [node name="BtnUpdate" type="Button" parent="Main/Tabs/Game/ActiveInstall/Update" groups=["disable_during_release_operations"]]
-margin_left = 0.0
-margin_right = 106.0
+margin_right = 164.0
 margin_bottom = 32.0
 hint_tooltip = "Update the current installation of Dabdoob to the latest version"
 size_flags_horizontal = 4
@@ -539,7 +538,6 @@ rect_min_size = Vector2( 0, 175 )
 focus_mode = 2
 custom_constants/line_separation = 4
 bbcode_enabled = true
-meta_underlined = true
 bbcode_text = "Mod info will appear here."
 text = "Mod info will appear here."
 selection_enabled = true
@@ -752,8 +750,8 @@ margin_bottom = 316.0
 hint_tooltip = "tooltip_activate_sound"
 size_flags_horizontal = 4
 disabled = true
-icon = ExtResource( 41 )
 text = "btn_activate_sound"
+icon = ExtResource( 41 )
 
 [node name="VSeparator" type="VSeparator" parent="Main/Tabs/Soundpacks/HBox"]
 margin_left = 284.0
@@ -1118,8 +1116,8 @@ margin_right = 285.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 0, 200 )
 size_flags_horizontal = 3
-select_mode = 1
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false, "Item 5", null, false, "Item 6", null, false, "Item 7", null, false, "Item 8", null, false, "Item 9", null, false ]
+select_mode = 1
 same_column_width = true
 
 [node name="BackupInfo" type="RichTextLabel" parent="Main/Tabs/Backups/Available/HBox"]
@@ -1166,16 +1164,17 @@ margin_bottom = 268.0
 margin_top = 272.0
 margin_right = 577.0
 margin_bottom = 300.0
-size_flags_horizontal = 4
 hint_tooltip = "Automatically create a backup of your saves before launching the game"
+size_flags_horizontal = 4
 text = "cbtn_backup_before_launch"
 
 [node name="BackupAfterClosing" type="CheckBox" parent="Main/Tabs/Backups" groups=["disable_during_backup_operations"]]
 margin_top = 304.0
 margin_right = 577.0
 margin_bottom = 332.0
+hint_tooltip = "Automatically create a backup of your saves after closing the game
+(Requires launcher to stay open)"
 size_flags_horizontal = 4
-hint_tooltip = "Automatically create a backup of your saves after closing the game\n(Requires launcher to stay open)"
 text = "cbtn_backup_after_closing"
 
 [node name="MaxAutoBackups" type="HBoxContainer" parent="Main/Tabs/Backups"]
@@ -1353,7 +1352,6 @@ margin_bottom = 290.0
 hint_tooltip = "tooltip_update_mods_with_game"
 text = "cbtn_update_mods_with_game"
 
-
 [node name="KeepCache" type="CheckButton" parent="Main/Tabs/Settings"]
 margin_top = 292.0
 margin_right = 577.0
@@ -1505,7 +1503,7 @@ margin_bottom = 136.0
 [node name="ThankYouTitle" type="Label" parent="Main/Tabs/About/ThankYou"]
 margin_right = 577.0
 margin_bottom = 32.0
-custom_colors/font_color = Color( 0.0, 0.8, 0.8, 1.0 )
+custom_colors/font_color = Color( 0, 0.8, 0.8, 1 )
 text = "thank_you_title"
 align = 1
 valign = 1
@@ -1689,9 +1687,9 @@ size_flags_horizontal = 4
 text = "Print screen info"
 
 [node name="Log" type="RichTextLabel" parent="Main"]
-margin_top = 539.0
+margin_top = 575.0
 margin_right = 592.0
-margin_bottom = 692.0
+margin_bottom = 660.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
@@ -1753,6 +1751,7 @@ __meta__ = {
 [connection signal="meta_clicked" from="Main/GameInfo/Description" to="." method="_on_Description_meta_clicked"]
 [connection signal="tab_changed" from="Main/Tabs" to="." method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Mods" method="_on_Tabs_tab_changed"]
+[connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Tilesets" method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Soundpacks" method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Fonts" method="_on_Tabs_tab_changed"]
 [connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Backups" method="_on_Tabs_tab_changed"]
@@ -1774,16 +1773,21 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Game/GameInstalls/HBox/VBox/btnDelete" to="." method="_on_btnDelete_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Mods/HBox/Installed/InstalledList" to="Main/Tabs/Mods" method="_on_InstalledList_item_selected"]
 [connection signal="multi_selected" from="Main/Tabs/Mods/HBox/Installed/InstalledList" to="Main/Tabs/Mods" method="_on_InstalledList_multi_selected"]
-[connection signal="toggled" from="Main/Tabs/Mods/HBox/Installed/ShowStock" to="Main/Tabs/Mods" method="_on_ShowStock_toggled"]
-[connection signal="pressed" from="Main/Tabs/Mods/HBox/Installed/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
 [connection signal="item_selected" from="Main/Tabs/Mods/HBox/Available/AvailableList" to="Main/Tabs/Mods" method="_on_AvailableList_item_selected"]
 [connection signal="multi_selected" from="Main/Tabs/Mods/HBox/Available/AvailableList" to="Main/Tabs/Mods" method="_on_AvailableList_multi_selected"]
-[connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
-[connection signal="pressed" from="Main/Tabs/Mods/HBox/Available/VBox/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
+[connection signal="toggled" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/ShowStock" to="Main/Tabs/Mods" method="_on_ShowStock_toggled"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
+[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
 [connection signal="meta_clicked" from="Main/Tabs/Mods/ModInfo" to="Main/Tabs/Mods" method="_on_ModInfo_meta_clicked"]
 [connection signal="confirmed" from="Main/Tabs/Mods/DeleteMultipleDialog" to="Main/Tabs/Mods" method="_on_DeleteMultipleDialog_confirmed"]
 [connection signal="response_no" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_no"]
 [connection signal="response_yes" from="Main/Tabs/Mods/ModReinstallDialog" to="Main/Tabs/Mods" method="_on_ModReinstallDialog_response_yes"]
+[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Installed/InstalledList" to="Main/Tabs/Tilesets" method="_on_InstalledList_item_selected"]
+[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Downloadable/AvailableList" to="Main/Tabs/Tilesets" method="_on_AvailableList_item_selected"]
+[connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Downloadable/BtnInstall" to="Main/Tabs/Tilesets" method="_on_BtnInstall_pressed"]
+[connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmManualDownload" to="Main/Tabs/Tilesets" method="_on_ConfirmManualDownload_confirmed"]
+[connection signal="file_selected" from="Main/Tabs/Tilesets/InstallFromFileDialog" to="Main/Tabs/Tilesets" method="_on_InstallFromFileDialog_file_selected"]
 [connection signal="item_selected" from="Main/Tabs/Soundpacks/HBox/Installed/InstalledList" to="Main/Tabs/Soundpacks" method="_on_InstalledList_item_selected"]
 [connection signal="toggled" from="Main/Tabs/Soundpacks/HBox/Installed/ShowStock" to="Main/Tabs/Soundpacks" method="_on_ShowStock_toggled"]
 [connection signal="pressed" from="Main/Tabs/Soundpacks/HBox/Installed/BtnDelete" to="Main/Tabs/Soundpacks" method="_on_BtnDelete_pressed"]
@@ -1794,12 +1798,6 @@ __meta__ = {
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmDelete" to="Main/Tabs/Soundpacks" method="_on_ConfirmDelete_confirmed"]
 [connection signal="confirmed" from="Main/Tabs/Soundpacks/ConfirmManualDownload" to="Main/Tabs/Soundpacks" method="_on_ConfirmManualDownload_confirmed"]
 [connection signal="file_selected" from="Main/Tabs/Soundpacks/InstallFromFileDialog" to="Main/Tabs/Soundpacks" method="_on_InstallFromFileDialog_file_selected"]
-[connection signal="tab_changed" from="Main/Tabs" to="Main/Tabs/Tilesets" method="_on_Tabs_tab_changed"]
-[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Installed/InstalledList" to="Main/Tabs/Tilesets" method="_on_InstalledList_item_selected"]
-[connection signal="item_selected" from="Main/Tabs/Tilesets/HBox/Downloadable/AvailableList" to="Main/Tabs/Tilesets" method="_on_AvailableList_item_selected"]
-[connection signal="pressed" from="Main/Tabs/Tilesets/HBox/Downloadable/BtnInstall" to="Main/Tabs/Tilesets" method="_on_BtnInstall_pressed"]
-[connection signal="confirmed" from="Main/Tabs/Tilesets/ConfirmManualDownload" to="Main/Tabs/Tilesets" method="_on_ConfirmManualDownload_confirmed"]
-[connection signal="file_selected" from="Main/Tabs/Tilesets/InstallFromFileDialog" to="Main/Tabs/Tilesets" method="_on_InstallFromFileDialog_file_selected"]
 [connection signal="item_selected" from="Main/Tabs/Fonts/FontSelection/RightPane/FontsList" to="Main/Tabs/Fonts" method="_on_FontsList_item_selected"]
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/RightPane/Buttons/BtnSetFontUI" to="Main/Tabs/Fonts" method="_on_BtnSetFontX_pressed" binds= [ true, false, false ]]
 [connection signal="pressed" from="Main/Tabs/Fonts/FontSelection/RightPane/Buttons/BtnSetFontMap" to="Main/Tabs/Fonts" method="_on_BtnSetFontX_pressed" binds= [ false, true, false ]]
@@ -1838,6 +1836,9 @@ __meta__ = {
 [connection signal="value_changed" from="Main/Tabs/Settings/ProxySettings/sbProxyPort" to="Main/Tabs/Settings" method="_on_sbProxyPort_value_changed"]
 [connection signal="toggled" from="Main/Tabs/Settings/ScaleOverride/cbScaleOverrideEnable" to="Main/Tabs/Settings" method="_on_cbScaleOverrideEnable_toggled"]
 [connection signal="value_changed" from="Main/Tabs/Settings/ScaleOverride/sbScaleOverride" to="Main/Tabs/Settings" method="_on_sbScaleOverride_value_changed"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/GitHubLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DiscordLink" to="." method="_on_AboutLink_meta_clicked"]
+[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DonationLink" to="." method="_on_AboutLink_meta_clicked"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button" to="Main/Tabs/Debug" method="_on_Button_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button2" to="Main/Tabs/Debug" method="_on_Button2_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button3" to="Main/Tabs/Debug" method="_on_Button3_pressed"]
@@ -1847,12 +1848,6 @@ __meta__ = {
 [connection signal="pressed" from="Main/Tabs/Debug/Button7" to="Main/Tabs/Debug" method="_on_Button7_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button8" to="Main/Tabs/Debug" method="_on_Button8_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button9" to="Main/Tabs/Debug" method="_on_Button9_pressed"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/GitHubLink" to="." method="_on_AboutLink_meta_clicked"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmdDALink" to="." method="_on_AboutLink_meta_clicked"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmBNLink" to="." method="_on_AboutLink_meta_clicked"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/CataclysmTLGLink" to="." method="_on_AboutLink_meta_clicked"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DiscordLink" to="." method="_on_AboutLink_meta_clicked"]
-[connection signal="meta_clicked" from="Main/Tabs/About/Links/LinksContainer/DonationLink" to="." method="_on_AboutLink_meta_clicked"]
 [connection signal="meta_clicked" from="Main/Log" to="." method="_on_Log_meta_clicked"]
 [connection signal="done_fetching_releases" from="Releases" to="." method="_on_Releases_done_fetching_releases"]
 [connection signal="started_fetching_releases" from="Releases" to="." method="_on_Releases_started_fetching_releases"]
@@ -1864,9 +1859,9 @@ __meta__ = {
 [connection signal="request_completed" from="Releases/HTTPRequest_DDA_Stable" to="Releases" method="_on_request_completed_dda_stable"]
 [connection signal="request_completed" from="Releases/HTTPRequest_BN_Stable" to="Releases" method="_on_request_completed_bn_stable"]
 [connection signal="request_completed" from="Releases/HTTPRequest_BN_Rolling" to="Releases" method="_on_request_completed_bn_rolling"]
+[connection signal="game_updated" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_game_updated"]
 [connection signal="operation_finished" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_finished"]
 [connection signal="operation_started" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_operation_started"]
-[connection signal="game_updated" from="ReleaseInstaller" to="." method="_on_ReleaseInstaller_game_updated"]
 [connection signal="mod_deletion_finished" from="Mods" to="." method="_on_mod_operation_finished"]
 [connection signal="mod_deletion_started" from="Mods" to="." method="_on_mod_operation_started"]
 [connection signal="mod_installation_finished" from="Mods" to="." method="_on_mod_operation_finished"]
@@ -1879,17 +1874,11 @@ __meta__ = {
 [connection signal="tileset_deletion_started" from="Tileset" to="." method="_on_tileset_operation_started"]
 [connection signal="tileset_installation_finished" from="Tileset" to="." method="_on_tileset_operation_finished"]
 [connection signal="tileset_installation_started" from="Tileset" to="." method="_on_tileset_operation_started"]
-[connection signal="backup_creation_finished" from="Backups" to="." method="_on_backup_operation_finished"]
-[connection signal="backup_creation_started" from="Backups" to="." method="_on_backup_operation_started"]
-[connection signal="backup_restoration_finished" from="Backups" to="." method="_on_backup_operation_finished"]
-[connection signal="backup_restoration_started" from="Backups" to="." method="_on_backup_operation_started"]
-[connection signal="toggled" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/ShowStock" to="Main/Tabs/Mods" method="_on_ShowStock_toggled"]
-[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/LeftButtons/BtnDelete" to="Main/Tabs/Mods" method="_on_BtnDelete_pressed"]
-[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddSelectedMod" to="Main/Tabs/Mods" method="_on_BtnAddSelectedMod_pressed"]
-[connection signal="pressed" from="Main/Tabs/Mods/ButtonsRow/RightButtons/BtnAddAllMods" to="Main/Tabs/Mods" method="_on_BtnAddAllMods_pressed"]
-[connection signal="backup_deletion_finished" from="Backups" to="." method="_on_backup_operation_finished"]
-[connection signal="backup_deletion_started" from="Backups" to="." method="_on_backup_operation_started"]
 [connection signal="backup_batch_deletion_finished" from="Backups" to="." method="_on_backup_operation_finished"]
 [connection signal="backup_batch_deletion_started" from="Backups" to="." method="_on_backup_operation_started"]
-
-
+[connection signal="backup_creation_finished" from="Backups" to="." method="_on_backup_operation_finished"]
+[connection signal="backup_creation_started" from="Backups" to="." method="_on_backup_operation_started"]
+[connection signal="backup_deletion_finished" from="Backups" to="." method="_on_backup_operation_finished"]
+[connection signal="backup_deletion_started" from="Backups" to="." method="_on_backup_operation_started"]
+[connection signal="backup_restoration_finished" from="Backups" to="." method="_on_backup_operation_finished"]
+[connection signal="backup_restoration_started" from="Backups" to="." method="_on_backup_operation_started"]
