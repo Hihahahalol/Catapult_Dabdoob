@@ -51,6 +51,7 @@ var _easter_egg_counter := 0
 # Game process monitoring
 var _game_process: OSExecWrapper = null
 var _launcher_should_close_after_game := false
+var _game_launch_time := 0
 
 const VERSION_CHECK_URL = "https://api.github.com/repos/Hihahahalol/Catapult_Dabdoob/releases/latest"
 var _latest_version = ""
@@ -766,6 +767,11 @@ func _perform_wiki_search() -> void:
 				OS.shell_open(base_url + "/")
 
 
+func _process(_delta: float) -> void:
+	if _game_process and _game_process.is_done():
+		_on_game_process_exited()
+
+
 func _start_game(world := "") -> void:
 	# Create automatic backup if enabled
 	if Settings.read("backup_before_launch"):
@@ -790,9 +796,11 @@ func _start_game(world := "") -> void:
 	# Store whether launcher should close after game
 	_launcher_should_close_after_game = not Settings.read("keep_open_after_starting_game")
 	
-	# Create game process wrapper for monitoring
+	# Create game process wrapper for monitoring. We poll for completion in
+	# _process() rather than connecting to "process_exited" - see is_done()
+	# in OSExecWrapper for why.
 	_game_process = OSExecWrapper.new()
-	_game_process.connect("process_exited", self, "_on_game_process_exited")
+	_game_launch_time = OS.get_unix_time()
 	
 	var command_path: String
 	var command_args: PoolStringArray
@@ -948,9 +956,15 @@ func _on_game_process_exited() -> void:
 
 
 func _check_for_renderer_crash() -> void:
-	var crash_log_path = Paths.config_dir.plus_file("crash.log")
+	var crash_log_path = Paths.config.plus_file("crash.log")
 	var f = File.new()
 	if not f.file_exists(crash_log_path):
+		return
+
+	# Ignore a crash.log left over from a previous session - only react to one
+	# written by the game instance we just monitored, otherwise a single old
+	# crash keeps re-triggering this dialog on every future clean close.
+	if f.get_modified_time(crash_log_path) < _game_launch_time:
 		return
 
 	if f.open(crash_log_path, File.READ) != OK:
@@ -967,8 +981,11 @@ func _check_for_renderer_crash() -> void:
 
 	Status.post(tr("msg_crash_renderer_detected"), Enums.MSG_WARN)
 
-	var options_path = Paths.config_dir.plus_file("options.json")
+	var options_path = Paths.config.plus_file("options.json")
 	if not File.new().file_exists(options_path):
+		return
+
+	if not is_inside_tree():
 		return
 
 	var dlg = ConfirmationDialog.new()

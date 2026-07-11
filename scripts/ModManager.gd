@@ -29,6 +29,12 @@ var available: Dictionary = {} setget , _get_available
 var _mod_release_date_cache: Dictionary = {}
 var _pending_api_calls: Array = []
 
+# Guards against re-entrant fetches: `available` stays empty (and thus keeps
+# tripping the `_get_available()` auto-refresh below) until the async BN
+# registry request completes, so without this flag every read of `.available`
+# while it's pending spawns another HTTPRequest.
+var _bn_registry_fetch_in_progress := false
+
 signal mod_compatibility_checked(compatible_count, incompatible_count)
 
 
@@ -310,6 +316,10 @@ func _delete_mod(mod_id: String) -> void:
 
 func _fetch_bn_mods_from_registry() -> void:
 
+	if _bn_registry_fetch_in_progress:
+		return
+	_bn_registry_fetch_in_progress = true
+
 	Status.post("Fetching BN mod registry...", Enums.MSG_INFO)
 	var http = HTTPRequest.new()
 	add_child(http)
@@ -321,6 +331,7 @@ func _fetch_bn_mods_from_registry() -> void:
 		Status.post("Failed to connect to BN mod registry.", Enums.MSG_ERROR)
 		remove_child(http)
 		http.queue_free()
+		_bn_registry_fetch_in_progress = false
 		emit_signal("bn_registry_loaded")
 
 
@@ -328,6 +339,7 @@ func _on_bn_registry_received(result: int, response_code: int, _headers: PoolStr
 
 	remove_child(http)
 	http.queue_free()
+	_bn_registry_fetch_in_progress = false
 
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
 		Status.post("Failed to load BN mod registry (HTTP %d)." % response_code, Enums.MSG_ERROR)
