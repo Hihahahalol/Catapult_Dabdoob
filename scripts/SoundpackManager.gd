@@ -273,6 +273,13 @@ func install_pack(soundpack_index: int, from_file = null, reinstall = false, kee
 	yield(FS, "extract_done")
 	if not keep_archive and not Settings.read("keep_cache"):
 		Directory.new().remove(archive)
+	if FS.last_extract_result != 0:
+		if Directory.new().dir_exists(tmp_dir):
+			FS.rm_dir(tmp_dir)
+			yield(FS, "rm_dir_done")
+		emit_signal("soundpack_installation_finished")
+		return
+
 	FS.move_dir(tmp_dir.plus_file(pack["internal_path"]), sound_dir.plus_file(pack["name"]))
 	yield(FS, "move_dir_done")
 	
