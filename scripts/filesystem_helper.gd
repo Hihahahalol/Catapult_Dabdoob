@@ -178,8 +178,8 @@ func move_dir(abs_path: String, abs_dest: String) -> void:
 
 
 func extract(path: String, dest_dir: String) -> void:
-	# Extracts a .zip, .tar.gz, or .dmg archive using 7-Zip on Windows, Linux, and macOS
-	# Falls back to system utilities on Linux/macOS if 7-Zip is not available.
+	# Extracts a .zip, .tar.gz, or .dmg archive using platform-native tools on macOS,
+	# and 7-Zip/system utilities on Windows and Linux.
 	
 	var sevenzip_exe
 	if OS.get_name() == "Windows":
@@ -223,15 +223,11 @@ func extract(path: String, dest_dir: String) -> void:
 	
 	# On macOS, try multiple extraction methods in order of preference
 	if OS.get_name() == "OSX" and path.to_lower().ends_with(".zip"):
-		# First try 7-Zip if available
-		if d.file_exists(sevenzip_exe):
-			Status.post("[debug] Using 7-Zip for .zip extraction on macOS")
-			command = command_sevenzip_unix
-		# Then try system unzip with full path
-		elif _check_extraction_tool_available("/usr/bin/unzip"):
+		# The bundled 7za is a Linux binary, so prefer macOS's native unzip.
+		if _check_extraction_tool_available("/usr/bin/unzip"):
 			Status.post("[debug] Using /usr/bin/unzip for .zip extraction")
 			command = command_macos_zip
-		# Finally try unzip in PATH
+		# Fall back to unzip in PATH
 		elif _check_extraction_tool_available("unzip"):
 			Status.post("[debug] Using system unzip for .zip extraction")
 			command = command_linux_zip
@@ -537,8 +533,7 @@ func _check_extraction_tool_available(tool_name: String) -> bool:
 
 
 func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
-	# Creates a .zip using 7-Zip on Windows, Linux, and macOS for better performance.
-	# Falls back to system zip on Linux/macOS if 7-Zip is not available.
+	# Creates a .zip using ditto on macOS, and 7-Zip/system zip elsewhere.
 	# parent: directory that zip command is run from  (Path.savegames)
 	# dir_to_zip: relative folder to zip up  (world_name)
 	# dest_zip: zip name   (world_name.zip)
@@ -558,6 +553,10 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 		"name": "/bin/bash",
 		"args": ["-c", "cd '%s' && zip -r '%s' '%s'" % [parent, dest_zip, dir_to_zip]]
 	}
+	var command_macos_zip = {
+		"name": "/usr/bin/ditto",
+		"args": ["-c", "-k", "--keepParent", parent.plus_file(dir_to_zip), dest_zip]
+	}
 	var command_sevenzip_windows = {
 		"name": "cmd",
 		"args": ["/C", "cd /d \"%s\" && \"%s\" a \"%s\" \"%s\" -mx5" % [parent, sevenzip_exe, dest_zip, dir_to_zip]]
@@ -575,14 +574,24 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 		emit_signal("zip_done")
 		return
 	
-	# Try to use 7-Zip first for better performance
-	if d.file_exists(sevenzip_exe):
+	# The bundled 7za is a Linux binary, so use macOS's native archive tool.
+	if OS.get_name() == "OSX":
+		if _check_extraction_tool_available("/usr/bin/ditto"):
+			Status.post("[debug] Using /usr/bin/ditto for ZIP creation")
+			command = command_macos_zip
+		else:
+			Status.post("No ZIP creation tool available on macOS", Enums.MSG_ERROR)
+			last_zip_result = 127
+			emit_signal("zip_done")
+			return
+	# Try to use 7-Zip first for better performance on Windows and Linux
+	elif d.file_exists(sevenzip_exe):
 		if OS.get_name() == "Windows":
 			command = command_sevenzip_windows
-		else:  # Linux (X11) or macOS (OSX)
+		else:  # Linux (X11)
 			command = command_sevenzip_unix
-	# Fall back to system zip on Linux/macOS
-	elif _platform == "X11" or _platform == "OSX":
+	# Fall back to system zip on Linux
+	elif _platform == "X11":
 		Status.post("[debug] Using system zip for compression")
 		command = command_unix_zip
 	else:
@@ -602,4 +611,3 @@ func zip(parent: String, dir_to_zip: String, dest_zip: String) -> void:
 		if oew.output.size() > 0:
 			Status.post(tr("msg_extract_fail_output") % oew.output[0], Enums.MSG_DEBUG)
 	emit_signal("zip_done")
-	
