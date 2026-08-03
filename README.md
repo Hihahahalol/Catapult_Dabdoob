@@ -55,7 +55,7 @@ Without the native helper module, Dabdoob will still run, but it will not be abl
 **Windows:**
 - Build tools for visual studio (MSVC) or MinGW-w64. The easiest way to get this is to install Visual Studio Community Edition with the "Desktop development with C++" workload.
   - [Download Visual Studio Community](https://visualstudio.microsoft.com/downloads/) (free)
-    - Or via winget in terminal: `winget install Microsoft.VisualStudio.2022.Community`winget
+    - Or via winget in terminal: `winget install Microsoft.VisualStudio.2022.Community`
   - Or just the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
   - Or via winget in terminal: `winget install Microsoft.VisualStudio.2022.BuildTools`
 - Install CMake and Python via winget:
