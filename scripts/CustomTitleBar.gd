@@ -133,16 +133,14 @@ func _toggle_maximize() -> void:
 			if work_area.size.x > 100 and work_area.size.y > 100:
 				OS.window_position = work_area.position
 				# Subtract 1 pixel to prevent Godot 3 from forcing exclusive fullscreen
-				print("subtract 1 pixel")
+				
 				OS.window_size = Vector2(work_area.size.x, work_area.size.y - 1)
 			else:
-				print("screen size small")
 				var screen_idx := OS.get_current_screen()
 				OS.window_position = OS.get_screen_position(screen_idx)
 				OS.window_size = OS.get_screen_size(screen_idx)
 		else:
 			# macOS / Linux fallback
-			print("mac/linux fallback")
 			var screen_idx := OS.get_current_screen()
 			OS.window_position = OS.get_screen_position(screen_idx)
 			OS.window_size = OS.get_screen_size(screen_idx)
