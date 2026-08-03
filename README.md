@@ -83,7 +83,7 @@ Without the native helper module, Dabdoob will still run, but it will not be abl
 cd /path/to/Catapult_Dabdoob
 
 # Run the build script
-py ./build.py
+python ./build.py
 ```
 
 This will:
