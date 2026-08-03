@@ -10,6 +10,7 @@ var window_start_position := Vector2.ZERO
 var is_maximized := false
 var unmaximized_position := Vector2.ZERO
 var unmaximized_size := Vector2.ZERO
+var win32_helper = null
 
 onready var title_label = $MarginContainer/HBoxContainer/Title
 onready var icon = $MarginContainer/HBoxContainer/Icon
@@ -19,6 +20,10 @@ onready var minimize_button = $MarginContainer/HBoxContainer/MinimizeButton
 
 
 func _ready() -> void:
+	# Load Windows native DLL if on Windows platform
+	if OS.get_name() == "Windows":
+		win32_helper = preload("res://bin/Win32Helper.gdns").new()
+	
 	# Load and set the window icon
 	var app_icon = load("res://icons/appiconpng.png")
 	if app_icon:
@@ -105,27 +110,53 @@ func _on_MaximizeButton_pressed() -> void:
 
 func _toggle_maximize() -> void:
 	if is_maximized:
-		# Restore
+		# window
 		OS.window_position = unmaximized_position
 		OS.window_size = unmaximized_size
 		is_maximized = false
 		maximize_button.texture_normal = maximize_icon
 	else:
-		# Maximize to work area (respects taskbar, like File Explorer)
+		# maximise
 		unmaximized_position = OS.window_position
 		unmaximized_size = OS.window_size
 		is_maximized = true
 		maximize_button.texture_normal = restore_icon
-		var screen_idx := OS.get_current_screen()
-		var work_area: Rect2 = OS.get_screen_work_area(screen_idx)
-		if work_area.size.x > 100 and work_area.size.y > 100:
-			OS.window_position = work_area.position
-			OS.window_size = work_area.size
+		
+		# OS specific maximise logic
+		if OS.get_name() == "Windows":
+			var work_area: Rect2 = get_current_window_work_area_windows()
+			
+			if work_area.size.x > 100 and work_area.size.y > 100:
+				OS.window_position = work_area.position
+				# Subtract 1 pixel to prevent Godot 3 from forcing exclusive fullscreen
+				print("subtract 1 pixel")
+				OS.window_size = Vector2(work_area.size.x, work_area.size.y - 1)
+			else:
+				print("screen size small")
+				var screen_idx := OS.get_current_screen()
+				OS.window_position = OS.get_screen_position(screen_idx)
+				OS.window_size = OS.get_screen_size(screen_idx)
 		else:
-			# get_screen_work_area returned a bad rect (can occur with borderless windows);
-			# fall back to full screen size — may overlap taskbar but won't vanish
+			# macOS / Linux fallback
+			print("mac/linux fallback")
+			var screen_idx := OS.get_current_screen()
 			OS.window_position = OS.get_screen_position(screen_idx)
 			OS.window_size = OS.get_screen_size(screen_idx)
+
+
+func get_current_window_work_area_windows() -> Rect2:
+	# Target screen using window center point
+	var win_center = OS.window_position + (OS.window_size / 2.0)
+	
+	# Call native DLL to get taskbar-aware work area for the monitor at this point
+	if win32_helper:
+		var work_area = win32_helper.get_work_area_for_point(int(win_center.x), int(win_center.y))
+		if work_area.size.x > 0 and work_area.size.y > 0:
+			return work_area
+	
+	# Fallback if DLL is unavailable or returns empty Rect2
+	var screen_idx = OS.get_current_screen()
+	return Rect2(OS.get_screen_position(screen_idx), OS.get_screen_size(screen_idx))
 
 
 func _on_CloseButton_pressed() -> void:
