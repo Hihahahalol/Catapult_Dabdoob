@@ -22,7 +22,11 @@ onready var minimize_button = $MarginContainer/HBoxContainer/MinimizeButton
 func _ready() -> void:
 	# Load Windows native DLL if on Windows platform
 	if OS.get_name() == "Windows":
-		win32_helper = preload("res://bin/Win32Helper.gdns").new()
+		var helper_gdns_path = "res://native/Win32Helper.gdns"
+		if ResourceLoader.exists(helper_gdns_path):
+			var helper_class = load(helper_gdns_path)
+			if helper_class:
+				win32_helper = helper_class.new()
 	
 	# Load and set the window icon
 	var app_icon = load("res://icons/appiconpng.png")
