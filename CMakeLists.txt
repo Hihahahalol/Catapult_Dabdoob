@@ -30,7 +30,7 @@ target_link_libraries(win32_helper PRIVATE godot-cpp)
 
 # 5. platform specific linking
 if(WIN32)
-    # Link Windows system API library for SPI_GETWORKAREA
+    # Link Windows system API library for MonitorFromPoint / GetMonitorInfoW
     target_link_libraries(win32_helper PRIVATE user32)
 
     # Static runtime linking for MinGW GCC
