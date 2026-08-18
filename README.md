@@ -41,6 +41,58 @@ None required. The launcher is a single, self-contained executable. Just [downlo
 
  - You only need to disable gatekeeper for Dabdoob, or disable it altogether. Check this guide for more information: https://disable-gatekeeper.github.io/
 
+## Building from Source
+
+The native Windows helper module requires **CMake 3.14+**, a **C++ compiler supporting C++14 or later**, and Python 3.6+ to build.
+Without the native helper module, Dabdoob will still run, but it will not be able to detect the work area of the screen on Windows, which may result in the launcher being partially off-screen on some monitors and the taskbar being hidden behind the launcher window. The native helper module is not required on Linux or macOS.
+
+### Prerequisites
+
+**All platforms:**
+- CMake 3.14 or later: [Download here](https://cmake.org/download/)
+- Python 3.6 or later: [Download here](https://www.python.org/downloads/)
+
+**Windows:**
+- Build tools for visual studio (MSVC) or MinGW-w64. The easiest way to get this is to install Visual Studio Community Edition with the "Desktop development with C++" workload.
+  - [Download Visual Studio Community](https://visualstudio.microsoft.com/downloads/) (free)
+    - Or via winget in terminal: `winget install Microsoft.VisualStudio.2022.Community`
+  - Or just the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
+  - Or via winget in terminal: `winget install Microsoft.VisualStudio.2022.BuildTools`
+- Install CMake and Python via winget:
+  ```powershell
+  winget install Kitware.CMake
+  winget install Python.Python.3.11
+  # or if you want a whole Python distribution with conda, you can install Miniconda3:
+  winget install Anaconda.Miniconda3
+  ```
+
+**Linux:**
+- GCC 5.0+ or Clang 3.4+
+  - **Debian/Ubuntu:** `sudo apt install build-essential cmake python3`
+  - **Arch:** `sudo pacman -S base-devel cmake python`
+  - **Fedora:** `sudo dnf install gcc gcc-c++ cmake python3`
+
+**macOS:**
+- Xcode Command Line Tools: `xcode-select --install`
+- Homebrew (optional but recommended): `brew install cmake python3`
+
+### Build Instructions
+
+```bash
+# Navigate to the project root
+cd /path/to/Catapult_Dabdoob
+
+# Run the build script
+python ./build.py
+```
+
+This will:
+1. Create a `build/` directory with CMake configuration
+2. Compile native helper modules (x64)
+3. Output the DLL to `bin/Release/win32_helper.dll`
+
+The compiled DLL will be automatically picked up by Godot when you run the project.
+
 ## System requirements
 
 - 64-bit operating system.
