@@ -58,11 +58,18 @@ jobs:
               new_ncmds = 0
               new_sizeofcmds = 0
               new_size = None
+              datasize = None
+              linkedit_cmd_off = None
               for _ in range(ncmds):
                   cmd, cmdsize = struct.unpack_from('<II', data, off)
+                  if cmd == 0x19:  # LC_SEGMENT_64
+                      segname = data[off + 8:off + 24].rstrip(b'\x00')
+                      if segname == b'__LINKEDIT':
+                          linkedit_cmd_off = off
                   if cmd == 0x1d:  # LC_CODE_SIGNATURE
-                      dataoff, _datasize = struct.unpack_from('<II', data, off + 8)
+                      dataoff, ds = struct.unpack_from('<II', data, off + 8)
                       new_size = dataoff
+                      datasize = ds
                   else:
                       if write_ptr != off:
                           data[write_ptr:write_ptr + cmdsize] = data[off:off + cmdsize]
@@ -74,6 +81,14 @@ jobs:
                   for j in range(write_ptr, cmds_end):
                       data[j] = 0
                   struct.pack_into('<II', data, base + 16, new_ncmds, new_sizeofcmds)
+                  # __LINKEDIT's declared size covers the code signature blob
+                  # too, so shrink it by the same amount or codesign sees a
+                  # segment that runs past the end of the (now shorter) file.
+                  if linkedit_cmd_off is not None and datasize:
+                      vmsize, = struct.unpack_from('<Q', data, linkedit_cmd_off + 32)
+                      filesize, = struct.unpack_from('<Q', data, linkedit_cmd_off + 48)
+                      struct.pack_into('<Q', data, linkedit_cmd_off + 32, vmsize - datasize)
+                      struct.pack_into('<Q', data, linkedit_cmd_off + 48, filesize - datasize)
               return new_size
 
           magic = struct.unpack_from('<I', data, 0)[0]
