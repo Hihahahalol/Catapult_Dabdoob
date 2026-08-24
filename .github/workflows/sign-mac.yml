@@ -40,12 +40,19 @@ jobs:
           # --force resign fail on it). Strip the existing LC_CODE_SIGNATURE load
           # command and its trailing data by hand so codesign gets a clean,
           # unsigned Mach-O to sign.
+          #
+          # This also preflights the file for truncation: if an uploaded build
+          # has a fat-binary architecture slice whose declared offset+size runs
+          # past the actual file length, fail here with a clear message instead
+          # of the cryptic "main executable failed strict validation" /
+          # "truncated or malformed fat file" errors codesign/lipo give later.
           python3 - "$EXE_PATH" <<'PYEOF'
           import struct, sys
 
           path = sys.argv[1]
           with open(path, 'rb') as f:
               data = bytearray(f.read())
+          file_len = len(data)
 
           def strip_thin(base):
               magic = struct.unpack_from('<I', data, base)[0]
@@ -97,6 +104,16 @@ jobs:
               for i in range(nfat):
                   entry_off = 8 + i * 20
                   cputype, cpusubtype, offset, size, align = struct.unpack_from('>iiIII', data, entry_off)
+                  if offset + size > file_len:
+                      missing = offset + size - file_len
+                      pct = missing / size * 100
+                      sys.exit(
+                          f'ERROR: architecture slice (cputype={cputype}) at offset {offset} declares '
+                          f'size {size}, but the file is only {file_len} bytes -- {missing} bytes '
+                          f'({pct:.1f}%) of this slice are missing. The uploaded app bundle is truncated/'
+                          f'corrupted, not a codesign issue. Re-export the macOS build and re-upload the '
+                          f'release asset.'
+                      )
                   new_size = strip_thin(offset)
                   if new_size is not None:
                       struct.pack_into('>iiIII', data, entry_off, cputype, cpusubtype, offset, new_size, align)
@@ -110,15 +127,7 @@ jobs:
               f.write(data)
           PYEOF
 
-          echo "--- diagnostic: try signing each thin arch slice separately ---"
-          lipo -archs "$EXE_PATH" || true
-          for ARCH in x86_64 arm64; do
-            lipo -thin "$ARCH" "$EXE_PATH" -output "/tmp/thin_$ARCH" && \
-            echo "== $ARCH ==" && \
-            codesign --force --sign - -vvvv "/tmp/thin_$ARCH" 2>&1 || echo "$ARCH FAILED (see above)"
-          done
-
-          codesign --force --deep --sign - -vvvv "$APP_PATH"
+          codesign --force --deep --sign - "$APP_PATH"
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Build DMG
