@@ -1,9 +1,9 @@
 "keys","ru"
 ,
-"window_title","Dabdoob — лончер для Cataclysm: DDA и BN"
+"window_title","Dabdoob — лаунчер для Cataclysm: DDA и BN"
 "str_welcome","Добро пожаловать в Dabdoob!"
 "str_tip_of_the_day","\n\n[u]Совет дня:[/u]\n"
-"str_donor_of_the_day","\n\n[color=#f5c842][b]— Message from a donor —[/b][/color]\n"
+"str_donor_of_the_day","\n\n[color=#f5c842][b]— Сообщение от спонсора —[/b][/color]\n"
 "msg_theme_load_error","Не удалось загрузить тему %s."
 "debug_test","Это отладочный текст для проверки извлечения переводов."
 ,
@@ -20,16 +20,16 @@
 ,
 "tab_game","Игра"
 "tab_mods","Моды"
-"tab_soundpacks","Звуки"
+"tab_soundpacks","Звуковые пакеты"
 "tab_tilesets","Тайлсеты"
 "tab_fonts","Шрифты"
-"tab_backups","Бэкапы"
+"tab_backups","Резервные копии"
 "tab_settings","Настройки"
 "tab_about","О программе"
 "about_app_title","Dabdoob - Лаунчер Cataclysm"
 "about_app_desc","Dabdoob — это лаунчер, который продолжает разработку теперь заброшенного лаунчера Catapult. Он разрабатывается и поддерживается одним человеком. Вы можете найти меня в Discord и Github по ссылкам ниже.
 
-Если вы цените работу создателей Cataclysm и его модов/тайлсетов/звуковых пакетов, не забудьте посетить их, и если вы цените мою работу, рассмотрите возможность пожертвования по ссылке ниже!"
+Если вы цените работу создателей Cataclysm и его модов/тайлсетов/звуковых пакетов, не забудьте посетить их страницы. Если вы цените мою работу, рассмотрите возможность пожертвования по ссылке ниже!"
 "about_links","Ссылки"
 "thank_you_title","Спасибо за загрузку Dabdoob!"
 "thank_you_message","Спасибо за установку Dabdoob! Надеюсь, вам понравится.
