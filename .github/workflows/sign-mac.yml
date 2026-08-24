@@ -11,7 +11,7 @@ on:
 
 jobs:
   sign-and-package:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
       - name: Download macOS asset from release
