@@ -11,7 +11,7 @@ on:
 
 jobs:
   sign-and-package:
-    runs-on: macos-15
+    runs-on: macos-latest
 
     steps:
       - name: Download macOS asset from release
@@ -31,7 +31,71 @@ jobs:
         run: |
           APP_PATH=$(find . -name "*.app" -maxdepth 5 | head -1)
           echo "Found app at: $APP_PATH"
-          codesign --remove-signature "$APP_PATH"
+          EXE_NAME=$(defaults read "$APP_PATH/Contents/Info" CFBundleExecutable)
+          EXE_PATH="$APP_PATH/Contents/MacOS/$EXE_NAME"
+          echo "Found main executable at: $EXE_PATH"
+
+          # The bundled executable ships with a malformed ad-hoc signature (two
+          # CodeDirectory blobs both claiming slot 0) that crashes codesign when
+          # it tries to parse or remove it (both --remove-signature and a plain
+          # --force resign fail on it). Strip the existing LC_CODE_SIGNATURE load
+          # command and its trailing data by hand so codesign gets a clean,
+          # unsigned Mach-O to sign.
+          python3 - "$EXE_PATH" <<'PYEOF'
+          import struct, sys
+
+          path = sys.argv[1]
+          with open(path, 'rb') as f:
+              data = bytearray(f.read())
+
+          def strip_thin(base):
+              magic = struct.unpack_from('<I', data, base)[0]
+              if magic != 0xfeedfacf:  # not a 64-bit Mach-O, leave it alone
+                  return None
+              ncmds, sizeofcmds = struct.unpack_from('<II', data, base + 16)
+              off = base + 32
+              cmds_end = off + sizeofcmds
+              write_ptr = off
+              new_ncmds = 0
+              new_sizeofcmds = 0
+              new_size = None
+              for _ in range(ncmds):
+                  cmd, cmdsize = struct.unpack_from('<II', data, off)
+                  if cmd == 0x1d:  # LC_CODE_SIGNATURE
+                      dataoff, _datasize = struct.unpack_from('<II', data, off + 8)
+                      new_size = dataoff
+                  else:
+                      if write_ptr != off:
+                          data[write_ptr:write_ptr + cmdsize] = data[off:off + cmdsize]
+                      write_ptr += cmdsize
+                      new_ncmds += 1
+                      new_sizeofcmds += cmdsize
+                  off += cmdsize
+              if new_size is not None:
+                  for j in range(write_ptr, cmds_end):
+                      data[j] = 0
+                  struct.pack_into('<II', data, base + 16, new_ncmds, new_sizeofcmds)
+              return new_size
+
+          magic = struct.unpack_from('<I', data, 0)[0]
+          if magic == 0xbebafeca:  # fat binary (big-endian FAT_MAGIC read as little-endian)
+              nfat = struct.unpack_from('>I', data, 4)[0]
+              for i in range(nfat):
+                  entry_off = 8 + i * 20
+                  cputype, cpusubtype, offset, size, align = struct.unpack_from('>iiIII', data, entry_off)
+                  new_size = strip_thin(offset)
+                  if new_size is not None:
+                      struct.pack_into('>iiIII', data, entry_off, cputype, cpusubtype, offset, new_size, align)
+                      print(f'stripped signature from arch slice at {offset}: {size} -> {new_size} bytes')
+          else:
+              new_size = strip_thin(0)
+              if new_size is not None:
+                  print(f'stripped signature: {len(data)} -> {new_size} bytes')
+
+          with open(path, 'wb') as f:
+              f.write(data)
+          PYEOF
+
           codesign --force --deep --sign - "$APP_PATH"
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
