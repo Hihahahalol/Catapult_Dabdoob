@@ -31,8 +31,7 @@ jobs:
         run: |
           APP_PATH=$(find . -name "*.app" -maxdepth 5 | head -1)
           echo "Found app at: $APP_PATH"
-          EXE_NAME=$(defaults read "$APP_PATH/Contents/Info" CFBundleExecutable)
-          EXE_PATH="$APP_PATH/Contents/MacOS/$EXE_NAME"
+          EXE_PATH=$(find "$APP_PATH/Contents/MacOS" -type f | head -1)
           echo "Found main executable at: $EXE_PATH"
 
           # The bundled executable ships with a malformed ad-hoc signature (two
