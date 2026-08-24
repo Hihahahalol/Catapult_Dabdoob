@@ -127,7 +127,15 @@ jobs:
               f.write(data)
           PYEOF
 
-          codesign --force --deep --sign - "$APP_PATH"
+          echo "--- diagnostic: try signing each thin arch slice separately ---"
+          lipo -archs "$EXE_PATH" || true
+          for ARCH in x86_64 arm64; do
+            lipo -thin "$ARCH" "$EXE_PATH" -output "/tmp/thin_$ARCH" && \
+            echo "== $ARCH ==" && \
+            codesign --force --sign - -vvvv "/tmp/thin_$ARCH" 2>&1 || echo "$ARCH FAILED (see above)"
+          done
+
+          codesign --force --deep --sign - -vvvv "$APP_PATH"
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Build DMG
