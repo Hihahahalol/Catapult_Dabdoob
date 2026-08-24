@@ -25,7 +25,7 @@ jobs:
             --repo "${{ github.repository }}"
 
       - name: Unzip app bundle
-        run: unzip -q Dabdoob-mac-beta.app.zip
+        run: ditto -xk Dabdoob-mac-beta.app.zip .
 
       - name: Find and codesign app bundle
         run: |
