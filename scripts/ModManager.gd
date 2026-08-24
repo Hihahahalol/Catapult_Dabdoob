@@ -376,6 +376,15 @@ func _on_bn_registry_received(result: int, response_code: int, _headers: PoolStr
 			}
 		}
 
+		# Special case: mods.cataclysmbn.org's generator currently emits a
+		# broken "homepage" for xe038 (mod name duplicated at the end of the
+		# path -> 404) and its files sit 2 folders deep in a shared monorepo
+		# that the generic 1-level modinfo.json search can't find. Remove this
+		# block once the upstream registry fixes the homepage field (see
+		# _process_downloaded_mod for the matching extract-path override).
+		if mod_id == "xe038":
+			available[mod_id]["homepage"] = "https://github.com/leoCottret/cbn-leocottret-mods/tree/main/MODS/XE038"
+
 	Status.post("Loaded %d mods from BN registry." % available.size(), Enums.MSG_SUCCESS)
 	emit_signal("bn_registry_loaded")
 
@@ -791,7 +800,15 @@ func _install_mod(mod_id: String) -> void:
 	
 	if mod_id in available:
 		var mod = available[mod_id]
-		
+
+		# Special case: xe038 lives in a ~200MB shared monorepo with no dedicated
+		# zip; fetch just its folder via the GitHub API instead (see
+		# _install_xe038_via_api). Remove once upstream fixes the registry entry
+		# or general extract_path support is added.
+		if mod_id == "xe038":
+			yield(_install_xe038_via_api(mod), "completed")
+			return
+
 		# Registry mods have a direct ZIP URL — skip the GitHub releases API step
 		if mod.get("source_type") == "bn_registry":
 			_download_and_install_mod(mod["location"], mod["modinfo"]["name"])
@@ -821,6 +838,120 @@ func _install_mod(mod_id: String) -> void:
 		Status.post(tr("msg_mod_not_found") % mod_id, Enums.MSG_ERROR)
 	
 	emit_signal("_done_installing_mod")
+
+
+# Special case: fetch xe038's mod folder directly via GitHub's Contents API
+# instead of downloading the ~200MB monorepo it lives in (see
+# _on_bn_registry_received for the matching homepage override). Remove once
+# upstream fixes the registry entry or general extract_path support is added.
+func _install_xe038_via_api(mod: Dictionary) -> void:
+
+	var mod_id = "xe038"
+	var mod_name = mod["modinfo"]["name"]
+	var dest_dir = Paths.mods_user.plus_file(mod_id)
+
+	Status.post("Downloading %s directly (skipping the shared monorepo archive)..." % mod_name, Enums.MSG_INFO)
+
+	# Unauthenticated: this only makes a handful of Contents API calls (well
+	# under GitHub's 60/hr unauthenticated limit for a public repo), and
+	# skipping auth here sidesteps any issue with the user's GitHub token
+	# (e.g. a fine-grained PAT needing "Bearer" instead of the "token" scheme
+	# _get_github_auth_headers sends) causing a 401 on this specific call.
+	var headers = PoolStringArray()
+
+	if Directory.new().dir_exists(dest_dir):
+		FS.rm_dir(dest_dir)
+		yield(FS, "rm_dir_done")
+
+	var ok = yield(_fetch_github_dir_recursive("leoCottret", "cbn-leocottret-mods", "MODS/XE038", dest_dir, headers), "completed")
+
+	if ok:
+		_fix_mod_permissions_macos(dest_dir)
+		_store_mod_download_date(mod_id)
+		Status.post(tr("msg_mod_installed") % mod_name)
+	else:
+		Status.post(tr("msg_mod_download_failed") % mod_name, Enums.MSG_ERROR)
+
+	emit_signal("_done_installing_mod")
+
+
+# Recursively mirrors a GitHub repo directory into a local folder via the
+# Contents API — one request per subdirectory, one per file.
+func _fetch_github_dir_recursive(owner: String, repo: String, path: String, dest_dir: String, headers: PoolStringArray) -> bool:
+
+	var api_url = "https://api.github.com/repos/%s/%s/contents/%s" % [owner, repo, _github_api_escape_path(path)]
+	var listing = yield(_http_get(api_url, headers), "completed")
+	if not listing["ok"]:
+		Status.post("Failed to list %s (HTTP %s)" % [path, listing.get("response_code", -1)], Enums.MSG_ERROR)
+		return false
+
+	var json = JSON.parse(listing["body"].get_string_from_utf8())
+	if json.error != OK or typeof(json.result) != TYPE_ARRAY:
+		Status.post("Failed to parse directory listing for %s" % path, Enums.MSG_ERROR)
+		return false
+
+	var d = Directory.new()
+	if not d.dir_exists(dest_dir):
+		d.make_dir_recursive(dest_dir)
+
+	for entry in json.result:
+		if entry["type"] == "dir":
+			var sub_ok = yield(_fetch_github_dir_recursive(owner, repo, entry["path"], dest_dir.plus_file(entry["name"]), headers), "completed")
+			if not sub_ok:
+				return false
+		elif entry["type"] == "file":
+			var file_resp = yield(_http_get(entry["download_url"], PoolStringArray()), "completed")
+			if not file_resp["ok"]:
+				Status.post("Failed to download %s" % entry["path"], Enums.MSG_ERROR)
+				return false
+			var f = File.new()
+			if f.open(dest_dir.plus_file(entry["name"]), File.WRITE) != OK:
+				Status.post("Failed to write %s" % entry["path"], Enums.MSG_ERROR)
+				return false
+			f.store_buffer(file_resp["body"])
+			f.close()
+
+	return true
+
+
+func _github_api_escape_path(path: String) -> String:
+	var parts = path.split("/")
+	for i in range(parts.size()):
+		parts[i] = parts[i].http_escape()
+	return PoolStringArray(parts).join("/")
+
+
+# Awaitable single HTTP GET. {"ok": true, "body": PoolByteArray} on a 200
+# response, {"ok": false, "response_code": int} otherwise.
+func _http_get(url: String, headers: PoolStringArray) -> Dictionary:
+
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+
+	if Settings.read("proxy_option") == "on":
+		var host = Settings.read("proxy_host")
+		var port = Settings.read("proxy_port") as int
+		http_request.set_http_proxy(host, port)
+		http_request.set_https_proxy(host, port)
+
+	var error = http_request.request(url, headers)
+	if error != OK:
+		remove_child(http_request)
+		http_request.queue_free()
+		return {"ok": false, "response_code": -1}
+
+	var response = yield(http_request, "request_completed")
+	remove_child(http_request)
+	http_request.queue_free()
+
+	var result: int = response[0]
+	var response_code: int = response[1]
+	var body: PoolByteArray = response[3]
+
+	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		return {"ok": false, "response_code": response_code}
+
+	return {"ok": true, "body": body}
 
 
 func get_updatable_mod_ids() -> Array:
