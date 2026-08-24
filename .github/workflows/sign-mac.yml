@@ -110,7 +110,7 @@ jobs:
               f.write(data)
           PYEOF
 
-          codesign --force --deep --sign - "$APP_PATH"
+          codesign --force --deep --sign - -vvvv "$APP_PATH"
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Build DMG
