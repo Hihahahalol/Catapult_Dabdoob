@@ -127,15 +127,24 @@ jobs:
               f.write(data)
           PYEOF
 
-          echo "--- diagnostic: try signing each thin arch slice separately ---"
-          lipo -archs "$EXE_PATH" || true
-          for ARCH in x86_64 arm64; do
-            lipo -thin "$ARCH" "$EXE_PATH" -output "/tmp/thin_$ARCH" && \
-            echo "== $ARCH ==" && \
-            codesign --force --sign - -vvvv "/tmp/thin_$ARCH" 2>&1 || echo "$ARCH FAILED (see above)"
+          # codesign refuses to sign the merged fat (x86_64 + arm64) main
+          # executable directly ("main executable failed strict validation"),
+          # even though each thin architecture slice signs cleanly on its own.
+          # Work around this by signing each slice individually, then
+          # reassembling them with lipo, which produces a cleanly-formed fat
+          # binary that codesign will accept for the outer bundle sign.
+          THIN_ARCHS=$(lipo -archs "$EXE_PATH")
+          echo "Architectures: $THIN_ARCHS"
+          THIN_PATHS=()
+          for ARCH in $THIN_ARCHS; do
+            THIN_PATH="/tmp/thin_$ARCH"
+            lipo -thin "$ARCH" "$EXE_PATH" -output "$THIN_PATH"
+            codesign --force --sign - "$THIN_PATH"
+            THIN_PATHS+=("$THIN_PATH")
           done
+          lipo -create "${THIN_PATHS[@]}" -output "$EXE_PATH"
 
-          codesign --force --deep --sign - -vvvv "$APP_PATH"
+          codesign --force --sign - "$APP_PATH"
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Build DMG
