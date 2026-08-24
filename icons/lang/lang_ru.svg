@@ -21,11 +21,18 @@
        x="0"
        y="-8.8817842e-16" />
     <rect
-       style="fill:#088ce8;fill-opacity:1;stroke-width:0.30817"
+       style="fill:#0036A7;fill-opacity:1"
        id="rect45"
        width="238.125"
-       height="58.208332"
+       height="52.916667"
        x="0"
-       y="50.270832" />
+       y="52.916667" />
+    <rect
+       style="fill:#D62718"
+       id="rect47"
+       width="238.125"
+       height="52.916667"
+       x="0"
+       y="105.833334" />
   </g>
 </svg>
