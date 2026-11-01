@@ -1054,7 +1054,9 @@ func _get_mod_latest_release_date(mod_id: String) -> String:
 
 	# Registry mods carry last_updated directly — no GitHub API needed
 	if mod.get("source_type") == "bn_registry":
-		var ts = mod.get("last_updated", "")
+		# The registry emits full ISO 8601 timestamps, while everything else
+		# (and the UI) expects a bare YYYY-MM-DD date.
+		var ts = _date_only(mod.get("last_updated", ""))
 		if ts != "":
 			_mod_release_date_cache[mod_id] = ts
 			return ts
@@ -1404,8 +1406,12 @@ func _check_all_mod_compatibility() -> void:
 # Calculate days between release date and current date
 func _calculate_days_since_release(release_date: String) -> int:
 	
-	# Parse release date (format: YYYY-MM-DD)
-	var parts = release_date.split("-")
+	# Accepts both "YYYY-MM-DD" and a full ISO 8601 timestamp. Callers used to
+	# hand us timestamps like "2026-09-23T02:54:09Z"; splitting those on "-"
+	# still yields 3 parts, so the day component became "23T02:54:09Z" and
+	# int() turned it into a huge number, producing absurd values such as
+	# "-23025386 days ago".
+	var parts = _date_only(release_date).split("-")
 	if len(parts) != 3:
 		return 0
 	
@@ -1413,14 +1419,43 @@ func _calculate_days_since_release(release_date: String) -> int:
 	var release_month = int(parts[1])
 	var release_day = int(parts[2])
 	
-	# Get current date
+	if release_year <= 0 or release_month < 1 or release_month > 12 \
+			or release_day < 1 or release_day > 31:
+		return 0
+	
 	var current_date = OS.get_datetime()
 	
-	# Simple day calculation (approximate)
-	var release_days = release_year * 365 + release_month * 30 + release_day
-	var current_days = current_date.year * 365 + current_date.month * 30 + current_date.day
+	# Use real calendar arithmetic instead of the old year*365 + month*30
+	# approximation, which drifted by up to a few days per release. Midday is
+	# used for both ends so a DST shift can never move the result by a day.
+	var release_unix = OS.get_unix_time_from_datetime({
+		"year": release_year, "month": release_month, "day": release_day,
+		"hour": 12, "minute": 0, "second": 0
+	})
+	var current_unix = OS.get_unix_time_from_datetime({
+		"year": current_date.year, "month": current_date.month,
+		"day": current_date.day, "hour": 12, "minute": 0, "second": 0
+	})
 	
-	return current_days - release_days
+	# Clamp at 0 so a date in the future (registry timezone offsets, clock
+	# skew) reads as "0 days ago" instead of a negative number.
+	return int(max(0, round((current_unix - release_unix) / 86400.0)))
+
+
+# Reduce a date string to its bare YYYY-MM-DD component. Handles plain dates,
+# ISO 8601 timestamps ("2026-09-23T02:54:09Z") and space-separated datetimes.
+func _date_only(date_string: String) -> String:
+	
+	var trimmed = date_string.strip_edges()
+	if trimmed == "":
+		return ""
+	
+	for separator in ["T", " "]:
+		var split_at = trimmed.find(separator)
+		if split_at != -1:
+			trimmed = trimmed.substr(0, split_at)
+	
+	return trimmed
 
 
 func _find_mod_directory(extracted_dir: String) -> String:

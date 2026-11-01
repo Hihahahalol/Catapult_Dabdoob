@@ -217,8 +217,9 @@ func reload_available() -> void:
 			# Apply color and status indicators for all channels (both stable and experimental)
 			var mod_release_date = _mods._get_mod_latest_release_date(id)
 			var mod_location = _mods.available[id]["location"]
+			var is_registry_mod = _mods.available[id].get("source_type") == "bn_registry"
 			
-			if mod_location.begins_with("https://github.com/") and mod_release_date == "":
+			if mod_location.begins_with("https://github.com/") and mod_release_date == "" and not is_registry_mod:
 				# Still fetching/checking - show in yellow with "CHECKING" prefix
 				_available_list.set_item_custom_fg_color(i, Color(1.0, 1.0, 0.0))  # Yellow
 				var current_text = _available_list.get_item_text(i)
@@ -229,10 +230,15 @@ func reload_available() -> void:
 				var current_text = _available_list.get_item_text(i)
 				_available_list.set_item_text(i, "[OUTDATED] " + current_text)
 			elif _mods.is_mod_compatible(id) and mod_release_date != "":
-				# Has data and is compatible - show in green with "UP-TO-DATE" prefix
+				# Has data and is compatible - show in green. Mods served by the
+				# official CBN registry get "OFFICIAL" instead, since for them the
+				# meaningful signal is upstream provenance, not recency.
 				_available_list.set_item_custom_fg_color(i, Color(0.2, 0.8, 0.2))  # Green
 				var current_text = _available_list.get_item_text(i)
-				_available_list.set_item_text(i, "[UP-TO-DATE] " + current_text)
+				var status_prefix = "[OFFICIAL] "
+				if _mods.available[id].get("source_type") != "bn_registry":
+					status_prefix = "[UP-TO-DATE] "
+				_available_list.set_item_text(i, status_prefix + current_text)
 				
 	if _available_list.get_item_count() == 0:
 		_btn_add_all.disabled = true
@@ -328,6 +334,7 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 	if "stability" in modinfo:
 		var stability_rating = modinfo["stability"]
 		var stability_text = ""
+		var is_official_listing = false
 		
 		match stability_rating:
 			-1:
@@ -346,7 +353,10 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 				stability_text = "2 years"
 			100:
 				if mod_dict_key != "" and _mods.available[mod_dict_key].get("source_type") == "bn_registry":
-					stability_text = "officially maintained"
+					# Registry mods are distributed by the official BN modlist, so
+					# recency says nothing about whether they still work.
+					is_official_listing = true
+					stability_text = "The mod is from an official BN modlist, but non updated mods might still have bugs or be broken"
 				else:
 					stability_text = "forever"
 			_:
@@ -356,7 +366,11 @@ func _make_mod_info_string(mod: Dictionary) -> String:
 		if mod_dict_key != "":
 			var mod_release_date = _mods._get_mod_latest_release_date(mod_dict_key)
 			var is_compatible = _mods.is_mod_compatible(mod_dict_key)
-			if mod_release_date != "":
+			if is_official_listing:
+				# The sentence above already carries the caveat; appending an
+				# "Up to Date!" verdict next to it would contradict it.
+				result += "[b][u]%s[/u][/b] %s\n" % [tr("str_mod_stability"), stability_text]
+			elif mod_release_date != "":
 				if is_compatible:
 					result += "[b][u]%s[/u][/b] %s - [color=green]Up to Date![/color]\n" % [tr("str_mod_stability"), stability_text]
 				else:
