@@ -77,15 +77,15 @@ const _ASSET_FILTERS = {
 	},
 	"tlg-experimental-linux": {
 		"field": "name",
-		"substring": "ctlg-linux-tiles-x64",
+		"substring": "ctlg-linux-tiles",
 	},
 	"tlg-experimental-win": {
 		"field": "name",
-		"substring": "ctlg-windows-tiles-sounds-x64",
+		"substring": "ctlg-windows-tiles-sounds",
 	},
 	"tlg-experimental-mac": {
 		"field": "name",
-		"substring": "ctlg-osx-tiles",
+		"substring": "ctlg-osx-curses",
 	},
 }
 
