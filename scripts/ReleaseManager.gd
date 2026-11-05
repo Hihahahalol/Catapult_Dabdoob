@@ -77,15 +77,17 @@ const _ASSET_FILTERS = {
 	},
 	"tlg-experimental-linux": {
 		"field": "name",
-		"substring": "ctlg-linux-tiles",
+		"substring": "ctlg-linux",
+		"exclude": "-curses",
 	},
 	"tlg-experimental-win": {
 		"field": "name",
-		"substring": "ctlg-windows-tiles-sounds",
+		"substring": "ctlg-windows",
 	},
 	"tlg-experimental-mac": {
 		"field": "name",
-		"substring": "ctlg-osx-curses",
+		"substring": "ctlg-osx",
+		"exclude": "-curses",
 	},
 }
 
@@ -420,9 +422,15 @@ func _parse_builds(data: PoolByteArray, write_to: Array, filter: Dictionary) -> 
 		build["has_any_assets"] = len(rec["assets"]) > 0
 
 		for asset in rec["assets"]:
-			if filter["substring"] in asset[filter["field"]] and not "-pdb" in asset["name"]:
-				build["url"] = asset["browser_download_url"]
-				build["filename"] = asset["name"]
+			if not filter["substring"] in asset[filter["field"]]:
+				continue
+			var exclude = filter.get("exclude", "")
+			if exclude != "" and exclude in asset["name"]:
+				continue
+			if "-pdb" in asset["name"]:
+				continue
+			build["url"] = asset["browser_download_url"]
+			build["filename"] = asset["name"]
 
 		# Include all releases, even those without matching assets
 		tmp_arr.append(build)
