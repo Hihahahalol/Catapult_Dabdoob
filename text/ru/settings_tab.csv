@@ -8,6 +8,7 @@
 "cbtn_always_show_installs","Всегда показывать список установок"
 "cbtn_show_game_desc","Показывать описание игры"
 "cbtn_show_obsolete_mods","Показывать устаревшие моды в установленных"
+"cbtn_patch_macos_app_bundle","Пропатчить Cataclysm.app (включает моды, тайлсеты и резервные копии лаунчера)"
 "cbtn_update_mods_with_game","Обновлять моды при обновлении игры"
 "cbtn_updating_to_same_build","Разрешить «обновляться» на уже установленную версию"
 "cbtn_keep_cache","Сохранять кэш загрузок"

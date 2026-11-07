@@ -8,6 +8,7 @@
 "cbtn_always_show_installs","Always show installs list"
 "cbtn_show_game_desc","Show game description"
 "cbtn_show_obsolete_mods","List obsolete mods in installed"
+"cbtn_patch_macos_app_bundle","Patch Cataclysm.app (enables launcher mods, tilesets, and backups)"
 "cbtn_update_mods_with_game","Update mods when updating the game"
 "cbtn_updating_to_same_build","Allow ""updating"" to the same build as installed"
 "cbtn_keep_cache","Keep download cache"

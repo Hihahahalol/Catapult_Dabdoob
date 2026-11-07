@@ -8,6 +8,7 @@
 "cbtn_always_show_installs","Her zaman yüklenenleri listele"
 "cbtn_show_game_desc","Oyun açıklamasını göster"
 "cbtn_show_obsolete_mods","Geçersiz modları yüklenmiş modlar içinde listele"
+"cbtn_patch_macos_app_bundle","Cataclysm.app'e yama uygula (yükleyici modlarını, tilesetleri ve yedekleri etkinleştir)"
 "cbtn_update_mods_with_game","Update mods when updating the game"
 "cbtn_updating_to_same_build","İndirilmiş sürümle aynı olan sürüme "yükseltmeyi" etkinleştir"
 "cbtn_keep_cache","İndirme önbelleğini tut"

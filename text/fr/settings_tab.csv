@@ -9,6 +9,7 @@
 "cbtn_shorten_release_names","Raccourcir les noms des versions expérimentales"
 "cbtn_always_show_installs","Toujours afficher la liste des installations"
 "cbtn_show_obsolete_mods","Lister les mods obsolètes installés"
+"cbtn_patch_macos_app_bundle","Patcher Cataclysm.app (active les mods, les tilesets et les sauvegardes du lanceur)"
 "cbtn_update_mods_with_game","Update mods when updating the game"
 "cbtn_debug_mode","Mode débogage"
 "lbl_num_releases_to_request","Nombre de versions à demander:"

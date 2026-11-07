@@ -8,6 +8,7 @@
 "cbtn_always_show_installs","항상 설치 목록 표시"
 "cbtn_show_game_desc","게임 설명 표시"
 "cbtn_show_obsolete_mods","설치된 모드에서 사용되지 않는 모드 나열"
+"cbtn_patch_macos_app_bundle","Cataclysm.app 패치 (런처 모드, 타일셋 및 백업 활성화)"
 "cbtn_update_mods_with_game","Update mods when updating the game"
 "cbtn_updating_to_same_build","설치된 것과 동일한 빌드로 ""업데이트"" 허용"
 "cbtn_keep_cache","다운로드 캐시 유지"
