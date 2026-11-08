@@ -1827,6 +1827,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 			PatchMacos.patch(app_bundle_path)
 			if not PatchMacos.has_migrated_userdir():
 				PatchMacos.migrate_userdir()
+				yield(PatchMacos, "migrate_userdir_done")
 	else:
 		PatchMacos.unpatch(app_bundle_path)
 	

@@ -1,5 +1,7 @@
 extends Node
 
+signal migrate_userdir_done
+
 enum PatchState { UNPATCHED, PATCHED, UNKNOWN }
 
 # these must be updated if upstream updates Cataclysm.sh
@@ -30,7 +32,7 @@ func _get_orig_userdir():
 		"tlg":
 			game_dir = "Cataclysm-TLG"
 		_:
-			return ""
+			return "" # can't support migration for the other forks because their game_dir is also Cataclysm (no one plays them anyways)
 
 	var orig_userdir = ""
 	var home_dir = OS.get_environment("HOME")
@@ -180,25 +182,61 @@ func has_migrated_userdir():
 	return !d.dir_exists(orig_userdir) or FS.list_dir(orig_userdir).size() == 0
 
 func migrate_userdir():
-	if OS.get_name() != "OSX": return
 	var d = Directory.new()
 	var orig_userdir = _get_orig_userdir()
-	if orig_userdir == "": return
-	if !d.dir_exists(orig_userdir) or FS.list_dir(orig_userdir).size() == 0: return
 
 	Status.post(tr("msg_migrate_macos_userdir_start"), Enums.MSG_INFO)
+	
+	# copy to a temp directory first to ensure atomicity
+	var temp_path = Paths.userdata + "_temp"
+	if d.dir_exists(temp_path):
+		FS.rm_dir(temp_path)
+		yield(FS, "rm_dir_done")
+	d.make_dir_recursive(temp_path)
+	for item in FS.list_dir(orig_userdir):
+		var item_path = orig_userdir.plus_file(item)
+		if d.file_exists(item_path):
+			d.copy(item_path, temp_path.plus_file(item))
+		else:
+			FS.copy_dir(item_path, temp_path)
+			yield(FS, "copy_dir_done")
+
+	if FS.list_dir(temp_path).size() != FS.list_dir(orig_userdir).size():
+		Status.post("Failed to copy %s to %s, please copy manually for the launcher-managed features to work" % [orig_userdir, Paths.userdata], Enums.MSG_ERROR)
+		FS.rm_dir(temp_path)
+		yield(FS, "rm_dir_done")
+		emit_signal("migrate_userdir_done")
+		return
 
 	# back up old launcher userdata dir
+	var backup_userdir = ""
 	if d.dir_exists(Paths.userdata):
-		var backup_userdir = Paths.own_dir.plus_file(Settings.read("game")).plus_file("userdata_backup")
-		if d.dir_exists(backup_userdir):
-			FS.rm_dir(backup_userdir)
-			yield(FS, "rm_dir_done")
+		var datetime = OS.get_datetime()
+		var backup_name = "userdata_backup_%02d-%02d-%02d_%02d-%02d" % [
+			datetime["year"] % 100,
+			datetime["month"],
+			datetime["day"],
+			datetime["hour"],
+			datetime["minute"],
+		]
+		var backups_dir = Paths.own_dir.plus_file(Settings.read("game")).plus_file("userdata_backups")
+		d.make_dir_recursive(backups_dir)
+		backup_userdir = backups_dir.plus_file(backup_name)
+		while d.dir_exists(backup_userdir):
+			backup_userdir += "_1"
+		# we back up and at the same time delete the initial userdata
 		FS.move_dir(Paths.userdata, backup_userdir)
 		yield(FS, "move_dir_done")
-	
-	for subdir in FS.list_dir(orig_userdir):
-		FS.copy_dir(orig_userdir.plus_file(subdir), Paths.userdata)
-		yield(FS, "copy_dir_done")
-	
-	Status.post(tr("msg_migrate_macos_userdir_success") % Paths.userdata, Enums.MSG_INFO)
+
+	FS.move_dir(temp_path, Paths.userdata)
+	yield(FS, "move_dir_done")
+
+	if d.dir_exists(Paths.userdata):
+		Status.post(tr("msg_migrate_macos_userdir_success") % Paths.userdata, Enums.MSG_INFO)
+	else:
+		Status.post("Failed to copy %s to %s, please copy manually for the launcher-managed features to work" % [orig_userdir, Paths.userdata], Enums.MSG_ERROR)
+		if backup_userdir != "":
+			FS.move_dir(backup_userdir, Paths.userdata)
+			yield(FS, "move_dir_done")
+
+	emit_signal("migrate_userdir_done")
