@@ -1765,6 +1765,12 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 		open_args.append("--world")
 		open_args.append(world)
 	
+	if Settings.read("patch_macos_app_bundle"):
+		if has_args:
+			PatchMacos.patch(app_bundle_path)
+	else:
+		PatchMacos.unpatch(app_bundle_path)
+	
 	# Launch using 'open' command with process monitoring
 	_game_process.execute("open", open_args, true)
 	

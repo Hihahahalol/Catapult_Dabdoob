@@ -135,7 +135,7 @@ margin_bottom = 100.0
 [node name="Tabs" type="TabContainer" parent="Main" groups=["disable_during_backup_operations", "disable_during_mod_operations", "disable_during_release_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases"]]
 margin_top = 104.0
 margin_right = 592.0
-margin_bottom = 663.0
+margin_bottom = 571.0
 tab_align = 0
 script = ExtResource( 16 )
 
@@ -1694,9 +1694,9 @@ size_flags_horizontal = 4
 text = "Print screen info"
 
 [node name="Log" type="RichTextLabel" parent="Main"]
-margin_top = 667.0
+margin_top = 575.0
 margin_right = 592.0
-margin_bottom = 667.0
+margin_bottom = 660.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
