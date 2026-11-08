@@ -808,6 +808,9 @@ func _start_game(world := "") -> void:
 	
 	match OS.get_name():
 		"X11":
+			# Older installs lost their SONAME links in <game>/lib/. Repair them
+			# on launch so users don't have to reinstall the game.
+			_repair_bundled_lib_links(Paths.game_dir)
 			command_path = Paths.game_dir.plus_file("cataclysm-launcher")
 			command_args = ["--userdir", _escape_path(Paths.userdata)]
 			if world != "":
@@ -913,6 +916,58 @@ func _start_game(world := "") -> void:
 		Status.post(tr("Closing launcher..."))
 		yield(get_tree().create_timer(1.0), "timeout")  # Give user time to see the message
 		get_tree().quit()
+
+
+func _repair_bundled_lib_links(game_dir: String) -> void:
+	# Recreate SONAME symlinks that older installs dropped from <game>/lib/.
+	# The games bundle real libraries like libSDL3.so.0.4.10 and expect a
+	# short libSDL3.so.0 link next to them. Only missing/broken links are
+	# touched; existing files and valid links are left alone.
+
+	if OS.get_name() != "X11":
+		return
+
+	var lib_dir = game_dir.plus_file("lib")
+	Status.post("[debug] Verifying bundled library links in " + lib_dir, Enums.MSG_DEBUG)
+	if not Directory.new().dir_exists(lib_dir):
+		return
+
+	var f = File.new()
+	var restored = 0
+	for name in FS.list_dir(lib_dir):
+		if not name.begins_with("lib") or not ".so." in name:
+			continue
+		var halves = name.split(".so.")
+		if halves.size() != 2:
+			continue
+		var version_parts = halves[1].split(".")
+		if version_parts.size() < 2:
+			continue  # already a SONAME link, not the real versioned library
+
+		# Generate every shorter name the loader might ask for: some archives
+		# use libX.so.0, others libX.so.1.0, some also ship an unversioned link.
+		var candidates = [halves[0] + ".so"]
+		var prefix = halves[0] + ".so."
+		for i in range(version_parts.size() - 1):
+			if i > 0:
+				prefix += "."
+			prefix += version_parts[i]
+			candidates.append(prefix)
+
+		for soname in candidates:
+			var link_path = lib_dir.plus_file(soname)
+			# File.file_exists() follows links, so a dangling link reads as missing.
+			if f.file_exists(link_path):
+				continue
+			var result = OS.execute("ln", ["-sfn", name, link_path], true)
+			if result == 0:
+				restored += 1
+			else:
+				Status.post(tr("Could not restore library link %s (exit %d)") % [soname, result], Enums.MSG_WARN)
+
+	# One line instead of a wall of per-link messages on older installs.
+	if restored > 0:
+		Status.post(tr("Restored %d missing library links in %s") % [restored, lib_dir], Enums.MSG_INFO)
 
 
 func _on_game_process_exited() -> void:

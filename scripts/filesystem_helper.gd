@@ -83,13 +83,16 @@ func _copy_dir_internal(data: Array) -> void:
 			Status.post("[debug] Skipping Applications folder/symlink: %s" % item, Enums.MSG_DEBUG)
 			continue
 		
-		if d.file_exists(path):
+		# Directories first. file_exists() follows symlinks and would silently
+		# skip a link whose target has already gone, so copy everything else
+		# directly (a valid link is dereferenced into a regular file).
+		if d.dir_exists(path):
+			_copy_dir_internal([path, dest_dir.plus_file(dir)])
+		else:
 			error = d.copy(path, dest_dir.plus_file(dir).plus_file(item))
 			if error:
 				# Don't report copy failures as errors - often caused by symlinks/special files
 				Status.post("[debug] Failed to copy file %s (non-critical)" % item, Enums.MSG_DEBUG)
-		elif d.dir_exists(path):
-			_copy_dir_internal([path, dest_dir.plus_file(dir)])
 
 
 func copy_dir(abs_path: String, dest_dir: String) -> void:
@@ -105,18 +108,37 @@ func copy_dir(abs_path: String, dest_dir: String) -> void:
 func _rm_dir_internal(data: Array) -> void:
 	
 	var abs_path = data[0]
+	# Only the top-level call may hand the tree to the OS; recursive calls
+	# must use the manual walk.
+	var allow_native_remove = data.size() >= 2 and data[1]
+
+	# Godot's Directory.remove() starts with stat(), which follows symlinks.
+	# A dangling SONAME link therefore cannot be unlinked, the sweep leaves
+	# lib/ (and the install dir) non-empty, and every failure is logged as an
+	# error. Native rm handles links and special files in one pass.
+	var safe_absolute = abs_path.begins_with("/") and abs_path.length() > 8
+	if allow_native_remove and safe_absolute and OS.get_name() in ["X11", "OSX"]:
+		var rm_result = OS.execute("rm", ["-rf", abs_path], true)
+		if rm_result == 0:
+			return
+		Status.post("[debug] Native rm failed (%d), falling back to manual removal" % rm_result, Enums.MSG_DEBUG)
+
 	var d = Directory.new()
 	var error
 	
 	for item in list_dir(abs_path):
 		var path = abs_path.plus_file(item)
-		if d.file_exists(path):
+		# Same symlink caveat as _move_dir_internal: file_exists() follows
+		# links, so a link whose target was deleted earlier in this sweep
+		# would be skipped and leave the directory non-empty. Removing it
+		# directly unlinks it regardless of target state.
+		if d.dir_exists(path):
+			_rm_dir_internal([path, false])
+		else:
 			error = d.remove(path)
 			if error:
 				Status.post(tr("msg_remove_file_failed") % [item, error], Enums.MSG_ERROR)
 				Status.post(tr("msg_remove_file_failed_details") % path, Enums.MSG_DEBUG)
-		elif d.dir_exists(path):
-			_rm_dir_internal([path])
 	
 	error = d.remove(abs_path)
 	if error:
@@ -127,7 +149,7 @@ func rm_dir(abs_path: String) -> void:
 	# Recursively removes a directory.
 	
 	var tfe = ThreadedFuncExecutor.new()
-	tfe.execute(self, "_rm_dir_internal", [abs_path])
+	tfe.execute(self, "_rm_dir_internal", [abs_path, true])
 	yield(tfe, "func_returned")
 	tfe.collect()
 	emit_signal("rm_dir_done")
@@ -137,11 +159,30 @@ func _move_dir_internal(data: Array) -> void:
 	
 	var abs_path: String = data[0]
 	var abs_dest: String = data[1]
+	# Only the top-level call may hand the tree to the OS; recursive calls
+	# must use the manual walk.
+	var allow_native_move = true
+	if data.size() >= 3:
+		allow_native_move = data[2]
+
+	# Game archives now ship SONAME symlinks in lib/ (SDL3). Godot's Directory
+	# API is not safe for those: file_exists() follows links, and rename() has
+	# platform-dependent symlink behaviour (on Windows it dereferences them).
+	# On Linux move the whole tree with mv, which preserves links, modes and
+	# special files in one atomic rename.
+	if allow_native_move and OS.get_name() == "X11":
+		Status.post("[debug] Symlink-safe installer: using native mv for game install", Enums.MSG_DEBUG)
+		var mv_result = OS.execute("mv", ["-T", abs_path, abs_dest], true)
+		if mv_result == 0:
+			return
+		# Non-empty leftover target or a non-GNU mv: fall back to the manual walk.
+		Status.post("[debug] Native mv failed (%d), falling back to manual move" % mv_result, Enums.MSG_DEBUG)
 	
 	var d = Directory.new()
 	var error = d.make_dir_recursive(abs_dest)
-	if error:
-		# Don't report directory creation failures as errors - often directory already exists
+	# ERR_ALREADY_EXISTS is fine: an update may leave the target directory
+	# behind. Only bail out when the directory genuinely isn't usable.
+	if error and not d.dir_exists(abs_dest):
 		Status.post("[debug] Could not create directory %s (non-critical)" % abs_dest, Enums.MSG_DEBUG)
 		return
 	
@@ -154,13 +195,21 @@ func _move_dir_internal(data: Array) -> void:
 			Status.post("[debug] Skipping Applications folder/symlink during move: %s" % item, Enums.MSG_DEBUG)
 			continue
 		
-		if d.file_exists(path):
-			error = d.rename(path, abs_dest.plus_file(item))
+		# Handle directories first, then move everything else with rename().
+		# Do NOT gate the move on file_exists(): that call follows symlinks, so
+		# a SONAME link whose target was already renamed into the destination
+		# looks like a broken link and is silently skipped. TLG bundles its
+		# SDL3 libs as real files plus SONAME symlinks in lib/, and the mixer
+		# target precedes its link in the archive - that is exactly how
+		# libSDL3_mixer.so.0 went missing. rename() moves the link itself and
+		# does not require a valid target.
+		if d.dir_exists(path):
+			_move_dir_internal([path, dest, false])
+		else:
+			error = d.rename(path, dest)
 			if error:
 				# Don't report move failures as errors - often caused by symlinks/special files
 				Status.post("[debug] Failed to move file %s (non-critical)" % item, Enums.MSG_DEBUG)
-		elif d.dir_exists(path):
-			_move_dir_internal([path, abs_dest.plus_file(item)])
 	
 	error = d.remove(abs_path)
 	if error:
