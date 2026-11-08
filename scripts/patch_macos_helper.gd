@@ -11,7 +11,7 @@ const _ORIG_SCRIPT_HASHES = {
 	"tlg": "0f2f49fe70fac1634dfb59284130c18f4ccc8de287fbe865d034d790ec60444c",
 }
 
-# these must be updated if scripts in scripts/macos_entry_scripts are modified
+# these must be updated if scripts in macos_entry_scripts are modified
 const _PATCHED_SCRIPT_HASHES = {
 	"bn": "4ab8e05c1bbe85d5ec7deea1fc6d52ef52dd5bed20f1167be1370e1bd9347726",
 	"cata": "23b84ceae85aca568b42eaf75c1cb2ef88a1248a9bc842da6fafba2147cff174",
@@ -103,17 +103,11 @@ func patch(app_bundle_path: String):
 		Status.post("Failed to back up MacOS Cataclysm.sh script: " + str(error), Enums.MSG_ERROR)
 		return
 	
-	# load patch from resources
-	var patch_path = "res://scripts/macos_entry_scripts".plus_file(script_type)
-	if f.get_sha256(patch_path) != _PATCHED_SCRIPT_HASHES[script_type]:
-		Status.post("MacOS Cataclysm.sh patch file corrupted. Please redownload launcher to enable MacOS patching.", Enums.MSG_ERROR)
+	# load patch
+	var patch = MacosEntry.SCRIPTS[script_type]
+	if patch.sha256_text() != _PATCHED_SCRIPT_HASHES[script_type]:
+		Status.post("MacOS Cataclysm.sh patch file corrupted.", Enums.MSG_ERROR)
 		return
-	error = f.open(patch_path, File.READ)
-	if error != OK:
-		Status.post("Failed to open Cataclysm.sh patch file: " + str(error), Enums.MSG_ERROR)
-		return
-	var patch = f.get_as_text()
-	f.close()
 
 	var temp_path = Paths.game_dir.plus_file(_TEMP_FILENAME)
 	error = f.open(temp_path, File.WRITE)
