@@ -774,7 +774,8 @@ func _process(_delta: float) -> void:
 
 func _start_game(world := "") -> void:
 	# Create automatic backup if enabled
-	if Settings.read("backup_before_launch"):
+	if (Settings.read("backup_before_launch") and
+		Directory.new().dir_exists(Paths.savegames) and FS.list_dir(Paths.savegames).size() > 0):
 		var datetime = OS.get_datetime()
 		var backup_name = "Auto_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
@@ -929,7 +930,8 @@ func _on_game_process_exited() -> void:
 					Status.post(trimmed, msg_type)
 
 	# Create automatic backup if enabled
-	if Settings.read("backup_after_closing"):
+	if (Settings.read("backup_after_closing") and
+		Directory.new().dir_exists(Paths.savegames) and FS.list_dir(Paths.savegames).size() > 0):
 		var datetime = OS.get_datetime()
 		var backup_name = "AutoExit_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
@@ -1747,7 +1749,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	Status.post(tr("Starting macOS app bundle: %s") % app_name)
 	
 	# Build 'open' command with arguments
-	var open_args = [app_bundle_path]
+	var open_args = ["-W", "-n", app_bundle_path]
 	
 	# Add game arguments if needed
 	var has_args = false
