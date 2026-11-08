@@ -1,4 +1,8 @@
 "keys","es"
 ,
+"msg_macos_patch_start","Aplicando un parche a Cataclysm.app para habilitar los datos de usuario gestionados por el lanzador..."
 "msg_macos_patch_success","Cataclysm.app se parcheó correctamente."
+"msg_macos_unpatch_start","Restaurando el Cataclysm.app original para deshabilitar los datos de usuario gestionados por el lanzador..."
 "msg_macos_unpatch_success","El Cataclysm.app original se restauró correctamente."
+"msg_migrate_macos_userdir_start","Copiando los datos de usuario de la carpeta propia del juego a la carpeta de datos de usuario del lanzador..."
+"msg_migrate_macos_userdir_success","Los datos de usuario se copiaron correctamente a %s"

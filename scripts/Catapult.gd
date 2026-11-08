@@ -1768,6 +1768,8 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	if Settings.read("patch_macos_app_bundle"):
 		if has_args:
 			PatchMacos.patch(app_bundle_path)
+			if not PatchMacos.has_migrated_userdir():
+				PatchMacos.migrate_userdir()
 	else:
 		PatchMacos.unpatch(app_bundle_path)
 	

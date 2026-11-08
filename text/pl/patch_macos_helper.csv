@@ -1,4 +1,8 @@
 "keys","pl"
 ,
+"msg_macos_patch_start","Spatchuj Cataclysm.app, aby włączyć dane użytkownika zarządzane przez launcher..."
 "msg_macos_patch_success","Cataclysm.app został pomyślnie spatchowany."
+"msg_macos_unpatch_start","Przywracanie oryginalnego Cataclysm.app, aby wyłączyć dane użytkownika zarządzane przez launcher..."
 "msg_macos_unpatch_success","Pomyślnie przywrócono oryginalny Cataclysm.app."
+"msg_migrate_macos_userdir_start","Kopiowanie danych użytkownika z folderu gry do folderu danych użytkownika launchera..."
+"msg_migrate_macos_userdir_success","Pomyślnie skopiowano dane użytkownika do %s"

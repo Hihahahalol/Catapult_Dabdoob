@@ -1082,9 +1082,9 @@ fit_content_height = true
 [node name="FontSizeHelpDialog" parent="Main/Tabs/Fonts" instance=ExtResource( 29 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 492.0
-margin_right = 619.0
-margin_bottom = 493.0
+margin_top = 428.0
+margin_right = 577.0
+margin_bottom = 429.0
 
 [node name="Backups" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
@@ -1356,7 +1356,7 @@ text = "cbtn_update_mods_with_game"
 margin_top = 292.0
 margin_right = 577.0
 margin_bottom = 320.0
-hint_tooltip = "tooltip_update_mods_with_game"
+hint_tooltip = "tooltip_patch_macos_app_bundle"
 text = "cbtn_patch_macos_app_bundle"
 
 [node name="KeepCache" type="CheckButton" parent="Main/Tabs/Settings"]

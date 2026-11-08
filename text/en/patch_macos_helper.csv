@@ -1,4 +1,8 @@
 "keys","en"
 ,
-"msg_macos_patch_success","Cataclysm.app patched successfully."
+"msg_macos_patch_start","Patching Cataclysm.app to enable launcher-managed user data..."
+"msg_macos_patch_success","Successfully patched Cataclysm.app."
+"msg_macos_unpatch_start","Restoring original Cataclysm.app to disable launcher-managed user data..."
 "msg_macos_unpatch_success","Successfully restored original Cataclysm.app."
+"msg_migrate_macos_userdir_start","Copying user data from the game's own folder to the launcher's userdata folder..."
+"msg_migrate_macos_userdir_success","Successfully copied user data to %s"
