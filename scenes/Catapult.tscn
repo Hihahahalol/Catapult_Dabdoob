@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://icons/info.svg" type="Texture" id=1]
 [ext_resource path="res://icons/buttons/tex_resume.tex" type="Texture" id=2]
@@ -50,6 +50,7 @@
 [ext_resource path="res://scripts/AboutUI.gd" type="Script" id=48]
 [ext_resource path="res://icons/lang/lang_ja.svg" type="Texture" id=49]
 [ext_resource path="res://scenes/CustomTitleBar.tscn" type="PackedScene" id=50]
+[ext_resource path="res://scenes/MacosDialog.tscn" type="PackedScene" id=51]
 [ext_resource path="res://icons/buttons/search_wiki.svg" type="Texture" id=52]
 
 [sub_resource type="StyleBoxEmpty" id=2]
@@ -135,7 +136,7 @@ margin_bottom = 100.0
 [node name="Tabs" type="TabContainer" parent="Main" groups=["disable_during_backup_operations", "disable_during_mod_operations", "disable_during_release_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases"]]
 margin_top = 104.0
 margin_right = 592.0
-margin_bottom = 571.0
+margin_bottom = 576.0
 tab_align = 0
 script = ExtResource( 16 )
 
@@ -402,6 +403,16 @@ text = "btn_delete"
 icon = ExtResource( 40 )
 
 [node name="ChangelogDialog" parent="Main/Tabs/Game" instance=ExtResource( 32 )]
+
+[node name="MacosDialog" parent="Main/Tabs/Game" instance=ExtResource( 51 )]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 430.0
+margin_right = 577.0
+margin_bottom = 431.0
 
 [node name="Mods" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
@@ -1694,7 +1705,7 @@ size_flags_horizontal = 4
 text = "Print screen info"
 
 [node name="Log" type="RichTextLabel" parent="Main"]
-margin_top = 575.0
+margin_top = 580.0
 margin_right = 592.0
 margin_bottom = 660.0
 focus_mode = 2

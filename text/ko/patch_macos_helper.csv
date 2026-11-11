@@ -4,5 +4,7 @@
 "msg_macos_patch_success","Cataclysm.app 패치에 성공했습니다."
 "msg_macos_unpatch_start","런처가 관리하는 사용자 데이터를 비활성화하기 위해 원본 Cataclysm.app을 복원하는 중..."
 "msg_macos_unpatch_success","원본 Cataclysm.app을 성공적으로 복원했습니다."
-"msg_migrate_macos_userdir_start","게임 폴더에서 런처의 사용자 데이터 폴더로 사용자 데이터를 복사하는 중..."
+"msg_migrate_macos_userdir_start","최근 런처 업데이트로 macOS에서 사용자 데이터 위치가 변경되었습니다. %s에서 %s(으)로 데이터를 복사하는 중..."
+"msg_migrated_other_fork","세이브 및 기타 사용자 데이터가 이미 다른 포크로 마이그레이션된 것으로 감지되어 자동 마이그레이션을 건너뜁니다. 데이터가 이 포크에 해당한다면 %s의 파일을 %s(으)로 복사할 수 있습니다."
+"msg_migrate_skip","자동 마이그레이션을 건너뛰었습니다. 세이브와 사용자 데이터를 수동으로 이동하려면 %s의 파일을 %s(으)로 복사하세요."
 "msg_migrate_macos_userdir_success","사용자 데이터를 %s에 성공적으로 복사했습니다"

@@ -4,5 +4,7 @@
 "msg_macos_patch_success","Cataclysm.app foi corrigido com sucesso."
 "msg_macos_unpatch_start","Restaurando o Cataclysm.app original para desativar os dados do usuário gerenciados pelo launcher..."
 "msg_macos_unpatch_success","O Cataclysm.app original foi restaurado com sucesso."
-"msg_migrate_macos_userdir_start","Copiando os dados do usuário da pasta do jogo para a pasta de dados do usuário do launcher..."
+"msg_migrate_macos_userdir_start","Uma atualização recente do launcher alterou o local dos dados do usuário no macOS. Copiando os dados de %s para %s..."
+"msg_migrated_other_fork","Foi detectado que os arquivos salvos e outros dados do usuário já foram migrados para outro fork; a migração automática será ignorada. Se os dados pertencerem a este fork, você pode copiar os arquivos de %s para %s."
+"msg_migrate_skip","Migração automática ignorada. Para mover manualmente seus arquivos salvos e dados do usuário, copie os arquivos de %s para %s."
 "msg_migrate_macos_userdir_success","Os dados do usuário foram copiados com sucesso para %s"

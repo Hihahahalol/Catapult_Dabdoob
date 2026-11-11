@@ -4,5 +4,7 @@
 "msg_macos_patch_success","Cataclysm.app 修补成功。"
 "msg_macos_unpatch_start","正在恢复原始 Cataclysm.app，以停用由启动器管理的用户数据……"
 "msg_macos_unpatch_success","已成功恢复原始 Cataclysm.app。"
-"msg_migrate_macos_userdir_start","正在将用户数据从游戏自身的文件夹复制到启动器的用户数据文件夹……"
+"msg_migrate_macos_userdir_start","启动器最近的一次更新更改了 macOS 上用户数据的位置。正在将数据从 %s 复制到 %s……"
+"msg_migrated_other_fork","检测到存档和其他用户数据已为另一个分支完成迁移；跳过自动迁移。如果这些数据属于当前分支，你可以将 %s 中的文件复制到 %s。"
+"msg_migrate_skip","已跳过自动迁移。要手动移动存档和用户数据，请将 %s 中的文件复制到 %s。"
 "msg_migrate_macos_userdir_success","用户数据已成功复制到 %s"

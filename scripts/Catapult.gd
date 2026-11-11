@@ -1813,7 +1813,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 			open_args.append("--args")
 			has_args = true
 		open_args.append("--userdir")
-		open_args.append(Paths.userdata)
+		open_args.append(Paths.userdata + "/")
 	
 	if world != "":
 		if not has_args:
@@ -1825,9 +1825,8 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	if Settings.read("patch_macos_app_bundle"):
 		if has_args:
 			PatchMacos.patch(app_bundle_path)
-			if not PatchMacos.has_migrated_userdir():
-				PatchMacos.migrate_userdir()
-				yield(PatchMacos, "migrate_userdir_done")
+			PatchMacos.handle_userdir_migration()
+			yield(PatchMacos, "migrate_userdir_done")
 	else:
 		PatchMacos.unpatch(app_bundle_path)
 	
