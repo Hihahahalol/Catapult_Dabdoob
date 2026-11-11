@@ -1,0 +1,10 @@
+"keys","ja"
+,
+"msg_macos_patch_start","ランチャーが管理するユーザーデータを有効にするため、Cataclysm.appにパッチを適用しています..."
+"msg_macos_patch_success","Cataclysm.appのパッチ適用に成功しました。"
+"msg_macos_unpatch_start","ランチャーが管理するユーザーデータを無効にするため、元のCataclysm.appを復元しています..."
+"msg_macos_unpatch_success","元のCataclysm.appを正常に復元しました。"
+"msg_migrate_macos_userdir_start","最近のランチャーの更新により、macOSでのユーザーデータの場所が変更されました。%sから%sへデータをコピーしています..."
+"msg_migrated_other_fork","セーブデータやその他のユーザーデータが、別のフォーク用にすでに移行済みです。自動移行をスキップします。データがこのフォークのものである場合は、%s内のファイルを%sへコピーできます。"
+"msg_migrate_skip","自動移行をスキップしました。セーブデータとユーザーデータを手動で移動するには、%s内のファイルを%sへコピーしてください。"
+"msg_migrate_macos_userdir_success","ユーザーデータを%sに正常にコピーしました"

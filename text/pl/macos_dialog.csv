@@ -1,0 +1,6 @@
+"keys","pl"
+,
+"dlg_macos_title","Aktualizacja launchera dla macOS"
+"str_macos_intro","Niedawna aktualizacja wprowadziła w systemie macOS obsługę modów, zestawów kafelków, czcionek, kopii zapasowych i innych danych zarządzanych przez launcher. Zmienia to jednak miejsce, z którego gra odczytuje dane. Aby zachować zapisy gry i ustawienia, potrzebujemy Twojej pomocy:"
+"str_macos_question_save","do którego forka należą te zapisy gry?"
+"str_macos_question_played","w którego forka grałeś ostatnio?"

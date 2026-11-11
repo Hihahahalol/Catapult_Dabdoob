@@ -1,0 +1,10 @@
+"keys","fr"
+,
+"msg_macos_patch_start","Application d'un patch à Cataclysm.app pour activer les données utilisateur gérées par le lanceur..."
+"msg_macos_patch_success","Cataclysm.app a été patché avec succès."
+"msg_macos_unpatch_start","Restauration du Cataclysm.app original pour désactiver les données utilisateur gérées par le lanceur..."
+"msg_macos_unpatch_success","Le Cataclysm.app original a été restauré avec succès."
+"msg_migrate_macos_userdir_start","Une mise à jour récente du lanceur a modifié l’emplacement des données utilisateur sur macOS. Copie des données de %s vers %s..."
+"msg_migrated_other_fork","Les sauvegardes et autres données utilisateur ont déjà été migrées pour un autre fork ; migration automatique ignorée. Si les données appartiennent à ce fork, vous pouvez copier les fichiers de %s vers %s."
+"msg_migrate_skip","Migration automatique ignorée. Pour déplacer manuellement vos sauvegardes et données utilisateur, copiez les fichiers de %s vers %s."
+"msg_migrate_macos_userdir_success","Les données utilisateur ont été copiées avec succès vers %s"

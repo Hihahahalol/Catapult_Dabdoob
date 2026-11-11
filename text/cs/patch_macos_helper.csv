@@ -1,0 +1,10 @@
+"keys","cs"
+,
+"msg_macos_patch_start","Probíhá oprava Cataclysm.app pro povolení uživatelských dat spravovaných spouštěčem..."
+"msg_macos_patch_success","Cataclysm.app byl úspěšně opraven."
+"msg_macos_unpatch_start","Probíhá obnovení původního Cataclysm.app pro vypnutí uživatelských dat spravovaných spouštěčem..."
+"msg_macos_unpatch_success","Původní Cataclysm.app byl úspěšně obnoven."
+"msg_migrate_macos_userdir_start","Nedávná aktualizace spouštěče změnila umístění uživatelských dat v systému macOS. Kopírování dat z %s do %s..."
+"msg_migrated_other_fork","Bylo zjištěno, že uložené hry a další uživatelská data již byla migrována pro jiný fork; automatická migrace se vynechává. Pokud data patří tomuto forku, můžete zkopírovat soubory z %s do %s."
+"msg_migrate_skip","Automatická migrace byla vynechána. Chcete-li uložené hry a uživatelská data přesunout ručně, zkopírujte soubory z %s do %s."
+"msg_migrate_macos_userdir_success","Uživatelská data byla úspěšně zkopírována do %s"

@@ -1,0 +1,6 @@
+"keys","fr"
+,
+"dlg_macos_title","Mise à jour du lanceur pour macOS"
+"str_macos_intro","Une mise à jour récente a ajouté à macOS la prise en charge des mods, ensembles de tuiles, polices, sauvegardes et autres données gérés par le lanceur. Cependant, cela modifie l’emplacement depuis lequel le jeu lit vos données. Pour conserver vos sauvegardes et vos options, nous avons besoin de votre aide :"
+"str_macos_question_save","à quel fork appartiennent ces sauvegardes ?"
+"str_macos_question_played","avec quel fork avez-vous joué en dernier ?"

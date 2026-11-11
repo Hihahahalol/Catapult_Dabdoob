@@ -774,7 +774,8 @@ func _process(_delta: float) -> void:
 
 func _start_game(world := "") -> void:
 	# Create automatic backup if enabled
-	if Settings.read("backup_before_launch"):
+	if (Settings.read("backup_before_launch") and
+		Directory.new().dir_exists(Paths.savegames) and FS.list_dir(Paths.savegames).size() > 0):
 		var datetime = OS.get_datetime()
 		var backup_name = "Auto_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
@@ -984,7 +985,8 @@ func _on_game_process_exited() -> void:
 					Status.post(trimmed, msg_type)
 
 	# Create automatic backup if enabled
-	if Settings.read("backup_after_closing"):
+	if (Settings.read("backup_after_closing") and
+		Directory.new().dir_exists(Paths.savegames) and FS.list_dir(Paths.savegames).size() > 0):
 		var datetime = OS.get_datetime()
 		var backup_name = "AutoExit_%02d-%02d-%02d_%02d-%02d" % [
 			datetime["year"] % 100,
@@ -1802,7 +1804,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 	Status.post(tr("Starting macOS app bundle: %s") % app_name)
 	
 	# Build 'open' command with arguments
-	var open_args = [app_bundle_path]
+	var open_args = ["-W", "-n", app_bundle_path]
 	
 	# Add game arguments if needed
 	var has_args = false
@@ -1811,7 +1813,7 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 			open_args.append("--args")
 			has_args = true
 		open_args.append("--userdir")
-		open_args.append(Paths.userdata)
+		open_args.append(Paths.userdata + "/")
 	
 	if world != "":
 		if not has_args:
@@ -1819,6 +1821,14 @@ func _launch_app_bundle(exe_info: Dictionary, world: String) -> void:
 			has_args = true
 		open_args.append("--world")
 		open_args.append(world)
+	
+	if Settings.read("patch_macos_app_bundle"):
+		if has_args:
+			PatchMacos.patch(app_bundle_path)
+			PatchMacos.handle_userdir_migration()
+			yield(PatchMacos, "migrate_userdir_done")
+	else:
+		PatchMacos.unpatch(app_bundle_path)
 	
 	# Launch using 'open' command with process monitoring
 	_game_process.execute("open", open_args, true)

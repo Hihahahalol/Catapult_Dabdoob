@@ -4,6 +4,7 @@ Dabdoob.x86_64
 Dabdoob.exe
 *.translation
 *~lock*
+.DS_Store
 
 # Godot Git plugin
 /bin

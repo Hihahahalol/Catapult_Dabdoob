@@ -1,0 +1,10 @@
+"keys","es"
+,
+"msg_macos_patch_start","Aplicando un parche a Cataclysm.app para habilitar los datos de usuario gestionados por el lanzador..."
+"msg_macos_patch_success","Cataclysm.app se parcheó correctamente."
+"msg_macos_unpatch_start","Restaurando el Cataclysm.app original para deshabilitar los datos de usuario gestionados por el lanzador..."
+"msg_macos_unpatch_success","El Cataclysm.app original se restauró correctamente."
+"msg_migrate_macos_userdir_start","Una actualización reciente del lanzador cambió la ubicación de los datos de usuario en macOS. Copiando los datos de %s a %s..."
+"msg_migrated_other_fork","Se detectó que las partidas guardadas y otros datos de usuario ya se migraron para otra bifurcación; se omite la migración automática. Si los datos pertenecen a esta bifurcación, puedes copiar los archivos de %s a %s."
+"msg_migrate_skip","Se omitió la migración automática. Para mover manualmente tus partidas guardadas y datos de usuario, copia los archivos de %s a %s."
+"msg_migrate_macos_userdir_success","Los datos de usuario se copiaron correctamente a %s"

@@ -1,0 +1,10 @@
+"keys","tr"
+,
+"msg_macos_patch_start","Yükleyici tarafından yönetilen kullanıcı verilerini etkinleştirmek için Cataclysm.app'e yama uygulanıyor..."
+"msg_macos_patch_success","Cataclysm.app başarıyla yamalandı."
+"msg_macos_unpatch_start","Yükleyici tarafından yönetilen kullanıcı verilerini devre dışı bırakmak için orijinal Cataclysm.app geri yükleniyor..."
+"msg_macos_unpatch_success","Orijinal Cataclysm.app başarıyla geri yüklendi."
+"msg_migrate_macos_userdir_start","macOS'ta yakın zamanda yapılan bir yükleyici güncellemesi kullanıcı verilerinin konumunu değiştirdi. Veriler %s konumundan %s konumuna kopyalanıyor..."
+"msg_migrated_other_fork","Kayıtlar ve diğer kullanıcı verileri başka bir çatala zaten aktarılmış olarak tespit edildi; otomatik aktarım atlanıyor. Veriler bu çatala aitse, %s içindeki dosyaları %s konumuna kopyalayabilirsiniz."
+"msg_migrate_skip","Otomatik aktarım atlandı. Kayıtlarınızı ve kullanıcı verilerinizi manuel olarak taşımak için %s içindeki dosyaları %s konumuna kopyalayın."
+"msg_migrate_macos_userdir_success","Kullanıcı verileri %s konumuna başarıyla kopyalandı"

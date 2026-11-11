@@ -1,0 +1,106 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scripts/MacosDialog.gd" type="Script" id=1]
+[ext_resource path="res://fonts/OpenSans-SemiboldItalic.tres" type="DynamicFont" id=2]
+[ext_resource path="res://fonts/OpenSans-Regular.tres" type="DynamicFont" id=3]
+[ext_resource path="res://fonts/OpenSans-Italic.tres" type="DynamicFont" id=4]
+[ext_resource path="res://fonts/OpenSans-Semibold.tres" type="DynamicFont" id=5]
+
+[node name="MacosDialog" type="WindowDialog"]
+margin_right = 650.0
+margin_bottom = 600.0
+window_title = "dlg_macos_title"
+script = ExtResource( 1 )
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+margin_left = 14.0
+margin_top = 14.0
+margin_right = 636.0
+margin_bottom = 586.0
+custom_constants/margin_top = 8
+custom_constants/margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+margin_top = 8.0
+margin_right = 622.0
+margin_bottom = 564.0
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MacosText" type="RichTextLabel" parent="Panel/Margin/VBox"]
+margin_right = 622.0
+margin_bottom = 466.0
+size_flags_vertical = 3
+custom_fonts/bold_italics_font = ExtResource( 2 )
+custom_fonts/italics_font = ExtResource( 4 )
+custom_fonts/bold_font = ExtResource( 5 )
+custom_fonts/normal_font = ExtResource( 3 )
+bbcode_enabled = true
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+margin_left = 10.0
+margin_top = 474.0
+margin_right = 612.0
+margin_bottom = 511.0
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="BtnDDA" type="Button" parent="Panel/Margin/VBox/HBox"]
+margin_right = 208.0
+margin_bottom = 37.0
+size_flags_horizontal = 4
+text = "Dark Days Ahead"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtnEOD" type="Button" parent="Panel/Margin/VBox/HBox"]
+margin_left = 216.0
+margin_right = 375.0
+margin_bottom = 37.0
+size_flags_horizontal = 4
+text = "Era of Decay"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtnTISH" type="Button" parent="Panel/Margin/VBox/HBox"]
+margin_left = 383.0
+margin_right = 602.0
+margin_bottom = 37.0
+size_flags_horizontal = 4
+text = "There is Still Hope"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BtnCloseMacos" type="Button" parent="Panel/Margin/VBox"]
+margin_left = 254.0
+margin_top = 519.0
+margin_right = 367.0
+margin_bottom = 556.0
+size_flags_horizontal = 4
+text = "btn_skip"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="popup_hide" from="." to="." method="_on_MacosDialog_popup_hide"]
+[connection signal="meta_clicked" from="Panel/Margin/VBox/MacosText" to="." method="_on_MacosText_meta_clicked"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/BtnDDA" to="." method="_on_BtnDDA_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/BtnEOD" to="." method="_on_BtnEOD_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/BtnTISH" to="." method="_on_BtnTISH_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/BtnCloseMacos" to="." method="_on_BtnCloseMacos_pressed"]
