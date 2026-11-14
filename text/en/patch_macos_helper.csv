@@ -1,0 +1,10 @@
+"keys","en"
+,
+"msg_macos_patch_start","Patching Cataclysm.app to enable launcher-managed user data..."
+"msg_macos_patch_success","Successfully patched Cataclysm.app."
+"msg_macos_unpatch_start","Restoring original Cataclysm.app to disable launcher-managed user data..."
+"msg_macos_unpatch_success","Successfully restored original Cataclysm.app."
+"msg_migrate_macos_userdir_start","A recent launcher update changed the location of user data on macOS. Copying data from '%s' to '%s'..."
+"msg_migrate_macos_userdir_success","Successfully copied user data to '%s'."
+"msg_migrated_other_fork","Saves and other user data detected as already migrated for another fork; skipping automatic migration. If the data actually belongs to this fork, you may copy the files inside '%s' to '%s'."
+"msg_migrate_skip","Automatic migration skipped. To manually move your saves and user data, copy the files inside '%s' to '%s'."

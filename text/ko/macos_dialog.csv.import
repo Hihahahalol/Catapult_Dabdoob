@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=[ "res://text/ko/macos_dialog.ko.translation" ]
+
+source_file="res://text/ko/macos_dialog.csv"
+dest_files=[ "res://text/ko/macos_dialog.ko.translation" ]
+
+[params]
+
+compress=true
+delimiter=0

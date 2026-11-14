@@ -43,6 +43,8 @@ func _ready() -> void:
 	$AlwaysShowInstalls.pressed = Settings.read("always_show_installs")
 	$ShowObsoleteMods.pressed = Settings.read("show_obsolete_mods")
 	$UpdateModsWithGame.pressed = Settings.read("update_mods_with_game")
+	$PatchMacosAppBundle.visible = OS.get_name() == "OSX"
+	$PatchMacosAppBundle.pressed = Settings.read("patch_macos_app_bundle")
 
 	$KeepCache.pressed = Settings.read("keep_cache")
 	$IgnoreCache.pressed = Settings.read("ignore_cache")
@@ -117,6 +119,9 @@ func _on_UpdateModsWithGame_toggled(button_pressed: bool) -> void:
 
 	Settings.store("update_mods_with_game", button_pressed)
 
+func _on_PatchMacosAppBundle_toggled(button_pressed: bool) -> void:
+
+	Settings.store("patch_macos_app_bundle", button_pressed)
 
 func _on_KeepCache_toggled(button_pressed: bool) -> void:
 	

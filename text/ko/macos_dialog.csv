@@ -1,0 +1,6 @@
+"keys","ko"
+,
+"dlg_macos_title","macOS 런처 업데이트"
+"str_macos_intro","최근 업데이트에서 macOS에 런처가 관리하는 모드, 타일셋, 글꼴, 백업 등의 지원이 추가되었습니다. 하지만 이로 인해 게임이 데이터를 읽는 위치가 변경됩니다. 세이브와 설정을 그대로 유지하려면 도움이 필요합니다:"
+"str_macos_question_save","이 세이브는 어느 포크에 해당하나요?"
+"str_macos_question_played","마지막으로 플레이한 포크는 무엇인가요?"

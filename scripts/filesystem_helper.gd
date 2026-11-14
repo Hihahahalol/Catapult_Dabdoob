@@ -49,7 +49,8 @@ func list_dir(path: String, recursive := false) -> Array:
 	while true:
 		var name = d.get_next()
 		if name:
-			result.append(name)
+			if name != ".DS_Store":
+				result.append(name)
 			if recursive and d.current_is_dir():
 				var subdir = list_dir(path.plus_file(name), true)
 				for child in subdir:

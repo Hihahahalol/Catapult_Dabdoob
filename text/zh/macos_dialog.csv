@@ -1,0 +1,6 @@
+"keys","zh_Hans_CN"
+,
+"dlg_macos_title","macOS 启动器更新"
+"str_macos_intro","最近的一次更新为 macOS 引入了由启动器管理的模组、图块集、字体、备份等功能。不过，这会改变游戏读取数据的位置。为了保留你的存档和选项，我们需要你的帮助："
+"str_macos_question_save","这些存档属于哪个分支？"
+"str_macos_question_played","你最近玩的是哪个分支？"

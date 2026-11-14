@@ -28,6 +28,7 @@ const _HARDCODED_DEFAULTS = {
 	"show_installed_mods_in_available": false,
 	"show_obsolete_mods": false,
 	"update_mods_with_game": false,
+	"patch_macos_app_bundle": true,
 
 	"show_stock_sound": false,
 	"show_stock_tilesets": true,

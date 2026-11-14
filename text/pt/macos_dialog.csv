@@ -1,0 +1,6 @@
+"keys","pt"
+,
+"dlg_macos_title","Atualização do launcher para macOS"
+"str_macos_intro","Uma atualização recente introduziu no macOS o suporte a mods, conjuntos de tiles, fontes, backups e outros dados gerenciados pelo launcher. No entanto, isso altera o local de onde o jogo lê seus dados. Para manter seus arquivos salvos e opções intactos, precisamos da sua ajuda:"
+"str_macos_question_save","a qual fork pertencem estes arquivos salvos?"
+"str_macos_question_played","em qual fork você jogou pela última vez?"

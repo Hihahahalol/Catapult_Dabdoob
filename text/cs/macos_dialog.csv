@@ -1,0 +1,6 @@
+"keys","cs"
+,
+"dlg_macos_title","Aktualizace spouštěče pro macOS"
+"str_macos_intro","Nedávná aktualizace zavedla pro macOS podporu modů, tilesetů, písem, záloh a dalších dat spravovaných spouštěčem. Tím se však mění umístění, ze kterého hra načítá vaše data. Abychom zachovali vaše uložené hry a nastavení, potřebujeme vaši pomoc:"
+"str_macos_question_save","ke kterému forku patří tyto uložené hry?"
+"str_macos_question_played","za který fork jste hráli naposledy?"

@@ -1,0 +1,6 @@
+"keys","en"
+,
+"dlg_macos_title","macOS launcher update"
+"str_macos_intro","In a recent update, support for launcher-managed mods, tilesets, fonts, backups, etc. were introduced for macOS. However, this changes where the game reads your data. To keep your saves and settings intact, we need your help:"
+"str_macos_question_save","which fork do these saves belong to?"
+"str_macos_question_played","which fork did you last play?"

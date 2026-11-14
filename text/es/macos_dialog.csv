@@ -1,0 +1,6 @@
+"keys","es"
+,
+"dlg_macos_title","Actualización del lanzador para macOS"
+"str_macos_intro","En una actualización reciente se introdujo en macOS la compatibilidad con mods, conjuntos de teselas, fuentes, copias de seguridad y otros datos gestionados por el lanzador. Sin embargo, esto cambia la ubicación desde la que el juego lee tus datos. Para conservar tus partidas guardadas y opciones, necesitamos tu ayuda:"
+"str_macos_question_save","¿a qué bifurcación pertenecen estas partidas guardadas?"
+"str_macos_question_played","¿con qué bifurcación jugaste por última vez?"
